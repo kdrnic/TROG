@@ -1,0 +1,12 @@
+all TROG
+TROG main Engine Items Entities
+Engine EntitiesManager Entity Game InventoryManager Keys Map MapManager Utils
+Items AK47 AKMagazine Swords LimitedAmountItems
+LimitedAmountItems LimitedAmountItem BombItem
+Swords GenericSword Sword
+Entities SpriteEntity Player Enemies OtherEntities EventEntities ItemPickups
+Enemies Enemy HitHurtEnemies Skeleton Archer Werewolf
+HitHurtEnemies HitHurtEnemy Zombie BarbedWire Bat Rat Slime
+OtherEntities AKBullet Bomb Explosion Rock Heart Poof Portal Vampire Stake Trap Plague Goo Arrow
+EventEntities EventEntity Sign Door NPC
+ItemPickups ItemPickup BombPickup
