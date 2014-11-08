@@ -17,6 +17,7 @@
 #include "Werewolf.h"
 #include "Painting.h"
 #include "Saver.h"
+#include "VillageWall.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -248,6 +249,7 @@ void GameManager::RegisterEntities()
 	entitiesFactory.Register("Werewolf", Werewolf::Create);
 	entitiesFactory.Register("Painting", Painting::Create);
 	entitiesFactory.Register("Saver", Saver::Create);
+	entitiesFactory.Register("VillageWall", VillageWall::Create);
 }
 
 void GameManager::RegisterItems()
