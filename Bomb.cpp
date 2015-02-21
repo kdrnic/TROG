@@ -18,7 +18,7 @@ void Bomb::OnCollision(Entity *e)
 
 Bomb::Bomb(int _x, int _y)
 {
-	if(_sprite == 0) _sprite = load_bitmap("bomb.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bomb"); // load_bitmap("bomb.bmp", 0);
 	x = _x;
 	y = _y;
 	width = 30;
@@ -34,4 +34,5 @@ void Bomb::Explode()
 {
 	alive = false;
 	game.entitiesManager.Add(new Explosion(x + 14, y + 17));
+	play_sample((SAMPLE *) game.GetData("snd_explosion"), 255, 0, 1000, false);
 }

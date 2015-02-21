@@ -121,7 +121,7 @@ void NPC::Update()
 
 NPC::NPC()
 {
-	if(_sprite == 0) _sprite = load_bitmap("NPCs.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_npc"); // load_bitmap("NPCs.bmp", 0);
 	width = 16;
 	height = 18;
 	offsetX = 13;

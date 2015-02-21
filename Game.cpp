@@ -18,6 +18,7 @@
 #include "Painting.h"
 #include "Saver.h"
 #include "VillageWall.h"
+#include "Stairs.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -32,6 +33,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <cmath>
+#include <cctype>
 
 GameManager game;
 
@@ -51,18 +53,35 @@ void SaveFrame()
 	fpsFrame = game.frame;
 }
 
+void *GameManager::GetData(const char *name)
+{
+	DATAFILE *obj = find_datafile_object(data, name);
+	if(obj == 0)
+	{
+		std::cerr << "WARNING: Datafile object not found: " << name << "\n";
+		return 0;
+	}
+	return (void *) obj->dat;
+}
+
 void GameManager::Init()
 {
+	data = load_datafile("game.dat");
+
 	RegisterEntities();
 	RegisterItems();
+
 	mapManager.LoadTileSet("tiles/tileset.tls");
 	mapManager.LoadAllMaps("maps/map");
+
 	doubleBuffer = create_bitmap(640, 480);
 	transitionBitmap = create_bitmap(630, 420);
 	playArea = create_bitmap(630, 420);
-	hud = load_bitmap("hud.bmp", 0);
-	inventoryManager.inventoryBackground = load_bitmap("inventory.bmp", 0);
-	inventoryManager.itemSelection = load_bitmap("itemSelection.bmp", 0);
+
+	hud = (BITMAP *) GetData("gui_hud"); // load_bitmap("hud.bmp", 0);
+	inventoryManager.inventoryBackground = (BITMAP *) GetData("gui_inventory"); // load_bitmap("inventory.bmp", 0);
+	inventoryManager.itemSelection = (BITMAP *) GetData("gui_itemSelection"); // load_bitmap("itemSelection.bmp", 0);
+
 	selectedItem = 0;
 	transition = TransitionNone;
 	currentDialogLines[0] = "";
@@ -71,14 +90,19 @@ void GameManager::Init()
 	dialogProgress = 0;
 	dialogCounter = 0;
 	dialogInverseSpeed = 5;
-	dialogBox = load_bitmap("dialogBox.bmp", 0);
-	dialogFont = load_bitmap_font("font.bmp", 0, 0);
-	facePicture = load_bitmap("face.bmp", 0);
+
+	dialogBox = (BITMAP *) GetData("gui_dialogBox"); // load_bitmap("dialogBox.bmp", 0);
+	dialogFont = (FONT *) GetData("gui_font"); // load_bitmap_font("font.bmp", 0, 0);
+	facePicture = (BITMAP *) GetData("gui_face"); // load_bitmap("face.bmp", 0);
+
 	fpsFrame = 0;
 	transitionFadingSpeed = 8;
 	pauseFadingSpeed = 0.75;
-	heartSprite = load_bitmap("heart.bmp", 0);
-	continueBg = load_bitmap("continue.bmp", 0);
+
+	heartSprite = (BITMAP *) GetData("gui_heart"); // load_bitmap("heart.bmp", 0);
+	continueBg = (BITMAP *) GetData("gui_continue"); // load_bitmap("continue.bmp", 0);
+	
+	blip = (SAMPLE *) GetData("snd_blip");
 }
 
 void GameManager::Start(int f)
@@ -250,6 +274,7 @@ void GameManager::RegisterEntities()
 	entitiesFactory.Register("Painting", Painting::Create);
 	entitiesFactory.Register("Saver", Saver::Create);
 	entitiesFactory.Register("VillageWall", VillageWall::Create);
+	entitiesFactory.Register("Stairs", Stairs::Create);
 }
 
 void GameManager::RegisterItems()
@@ -268,6 +293,10 @@ void GameManager::Update()
 			entitiesManager.RemoveDead();
 			entitiesManager.RemoveNonPersistent();
 			mapManager.SpawnEntities();
+			
+			player->speedX = 0;
+			player->speedY = 0;
+			
 			if(transition == TransitionNone) gameState = GameStatePlaying;
 			else
 			{
@@ -357,7 +386,17 @@ void GameManager::Update()
 				}
 			}
 			dialogCounter++;
-			if(dialogCounter >= dialogInverseSpeed) dialogProgress++;
+			if(dialogCounter >= dialogInverseSpeed)
+			{
+				if(dialogProgress < currentDialogLines[currentDialogLine].size())
+				{
+					if(std::isalnum(currentDialogLines[currentDialogLine][dialogProgress]) != 0)
+					{
+						//play_sample(blip, 255, 0, 1000, false);
+					}
+				}
+				dialogProgress++;
+			}
 			break;
 		case GameStateDead:
 			pauseFading += pauseFadingSpeed;
@@ -487,7 +526,7 @@ void GameManager::Draw()
 		draw_sprite(doubleBuffer, hud, 0, 0);
 		if(player->equippedItems[0] != 0) draw_sprite(doubleBuffer, player->equippedItems[0]->icon, 222, 432);
 		if(player->equippedItems[1] != 0) draw_sprite(doubleBuffer, player->equippedItems[1]->icon, 272, 432);
-		if(player->health >= 0)
+		if(player->health > 0)
 		{
 			for(int i = 0, j = 4; i < 5; i++, j--)
 			{

@@ -133,6 +133,7 @@ void Vampire::Update()
 			{
 				Entity *bat = new Bat(x + width / 2, y + height / 2);
 				game.entitiesManager.Add(bat);
+				play_sample((SAMPLE *) game.GetData("snd_bat"), 255, 0, 1000, false);
 				batCounter = 0;
 			}
 		}
@@ -159,6 +160,8 @@ void Vampire::Update()
 			Entity *poof = new Poof(x + width / 2, y + height / 2);
 			game.entitiesManager.Add(poof);
 			game.SetQuestState("vampire", "defeated");
+			play_sample((SAMPLE *) game.GetData("snd_victory"), 255, 0, 1000, false);
+			game.PushDialogLine("The vampire has been defeated!");
 			alive = false;
 		}
 	}
@@ -181,7 +184,7 @@ Vampire::Vampire()
 	spriteHeight = 40;
 	offsetX = 10;
 	offsetY = 15;
-	if(_sprite == 0) _sprite = load_bitmap("vampire.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_vampire"); // load_bitmap("vampire.bmp", 0);
 	sprite = _sprite;
 	frameStart = frameEnd = 0;
 	

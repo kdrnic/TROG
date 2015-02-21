@@ -12,6 +12,8 @@ class Slime : public HitHurtEnemy
 		void Die();
 		void Update();
 		
+		SAMPLE *GetDyingSound();
+		
 		Slime(int fh = 1);
 		
 		static Entity *Create();

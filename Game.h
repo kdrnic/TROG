@@ -46,6 +46,8 @@ class GameManager
 		int frame;
 		int file;
 
+		void *GetData(const char *name);
+
 		void Init();
 		void Start(int f);
 		void Load();
@@ -58,10 +60,19 @@ class GameManager
 		void SetQuestState(std::string s, std::string v);
 		std::string GetQuestState(std::string s);
 	private:
+		DATAFILE *data;
+
 		BITMAP *doubleBuffer;
 		BITMAP *playArea;
 		BITMAP *hud;
 		BITMAP *transitionBitmap;
+		FONT *dialogFont;
+		BITMAP *dialogBox;
+		BITMAP *facePicture;
+		BITMAP *heartSprite;
+		BITMAP *continueBg;
+		SAMPLE *blip;
+
 		Item *selectedItem;
 		TransitionType transition, currentTransition;
 		int transitionDirection, transitionSpeed, transitionFrame;
@@ -71,11 +82,7 @@ class GameManager
 		int currentDialogLine, dialogProgress, dialogCounter, dialogInverseSpeed;
 		float pauseFading, pauseFadingSpeed;
 		bool continuePlaying;
-		FONT *dialogFont;
-		BITMAP *dialogBox;
-		BITMAP *facePicture;
-		BITMAP *heartSprite;
-		BITMAP *continueBg;
+
 		std::map<std::string, std::string> questStates;
 
 		void RegisterEntities();

@@ -20,182 +20,8 @@ void Player::Draw(BITMAP *bmp)
 void Player::Update()
 {
 	SpriteEntity::Update();
-	if(health >= 0)
-	{
-		if(isAttacking)
-		{
-			if(frame == frameStart + 4) isAttacking = false;
-			else if(!hasHitEnemy)
-			{
-				Entity *entities[5];
-				int n = 0;
-				switch(orientation)
-				{
-					case 0:
-						n = game.entitiesManager.SearchArea(x, y - 20, 20, 20, entities, 5);
-						break;
-					case 1:
-						n = game.entitiesManager.SearchArea(x, y + height, 20, 10, entities, 5);
-						break;
-					case 2:
-						n = game.entitiesManager.SearchArea(x - 10, y, 10, 20, entities, 5);
-						break;
-					case 3:
-						n = game.entitiesManager.SearchArea(x + width, y, 10, 20, entities, 5);
-						break;
-				}
-				for(int i = 0; i < n; i++)
-				{
-					if(entities[i]->Is("ENEMY"))
-					{
-						hasHitEnemy = true;
-						switch(orientation)
-						{
-							case 0:
-								((Enemy *) entities[i])->OnHit(x, y - 20, 20, 20, attackDamage);
-								break;
-							case 1:
-								((Enemy *) entities[i])->OnHit(x, y + height, 20, 10, attackDamage);
-								break;
-							case 2:
-								((Enemy *) entities[i])->OnHit(x - 10, y, 10, 20, attackDamage);
-								break;
-							case 3:
-								((Enemy *) entities[i])->OnHit(x + width, y, 10, 20, attackDamage);
-								break;
-						}
-					}
-				}
-			}
-		}
-		if(!isAttacking)
-		{
-			float spx, spy;
-			spx = spy = 0;
-			int oldO = orientation;
-			
-			if(key[KEY_UP])
-			{
-				spy = -speed;
-				orientation = 0;
-			}
-			if(key[KEY_DOWN])
-			{
-				spy = speed;
-				orientation = 1;
-			}
-			if(key[KEY_LEFT])
-			{
-				spx = -speed;
-				orientation = 2;
-			}
-			if(key[KEY_RIGHT])
-			{
-				spx = speed;
-				orientation = 3;
-			}
-			MoveSolid(spx, spy);
-			
-			if(movedLastFrame)
-			{
-				switch(oldO)
-				{
-					case 0:
-						if(key[KEY_UP]) orientation = 0;
-						break;
-					case 1:
-						if(key[KEY_DOWN]) orientation = 1;
-						break;
-					case 2:
-						if(key[KEY_LEFT]) orientation = 2;
-						break;
-					case 3:
-						if(key[KEY_RIGHT]) orientation = 3;
-						break;
-				}
-			}
-			
-			inverseSpeed = walkAnimSpeed;
-			frameStart = 0;
-			if(key[KEY_UP] || key[KEY_LEFT] || key[KEY_RIGHT] || key[KEY_DOWN])
-			{
-				frameEnd = 3;
-				movedLastFrame = true;
-			}
-			else
-			{
-				frameEnd = 0;
-				movedLastFrame = false;
-			}
-		}
-		if((x + width - 1 < 0) || (x > 630) || (y + height - 1 < 0) || (y > 420))
-		{
-			game.gameState = GameStateEnteringMap;
-			if(y + height - 1 < 0)
-			{
-				y = 390;
-				game.mapManager.SetMap(game.mapManager.GetExit(0));
-				game.SetScrollingTransition(0);
-			}
-			if(y > 420)
-			{
-				y = 0;
-				game.mapManager.SetMap(game.mapManager.GetExit(1));
-				game.SetScrollingTransition(1);
-			}
-			if(x + width - 1 < 0)
-			{
-				x = 600;
-				game.mapManager.SetMap(game.mapManager.GetExit(2));
-				game.SetScrollingTransition(2);
-			}
-			if(x > 630)
-			{
-				x = 0;
-				game.mapManager.SetMap(game.mapManager.GetExit(3));
-				game.SetScrollingTransition(3);
-			}
-		}
-		if(xKey == KeyDown)
-		{
-			if(equippedItems[0] != 0) equippedItems[0]->OnUse();
-		}
-		if(cKey == KeyDown)
-		{
-			if(equippedItems[1] != 0) equippedItems[1]->OnUse();
-		}
-		if(sKey == KeyDown) game.gameState = GameStateInventory;
-		if(aKey == KeyDown)
-		{
-			Entity *entities[5];
-			int n = 0;
-			switch(orientation)
-			{
-				case 0:
-					n = game.entitiesManager.SearchArea(x, y - 30, width, 30, entities, 5);
-					break;
-				case 1:
-					n = game.entitiesManager.SearchArea(x, y + height, width, 30, entities, 5);
-					break;
-				case 2:
-					n = game.entitiesManager.SearchArea(x - 30, y, 30, height, entities, 5);
-					break;
-				case 3:
-					n = game.entitiesManager.SearchArea(x + width, y, 30, height, entities, 5);
-					break;
-			}
-			for(int i = 0; i < n; i++)
-			{
-				if(entities[i]->Is("EVENT"))
-				{
-					((EventEntity *) entities[i])->Interact();
-					break;
-				}
-			}
-		}
-		if(invulnerabilityCounter > 0) invulnerabilityCounter--;
-	}
-	else
+	
+	if(health <= 0)
 	{
 		if(frameStart != 12)
 		{
@@ -205,7 +31,211 @@ void Player::Update()
 			inverseSpeed = deadAnimSpeed;
 		}
 		if(frame == 21) dead = true;
+		return;
 	}
+	
+	if(isAttacking)
+	{
+		speedX = speedY = 0;
+		if(frame == frameStart + 4) isAttacking = false;
+		else if(!hasHitEnemy)
+		{
+			Entity *entities[5];
+			int n = 0;
+			switch(orientation)
+			{
+				case 0:
+					n = game.entitiesManager.SearchArea(x, y - 20, 20, 20, entities, 5);
+					break;
+				case 1:
+					n = game.entitiesManager.SearchArea(x, y + height, 20, 10, entities, 5);
+					break;
+				case 2:
+					n = game.entitiesManager.SearchArea(x - 10, y, 10, 20, entities, 5);
+					break;
+				case 3:
+					n = game.entitiesManager.SearchArea(x + width, y, 10, 20, entities, 5);
+					break;
+			}
+			for(int i = 0; i < n; i++)
+			{
+				if(entities[i]->Is("ENEMY"))
+				{
+					hasHitEnemy = true;
+					switch(orientation)
+					{
+						case 0:
+							((Enemy *) entities[i])->OnHit(x, y - 20, 20, 20, attackDamage);
+							break;
+						case 1:
+							((Enemy *) entities[i])->OnHit(x, y + height, 20, 10, attackDamage);
+							break;
+						case 2:
+							((Enemy *) entities[i])->OnHit(x - 10, y, 10, 20, attackDamage);
+							break;
+						case 3:
+							((Enemy *) entities[i])->OnHit(x + width, y, 10, 20, attackDamage);
+							break;
+					}
+				}
+			}
+		}
+	}
+	if(!isAttacking)
+	{
+		//speedX = speedY = 0;
+		int oldO = orientation;
+		
+		if(key[KEY_UP])
+		{
+			speedY += -accel;
+			orientation = 0;
+		}
+		else if(key[KEY_DOWN])
+		{
+			speedY += accel;
+			orientation = 1;
+		}
+		else
+		{
+			if(speedY < 0)
+			{
+				speedY += accel;
+				if(speedY > 0) speedY = 0;
+			}
+			if(speedY > 0)
+			{
+				speedY -= accel;
+				if(speedY < 0) speedY = 0;
+			}
+		}
+		if(key[KEY_LEFT])
+		{
+			speedX += -accel;
+			orientation = 2;
+		}
+		else if(key[KEY_RIGHT])
+		{
+			speedX += accel;
+			orientation = 3;
+		}
+		else
+		{
+			if(speedX < 0)
+			{
+				speedX += accel;
+				if(speedX > 0) speedX = 0;
+			}
+			if(speedX > 0)
+			{
+				speedX -= accel;
+				if(speedX < 0) speedX = 0;
+			}
+		}
+		if(speedX > maxSpeed) speedX = maxSpeed;
+		if(speedX < -maxSpeed) speedX = -maxSpeed;
+		if(speedY > maxSpeed) speedY = maxSpeed;
+		if(speedY < -maxSpeed) speedY = -maxSpeed;
+		
+		if(movedLastFrame)
+		{
+			switch(oldO)
+			{
+				case 0:
+					if(key[KEY_UP]) orientation = 0;
+					break;
+				case 1:
+					if(key[KEY_DOWN]) orientation = 1;
+					break;
+				case 2:
+					if(key[KEY_LEFT]) orientation = 2;
+					break;
+				case 3:
+					if(key[KEY_RIGHT]) orientation = 3;
+					break;
+			}
+		}
+	
+		inverseSpeed = walkAnimSpeed;
+		frameStart = 0;
+		if(key[KEY_UP] || key[KEY_LEFT] || key[KEY_RIGHT] || key[KEY_DOWN])
+		{
+			frameEnd = 3;
+			movedLastFrame = true;
+		}
+		else
+		{
+			frameEnd = 0;
+			movedLastFrame = false;
+		}
+	}
+	MoveSolid(speedX, speedY);
+	if((x + width - 1 < 0) || (x > 630) || (y + height - 1 < 0) || (y > 420))
+	{
+		game.gameState = GameStateEnteringMap;
+		if(y + height - 1 < 0)
+		{
+			y = 390;
+			game.mapManager.SetMap(game.mapManager.GetExit(0));
+			game.SetScrollingTransition(0);
+		}
+		if(y > 420)
+		{
+			y = 0;
+			game.mapManager.SetMap(game.mapManager.GetExit(1));
+			game.SetScrollingTransition(1);
+		}
+		if(x + width - 1 < 0)
+		{
+			x = 600;
+			game.mapManager.SetMap(game.mapManager.GetExit(2));
+			game.SetScrollingTransition(2);
+		}
+		if(x > 630)
+		{
+			x = 0;
+			game.mapManager.SetMap(game.mapManager.GetExit(3));
+			game.SetScrollingTransition(3);
+		}
+	}
+	if(xKey == KeyDown)
+	{
+		if(equippedItems[0] != 0) equippedItems[0]->OnUse();
+	}
+	if(cKey == KeyDown)
+	{
+		if(equippedItems[1] != 0) equippedItems[1]->OnUse();
+	}
+	if(sKey == KeyDown) game.gameState = GameStateInventory;
+	if(aKey == KeyDown)
+	{
+		Entity *entities[5];
+		int n = 0;
+		switch(orientation)
+		{
+			case 0:
+				n = game.entitiesManager.SearchArea(x, y - 30, width, 30, entities, 5);
+				break;
+			case 1:
+				n = game.entitiesManager.SearchArea(x, y + height, width, 30, entities, 5);
+				break;
+			case 2:
+				n = game.entitiesManager.SearchArea(x - 30, y, 30, height, entities, 5);
+				break;
+			case 3:
+				n = game.entitiesManager.SearchArea(x + width, y, 30, height, entities, 5);
+				break;
+		}
+		for(int i = 0; i < n; i++)
+		{
+			if(entities[i]->Is("EVENT"))
+			{
+				((EventEntity *) entities[i])->Interact();
+				break;
+			}
+		}
+	}
+	if(invulnerabilityCounter > 0) invulnerabilityCounter--;
 }
 
 void Player::OnHit(int damage)
@@ -274,7 +304,9 @@ Player::Player()
 	width = 20;
 	height = 20;
 	persistent = true;
-	speed = 3;
+	maxSpeed = 3;
+	accel = maxSpeed / 5;
+	speedX = speedY = 0;
 	health = 0;
 	x = 0;
 	y = 0;
@@ -285,7 +317,7 @@ Player::Player()
 	offsetY = 20;
 	equippedItems[0] = 0;
 	equippedItems[1] = 0;
-	sprite = load_bitmap("gregorius.bmp", 0);
+	sprite = (BITMAP *) game.GetData("spr_gregorius"); // load_bitmap("gregorius.bmp", 0);
 	invulnerabilityCounter = 0;
 	blinkingHz = 6;
 	invulnerabilityTime = 60;

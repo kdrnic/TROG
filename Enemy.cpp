@@ -28,7 +28,14 @@ void Enemy::Die()
 {
 	Drop();
 	alive = false;
-	Entity *poof = new Poof(x + width / 2, y + height / 2);
+	Entity *poof;
+	SAMPLE *dyingSound = GetDyingSound();
+	if(dyingSound == 0) poof = new Poof(x + width / 2, y + height / 2);
+	else
+	{
+		play_sample(dyingSound, 255, 0, 1000, false);
+		poof = new Poof(x + width / 2, y + height / 2, 0, true);	// Silent poof
+	}
 	game.entitiesManager.Add(poof);
 }
 
@@ -36,6 +43,11 @@ void Enemy::OnHit(int damage)
 {
 	health -= damage;
 	if(health <= 0) Die();
+	else
+	{
+		SAMPLE *hurtSound = GetHurtSound();
+		if(hurtSound != 0) play_sample(hurtSound, 255, 0, 1000, false);
+	}
 }
 
 void Enemy::OnHit(int hx, int hy, int hw, int hh, int damage)
@@ -68,6 +80,16 @@ void Enemy::OnHit(int hx, int hy, int hw, int hh, int damage)
 			else MoveSolid(0, -hitJump);
 		}
 	}
+}
+
+SAMPLE *Enemy::GetHurtSound()
+{
+	return 0;
+}
+
+SAMPLE *Enemy::GetDyingSound()
+{
+	return 0;
 }
 
 std::vector<Enemy::CreateDropFunction> Enemy::PossibleDrops()

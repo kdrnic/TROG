@@ -1,3 +1,4 @@
+#include "Game.h"
 #include "Goo.h"
 
 BITMAP *Goo::_sprite = 0;
@@ -13,7 +14,7 @@ void Goo::Update()
 
 Goo::Goo(int _x, int _y, int o)
 {
-	if(_sprite == 0) _sprite = load_bitmap("goo.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_goo"); // load_bitmap("goo.bmp", 0);
 	x = _x - 14;
 	y = _y - 14;
 	width = 30;

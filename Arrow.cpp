@@ -36,7 +36,7 @@ void Arrow::Update()
 
 Arrow::Arrow(float _x, float _y, float a)
 {
-	if(_sprite == 0) _sprite = load_bitmap("arrow.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_arrow"); // load_bitmap("arrow.bmp", 0);
 	sprite = _sprite;
 	angle = a;
 	speed = 4.0;

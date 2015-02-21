@@ -11,7 +11,7 @@ void BombItem::OnActualUse()
 BombItem::BombItem()
 {
 	name = "Bomb";
-	iconBg = load_bitmap("bombIcon.bmp", 0);
+	iconBg = (BITMAP *) game.GetData("inv_bomb"); // load_bitmap("bombIcon.bmp", 0);
 	coolDownTime = 15;
 }
 

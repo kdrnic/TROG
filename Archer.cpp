@@ -68,6 +68,7 @@ void Archer::Update()
 			game.entitiesManager.Add(arrow);
 			arrow = new Arrow(x + width / 2, y + height / 2, LineAngle(x + width / 2, y + height / 2, game.player->x + game.player->width / 2, game.player->y + game.player->height / 2) + M_PI * 0.125);
 			game.entitiesManager.Add(arrow);
+			play_sample(arrowSounds[rand() % 3], 255, 0, 1000, false);
 		}
 	}
 	if(frame == 6)
@@ -83,7 +84,10 @@ void Archer::Update()
 
 Archer::Archer()
 {
-	if(_sprite == 0) _sprite = load_bitmap("archer.bmp", 0);
+	arrowSounds[0] = (SAMPLE *) game.GetData("snd_arrow1");
+	arrowSounds[1] = (SAMPLE *) game.GetData("snd_arrow2");
+	arrowSounds[2] = (SAMPLE *) game.GetData("snd_arrow3");
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_archer"); // load_bitmap("archer.bmp", 0);
 	sprite = _sprite;
 	width = 20;
 	height = 20;

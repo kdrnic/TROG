@@ -33,7 +33,7 @@ void Explosion::OnCollision(Entity *e)
 
 Explosion::Explosion(int _x, int _y)
 {
-	if(_sprite == 0) _sprite = load_bitmap("explosion.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_explosion"); // load_bitmap("explosion.bmp", 0);
 	x = _x - 59 + 23;
 	y = _y - 59 + 23;
 	width = 118 - 46;

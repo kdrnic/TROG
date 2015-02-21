@@ -253,3 +253,7 @@ bool Entity::MoveSolid(float dx, float dy)
 	if((x == _x) && (y == _y)) return false;
 	return true;
 }
+
+void Entity::OnCreate()
+{
+}

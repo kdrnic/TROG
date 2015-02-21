@@ -36,7 +36,7 @@ void Painting::Draw(BITMAP *bmp)
 
 Painting::Painting()
 {
-	if(_sprite == 0) _sprite = load_bitmap("frame.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_frame"); // load_bitmap("frame.bmp", 0);
 	width = 200;
 	height = 190;
 	spriteWidth = 200;

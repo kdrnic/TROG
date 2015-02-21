@@ -35,6 +35,7 @@ void Trap::OnCollision(Entity *e)
 		{
 			Entity *stake = new Stake(stakeX, stakeY, stakeO);
 			game.entitiesManager.Add(stake);
+			play_sample(sounds[rand() % 3], 255, 0, 1000, false);
 		}
 		lastActivationFrame = game.frame;
 		frameEnd = frameStart = 1;
@@ -48,7 +49,11 @@ void Trap::Update()
 
 Trap::Trap()
 {
-	if(_sprite == 0) _sprite = load_bitmap("button.bmp", 0);
+	sounds[0] = (SAMPLE *) game.GetData("snd_arrow1");
+	sounds[1] = (SAMPLE *) game.GetData("snd_arrow2");
+	sounds[2] = (SAMPLE *) game.GetData("snd_arrow3");
+
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_button"); // load_bitmap("button.bmp", 0);
 	sprite = _sprite;
 	width = 30;
 	spriteWidth = 30;

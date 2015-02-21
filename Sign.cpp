@@ -18,12 +18,12 @@ void Sign::SetParameter(std::string p, std::string v)
 
 void Sign::Interact()
 {
-	for(int i = 0; i < text.size(); i++) game.PushDialogLine(text[i]);
+	for(unsigned int i = 0; i < text.size(); i++) game.PushDialogLine(text[i]);
 }
 
 Sign::Sign()
 {
-	if(_sprite == 0) _sprite = load_bitmap("sign.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_sign"); // load_bitmap("sign.bmp", 0);
 	width = 30;
 	height = 30;
 	spriteWidth = 30;

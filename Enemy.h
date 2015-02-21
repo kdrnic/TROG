@@ -19,6 +19,9 @@ class Enemy : public SpriteEntity
 		virtual void OnHit(int damage);
 		virtual void OnHit(int hx, int hy, int hw, int hh, int damage);
 		
+		virtual SAMPLE *GetHurtSound();
+		virtual SAMPLE *GetDyingSound();
+		
 		virtual std::vector<CreateDropFunction> PossibleDrops();		
 		void Drop();
 		

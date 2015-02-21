@@ -29,6 +29,11 @@ void Plague::Update()
 			game.SetQuestState("plague", q.replace(pos, n.size(), "#"));
 			Entity *poof = new Poof(x + width / 2, y + height / 2, 1);
 			game.entitiesManager.Add(poof);
+			play_sample((SAMPLE *) game.GetData("snd_victory"), 255, 0, 1000, false);
+			if(game.GetQuestState("plague").find_first_not_of("#") == std::string::npos)
+			{
+				game.PushDialogLine("The village has been rid of the plague!");
+			}
 		}
 	}
 	SpriteEntity::Update();
@@ -37,7 +42,7 @@ void Plague::Update()
 Plague::Plague()
 {
 	const int numRats = 6;
-	if(_sprite == 0) _sprite = load_bitmap("plague.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_plague"); // load_bitmap("plague.bmp", 0);
 	width = 30;
 	height = 30;
 	spriteWidth = 30;

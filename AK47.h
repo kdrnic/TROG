@@ -13,6 +13,9 @@ class AK47 : public Item
 		AK47();
 		
 		static Item *Create();
+	private:
+		unsigned int shotsCounter;
+		int voiceId;
 };
 
 #endif

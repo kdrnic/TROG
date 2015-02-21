@@ -5,16 +5,17 @@
 
 class GenericSword : public Item
 {
-	public:	
+	public:
 		virtual void OnUse();
-		
-		GenericSword();		
+
+		GenericSword();
 	protected:
 		int coolDownTime;
 		int frames[2];
 		int damage;
 		int speed;
-		
+		SAMPLE *swishes[3];
+
 	private:
 		int lastFrameUsed;
 };

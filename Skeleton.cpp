@@ -165,7 +165,7 @@ Skeleton::Skeleton()
 	spriteHeight = 62;
 	offsetX = 16;
 	offsetY = 23;
-	if(_sprite == 0) _sprite = load_bitmap("skeleton.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_skeleton"); // load_bitmap("skeleton.bmp", 0);
 	sprite = _sprite;
 	health = 5;
 	walkSpeed = 1.5;

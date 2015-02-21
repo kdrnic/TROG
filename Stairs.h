@@ -1,25 +1,25 @@
-#ifndef TRAP_H
-#define TRAP_H
+#ifndef STAIRS_H
+#define STAIRS_H
 
 #include "SpriteEntity.h"
 
-class Trap : public SpriteEntity
+#include <queue>
+
+class Stairs : public SpriteEntity
 {
 	public:
-		static BITMAP *_sprite;
-		
 		void SetParameter(std::string p, std::string v);
 		void OnCollision(Entity *e);
 		void Update();
+		void OnCreate();
 		
-		Trap();
-		
+		Stairs();
 		static Entity *Create();
 	private:
-		int stakeX, stakeY, stakeO;
-		int lastActivationFrame;
-		
-		SAMPLE *sounds[3];
+		int type;
+		std::string id;
+		std::string toMap;
+		int toX, toY;
 };
 
 #endif

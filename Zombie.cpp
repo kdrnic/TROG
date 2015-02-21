@@ -2,6 +2,8 @@
 
 #include "Zombie.h"
 
+#include "ZombieHole.h"
+
 BITMAP *Zombie::_sprite = 0;
 
 bool Zombie::Is(std::string what)
@@ -16,12 +18,21 @@ void Zombie::Update()
 	{
 		if(((game.player->x - x) * (game.player->x - x)) + ((game.player->y - y) * (game.player->y - y)) < digDistance * digDistance)
 		{
-			if(frameEnd != 15) counter = 0;
+			if(frameEnd != 15)
+			{
+				counter = 0;
+				play_sample((SAMPLE *) game.GetData("snd_zombieDig"), 255, 0, 1000, false);
+			}
 			frameEnd = 15;
 		}
 	}
 	if(nextFrame == 13)
 	{
+		if(!outOfHole)
+		{
+			Entity *h = new ZombieHole(x, y);
+			game.entitiesManager.Add(h);
+		}
 		outOfHole = true;
 		frameStart = 13;
 		frameEnd = 16;
@@ -92,7 +103,7 @@ Zombie::Zombie()
 	spriteHeight = 30;
 	offsetX = 5;
 	offsetY = 10;
-	if(_sprite == 0) _sprite = load_bitmap("zombie.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_zombie"); // load_bitmap("zombie.bmp", 0);
 	sprite = _sprite;
 	health = 5;
 	hitDamage = 2;

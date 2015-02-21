@@ -29,7 +29,7 @@ void AKBullet::OnCollision(Entity *e)
 
 AKBullet::AKBullet(int o)
 {
-	if(_sprite == 0) _sprite = load_bitmap("bullet.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bullet"); // load_bitmap("bullet.bmp", 0);
 	x = game.player->x;
 	y = game.player->y; 
 	width = 7;

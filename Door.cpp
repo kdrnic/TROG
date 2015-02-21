@@ -43,6 +43,7 @@ void Door::Interact()
 	{
 		counter = 0;
 		frameEnd = frameStart + 3;
+		play_sample((SAMPLE *) game.GetData("snd_door"), 255, 0, 1000, false);
 	}
 }
 
@@ -74,7 +75,7 @@ void Door::Update()
 
 Door::Door()
 {
-	if(_sprite == 0) _sprite = load_bitmap("doors.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_doors"); // load_bitmap("doors.bmp", 0);
 	sprite = _sprite;
 	width = 30;
 	spriteWidth = 60;

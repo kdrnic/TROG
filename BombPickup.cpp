@@ -1,10 +1,11 @@
 #include "BombPickup.h"
+#include "Game.h"
 
 BITMAP *BombPickup::_sprite = 0;
 
 BombPickup::BombPickup()
 {
-	if(_sprite == 0) _sprite = load_bitmap("bombPickup.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bombPickup"); // load_bitmap("bombPickup.bmp", 0);
 	sprite = _sprite;
 	width = 15;
 	height = 15;

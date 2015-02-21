@@ -229,6 +229,7 @@ void Werewolf::Update()
 			if(transformationCountdown < 0)
 			{
 				isTransforming = true;
+				play_sample((SAMPLE *) game.GetData("snd_howl"), 255, 0, 1000, false);
 				inverseSpeed = transformationSpeed;
 				counter = 0;
 				frameStart = 4;
@@ -251,7 +252,7 @@ void Werewolf::OnHit(int hx, int hy, int hw, int hh, int damage)
 
 Werewolf::Werewolf()
 {
-	if(_sprite == 0) _sprite = load_bitmap("werewolf.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_werewolf"); // load_bitmap("werewolf.bmp", 0);
 	sprite = _sprite;
 	health = 5;
 	offsetX = 15;

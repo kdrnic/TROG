@@ -2,6 +2,7 @@
 
 void EntitiesManager::Add(Entity *e)
 {
+	e->OnCreate();
 	entities.push_back(e);
 }
 
@@ -104,4 +105,9 @@ int EntitiesManager::Count(std::string w)
 		}
 	}
 	return j;
+}
+
+int EntitiesManager::Count()
+{
+	return entities.size();
 }

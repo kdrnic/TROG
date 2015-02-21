@@ -1,4 +1,5 @@
 #include "Rat.h"
+#include "Game.h"
 
 BITMAP *Rat::_sprite = 0;
 
@@ -62,9 +63,14 @@ void Rat::Update()
 	SpriteEntity::Update();
 }
 
+SAMPLE *Rat::GetDyingSound()
+{
+	return (SAMPLE *) game.GetData("snd_rat");
+}
+
 Rat::Rat()
 {
-	if(_sprite == 0) _sprite = load_bitmap("rat.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_rat"); // load_bitmap("rat.bmp", 0);
 	sprite = _sprite;
 	width = 16;
 	height = 16;

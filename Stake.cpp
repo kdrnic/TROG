@@ -47,7 +47,7 @@ void Stake::OnCollision(Entity *e)
 
 Stake::Stake(int _x, int _y, int o)
 {
-	if(_sprite == 0) _sprite = load_bitmap("stake.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_stake"); // load_bitmap("stake.bmp", 0);
 	x = _x;
 	y = _y;
 	orientation = o;

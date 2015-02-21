@@ -12,6 +12,7 @@ int main()
 	install_keyboard();
 	install_mouse();
 	install_timer();
+	install_sound(DIGI_AUTODETECT, MIDI_NONE, 0);
 	game.Init();
 	game.Start(-1);
 	return 0;

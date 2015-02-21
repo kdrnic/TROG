@@ -23,7 +23,7 @@ void Rock::OnCollision(Entity *e)
 
 Rock::Rock()
 {
-	if(_sprite == 0) _sprite = load_bitmap("rock.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_rock"); // load_bitmap("rock.bmp", 0);
 	width = 30;
 	height = 30;
 	spriteWidth = 30;

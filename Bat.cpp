@@ -1,4 +1,5 @@
 #include "Bat.h"
+#include "Game.h"
 
 BITMAP *Bat::_sprite = 0;
 
@@ -38,7 +39,7 @@ void Bat::Update()
 
 Bat::Bat()
 {
-	if(_sprite == 0) _sprite = load_bitmap("bat.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bat"); // load_bitmap("bat.bmp", 0);
 	sprite = _sprite;
 	dx = 4.0 / 3.0;
 	dy = 1.0;
@@ -60,7 +61,7 @@ Bat::Bat()
 
 Bat::Bat(int _x, int _y)
 {
-	if(_sprite == 0) _sprite = load_bitmap("bat.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bat"); // load_bitmap("bat.bmp", 0);
 	sprite = _sprite;
 	dx = 4.0 / 3.0;
 	dy = 1.0;

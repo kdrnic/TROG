@@ -19,6 +19,7 @@ class EntitiesManager
 		
 		int SearchArea(int x, int y, int width, int height, Entity **entities, int maxEntities);
 		int Count(std::string w);
+		int Count();
 	private:
 		std::list<Entity *> entities;
 };

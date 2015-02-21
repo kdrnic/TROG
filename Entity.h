@@ -18,6 +18,7 @@ class Entity
 		virtual void Update();
 		virtual void OnCollision(Entity *e);
 		virtual void SetParameter(std::string p, std::string v);
+		virtual void OnCreate();
 		
 		bool Collision(Entity *e);		
 		bool Collision(int _x, int _y, int _w, int _h);

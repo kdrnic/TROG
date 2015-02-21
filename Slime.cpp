@@ -91,9 +91,15 @@ void Slime::Update()
 	SpriteEntity::Update();
 }
 
+SAMPLE *Slime::GetDyingSound()
+{
+	const char *soundNames[] = {"snd_slime1", "snd_slime2", "snd_slime3"};
+	return (SAMPLE *) game.GetData(soundNames[rand() % 3]);
+}
+
 Slime::Slime(int fh)
 {
-	if(_sprite == 0) _sprite = load_bitmap("slime.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_slime"); // load_bitmap("slime.bmp", 0);
 	sprite = _sprite;
 	width = 24;
 	height = 15;
@@ -108,9 +114,26 @@ Slime::Slime(int fh)
 	frameEnd = 3;
 	walkTime = 60;
 	walkSpeed = 1.0;
-	walkCounter = 0;
+	walkCounter = walkTime;
+	walking = true;
 	agitation = 7 + (rand() % 2);
-	direction = orientation = 0;
+	direction = rand() % 4;
+	switch(game.player->orientation)
+	{
+		case 0:
+			if(direction == 1) direction = 0;
+			break;
+		case 1:
+			if(direction == 0) direction = 1;
+			break;
+		case 2:
+			if(direction == 3) direction = 2;
+			break;
+		case 3:
+			if(direction == 2) direction = 3;
+			break;
+	}
+	orientation = 0;
 	futureGenerations = fh;
 	pathIntegral = 0;
 	MoveToFreeSpot(60, 60, 570, 360);

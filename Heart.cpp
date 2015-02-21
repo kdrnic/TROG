@@ -20,13 +20,14 @@ void Heart::OnCollision(Entity *e)
 				game.player->Heal(0);
 				break;
 		}
+		play_sample((SAMPLE *) game.GetData("snd_pickup"), 255, 0, 1000, false);
 		alive = false;
 	}
 }
 
 Heart::Heart()
 {
-	if(_sprite == 0) _sprite = load_bitmap("heartPickup.bmp", 0);
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_heartPickup"); // load_bitmap("heartPickup.bmp", 0);
 	sprite = _sprite;
 	width = height = spriteWidth = spriteHeight = 15;
 	//orientation = (rand() % 2);

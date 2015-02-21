@@ -27,21 +27,20 @@ void MapManager::LoadTileSet(std::string fileName)
 
 void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 {
-	for(int i = 0; true; i++)
+	al_ffblk fileInfo;
+	if(al_findfirst("maps/*.map", &fileInfo, FA_ALL) == 0)
 	{
-		Map *m = new Map;
-		std::string fileName = prefix;
-		std::stringstream ss;
-		ss << i;
-		fileName += ss.str();
-		fileName += suffix;
-		int value = exists(fileName.c_str());
-		if(value == 0)
-        {
-            break;
-        }
-		m->Load(fileName);
-		maps[m->name] = m;
+		while(true)
+		{
+			std::string fileName = "maps/";
+			fileName.append(fileInfo.name);
+			
+			Map *m = new Map;
+			m->Load(fileName.c_str());
+			maps[m->name] = m;
+			
+			if(al_findnext(&fileInfo) != 0) break;
+		}
 	}
 }
 
@@ -76,8 +75,8 @@ void MapManager::SpawnEntities()
 		if(game.frame - currentMap->timeLastVisited >= i->respawnTime)
 		{
 			Entity *e = game.entitiesFactory.Create(i->name);
-			game.entitiesManager.Add(e);
 			for(int j = 0; j < i->parameters.size(); j++) e->SetParameter(i->parameters[j].first, i->parameters[j].second);
+			game.entitiesManager.Add(e);
 		}
 	}
 	currentMap->timeLastVisited = game.frame;
