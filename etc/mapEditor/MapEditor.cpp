@@ -1295,6 +1295,17 @@ int main()
 	show_os_cursor(MOUSE_CURSOR_ARROW);
 	while(!key[KEY_ESC])
 	{
+		
+		std::string title;
+		int titleStart = 0;
+		if(fileName.length() > 32)
+		{
+			title.append("...");
+			title.append(fileName.substr(fileName.length() - 32));
+		}
+		else title = fileName;
+		set_window_title(title.c_str());
+		
 		clear(db);
 		int m = 0;
 		bool editModeKey = false;
