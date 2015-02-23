@@ -31,7 +31,7 @@ Poof::Poof(int _x, int _y, int o, bool silent)
 	offsetY = 0;
 	inverseSpeed = 4 + o * 1;
 	sprite = _sprite;
-	layer = 2;
+	layer = 1;
 	orientation = o;
 	counter = 0;
 	soundPlayed = silent;

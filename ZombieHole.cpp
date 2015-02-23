@@ -14,7 +14,7 @@ ZombieHole::ZombieHole(int _x, int _y)
 	offsetY = 10;
 	frameStart = frameEnd = 0;
 	inverseSpeed = 60;
-	layer = -2;
+	layer = -1;
 	orientation = 0;
 	counter = 0;
 }

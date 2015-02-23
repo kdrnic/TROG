@@ -26,7 +26,7 @@ Goo::Goo(int _x, int _y, int o)
 	offsetY = 0;
 	inverseSpeed = 60;
 	sprite = _sprite;
-	layer = -2;
+	layer = -1;
 	orientation = o;
 	counter = 0;
 }

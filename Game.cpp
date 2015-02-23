@@ -436,9 +436,17 @@ void GameManager::Draw()
 	if(gameState != GameStateEnteringMap) clear(doubleBuffer);
 	if((gameState == GameStatePlaying) || (gameState == GameStateTransition) || (gameState == GameStateInventory) || (gameState == GameStateDialog))
 	{
-		mapManager.DrawBottomLayers(playArea);
-		entitiesManager.Draw(playArea);
-		mapManager.DrawUpperLayers(playArea);
+		mapManager.BeginDrawing(playArea, 0, 0);
+		entitiesManager.BeginDrawing(playArea, 0, 0);
+		
+		for(int i = 0; i < 14; i++)
+		{
+			entitiesManager.DrawRow();
+			mapManager.DrawRow();
+		}
+		
+		entitiesManager.FinishDrawing();
+		mapManager.FinishDrawing();
 	}
 	if((gameState == GameStatePlaying) || (gameState == GameStateInventory) || (gameState == GameStateDialog) || (gameState == GameStateDead) || (gameState == GameStateQuit)) draw_sprite(doubleBuffer, playArea, 5, 5);
 	if(gameState == GameStateTransition)

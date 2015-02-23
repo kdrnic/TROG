@@ -216,7 +216,6 @@ Vampire::Vampire()
 	// int dieCountdown, dieTime, diePoofDelay;
 	dieTime = 240;
 	diePoofDelay = 15;
-	layer = 2;
 	// int blinkingCounter, blinkingTime, blinkingHz;
 	blinkingCounter = 0;
 	blinkingTime = 60;

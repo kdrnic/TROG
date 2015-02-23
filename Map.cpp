@@ -36,26 +36,13 @@ void Map::Load(std::string fileName)
 	mapFile.close();
 }
 
-void Map::DrawBottomLayers(BITMAP *bmp, BITMAP **tileSet, int x0, int y0)
+void Map::DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0, int y0)
 {
-	for(int y = 0; y < 14; y++)
+	for(int y = row0; y < row0 + rows; y++)
 	{
 		for(int x = 0; x < 21; x++)
 		{
-			masked_blit(tileSet[tiles[0][x][y]], bmp, ((game.frame / inverseSpeed) % (tileSet[tiles[0][x][y]]->w / 30)) * 30, 0, x0 + x * 30, y0 + y * 30, 30, 30);
-			masked_blit(tileSet[tiles[1][x][y]], bmp, ((game.frame / inverseSpeed) % (tileSet[tiles[1][x][y]]->w / 30)) * 30, 15, x0 + x * 30, y0 + 15 + y * 30, 30, 15);
-		}
-	}
-}
-
-void Map::DrawUpperLayers(BITMAP *bmp, BITMAP **tileSet, int x0, int y0)
-{
-	for(int y = 0; y < 14; y++)
-	{
-		for(int x = 0; x < 21; x++)
-		{
-			masked_blit(tileSet[tiles[1][x][y]], bmp, ((game.frame / inverseSpeed) % (tileSet[tiles[1][x][y]]->w / 30)) * 30, 0, x0 + x * 30, y0 + y * 30, 30, 15);
-			masked_blit(tileSet[tiles[2][x][y]], bmp, ((game.frame / inverseSpeed) % (tileSet[tiles[2][x][y]]->w / 30)) * 30, 0, x0 + x * 30, y0 + y * 30, 30, 30);
+			masked_blit(tileSet[tiles[layer][x][y]], bmp, ((game.frame / inverseSpeed) % (tileSet[tiles[2][x][y]]->w / 30)) * 30, 0, x0 + x * 30, y0 + y * 30, 30, 30);
 		}
 	}
 }

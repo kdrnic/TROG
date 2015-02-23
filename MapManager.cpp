@@ -44,14 +44,25 @@ void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 	}
 }
 
-void MapManager::DrawBottomLayers(BITMAP *bmp, int x, int y)
+void MapManager::BeginDrawing(BITMAP *dest, int x, int y)
 {
-	currentMap->DrawBottomLayers(bmp, tileSet, x, y);
+	GameDrawer::BeginDrawing(dest, x, y);
+	
+	currentMap->DrawLayer(destBitmap, tileSet, 0, 0, 14, topLeftX, topLeftY);
 }
 
-void MapManager::DrawUpperLayers(BITMAP *bmp, int x, int y)
+void MapManager::DrawRow()
 {
-	currentMap->DrawUpperLayers(bmp, tileSet, x, y);
+	GameDrawer::DrawRow();
+	
+	currentMap->DrawLayer(destBitmap, tileSet, 1, rowAt, 1, topLeftX, topLeftY);
+}
+
+void MapManager::FinishDrawing()
+{
+	GameDrawer::FinishDrawing();
+	
+	currentMap->DrawLayer(destBitmap, tileSet, 2, 0, 14, topLeftX, topLeftY);
 }
 
 int MapManager::BlockTypeAt(int x, int y)

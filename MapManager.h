@@ -5,8 +5,9 @@
 #include <string>
 
 #include "Map.h"
+#include "GameDrawer.h"
 
-class MapManager
+class MapManager : public GameDrawer
 {
 	public:
 		std::string currentMapName;
@@ -14,8 +15,9 @@ class MapManager
 		void LoadTileSet(std::string fileName);		
 		void LoadAllMaps(std::string prefix = "map", std::string suffix = ".map");
 		
-		void DrawUpperLayers(BITMAP *bmp, int x = 0, int y = 0);
-		void DrawBottomLayers(BITMAP *bmp, int x = 0, int y = 0);
+		void BeginDrawing(BITMAP *dest, int x, int y);
+		void DrawRow();
+		void FinishDrawing();
 		
 		int BlockTypeAt(int x, int y);		
 		std::string GetExit(int o);

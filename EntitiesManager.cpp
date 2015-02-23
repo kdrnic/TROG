@@ -68,14 +68,48 @@ bool EntityCompareZ(Entity *first, Entity *second)
 	return (first->y + first->height < second->y + second->height);
 }
 
-void EntitiesManager::Draw(BITMAP *bmp)
+void EntitiesManager::BeginDrawing(BITMAP *dest, int x, int y)
 {
+	GameDrawer::BeginDrawing(dest, x, y);
+	
 	entities.sort(EntityCompareZ);
-	for(std::list<Entity *>::iterator i = entities.begin(); i != entities.end(); i++)
+	drawIt = entities.begin();
+	while((drawIt != entities.end()) && ((*drawIt)->layer < 0))
 	{
-		if((*i)->alive == false) continue;
-		(*i)->Draw(bmp);
+		if((*drawIt)->alive)
+		{
+			(*drawIt)->Draw(destBitmap);
+		}
+		drawIt++;
 	}
+}
+
+void EntitiesManager::DrawRow()
+{
+	GameDrawer::DrawRow();
+	
+	while((drawIt != entities.end()) && ((*drawIt)->y + (*drawIt)->height > rowAt * 30) && ((*drawIt)->y + (*drawIt)->height <= (rowAt + 1) * 30) && ((*drawIt)->layer < 1))
+	{
+		if((*drawIt)->alive)
+		{
+			(*drawIt)->Draw(destBitmap);
+		}
+		drawIt++;
+	}
+}
+
+void EntitiesManager::FinishDrawing()
+{
+	while(drawIt != entities.end())
+	{
+		if((*drawIt)->alive)
+		{
+			(*drawIt)->Draw(destBitmap);
+		}
+		drawIt++;
+	}
+	
+	GameDrawer::FinishDrawing();
 }
 
 int EntitiesManager::SearchArea(int x, int y, int width, int height, Entity **foundEntities, int maxEntities)
