@@ -27,12 +27,16 @@ class Player : public SpriteEntity
 		Player();
 		~Player();
 	protected:
-		bool IsBlockSolid(int b);
 		bool IsEntitySolid(Entity *e);
 
 	private:
 		float maxSpeed;
 		float accel;
+		
+		bool falling;
+		float lastFloorX, lastFloorY;
+		int fallAnimSpeed;
+		int fallDamage, fallRespawnHit;
 
 		int walkAnimSpeed, deadAnimSpeed;
 		int invulnerabilityCounter;

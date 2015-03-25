@@ -29,6 +29,8 @@ class Enemy : public SpriteEntity
 	
 	protected:
 		int noDropChance;
+		
+		bool MoveSmart(float dx, float dy);
 };
 
 #endif

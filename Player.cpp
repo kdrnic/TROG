@@ -8,7 +8,7 @@
 bool Player::Is(std::string what)
 {
 	if(what == "PLAYER") return true;
-	if(what == "SOLID") return true;
+	if(what == "SOLID") return (!falling);
 	return false;
 }
 
@@ -33,6 +33,8 @@ void Player::Update()
 		if(frame == 21) dead = true;
 		return;
 	}
+	
+	if(falling) goto Falling;
 	
 	if(isAttacking)
 	{
@@ -236,6 +238,62 @@ void Player::Update()
 		}
 	}
 	if(invulnerabilityCounter > 0) invulnerabilityCounter--;
+	
+	if(!CheckFloor(lastFloorX, lastFloorY)) falling = true;
+	
+	Falling:
+	if(falling)
+	{
+		if(frameStart != 22)
+		{
+			switch(orientation)
+			{
+				case 0:
+					y -= 15;
+					break;
+				case 1:
+					y += 15;
+					break;
+				default:
+					break;
+			}
+			
+			invulnerabilityCounter = 0;
+			
+			orientation = 0;
+			frameStart = 22;
+			frameEnd = 28;
+			counter = 0;
+			inverseSpeed = deadAnimSpeed;
+		}
+		else
+		{
+			if(nextFrame == 28)
+			{
+				OnHit(fallDamage);
+				
+				frameStart = frameEnd = 0;
+				inverseSpeed = walkAnimSpeed;
+				SpriteEntity::Update();
+				falling = false;
+				
+				x = lastFloorX;
+				y = lastFloorY;
+				
+				Entity *entities[10];
+				int n = 0;
+				n = game.entitiesManager.SearchArea(x, y, width, height, entities, 10);
+				for(int i = 0; i < n; i++)
+				{
+					if(entities[i]->Is("ENEMY"))
+					{
+						((Enemy *) entities[i])->OnHit(x, y, width, height, fallRespawnHit);
+					}
+				}
+			}
+		}
+	}
+	return;
 }
 
 void Player::OnHit(int damage)
@@ -247,34 +305,36 @@ void Player::OnHit(int damage)
 
 void Player::OnHit(int hx, int hy, int hw, int hh, int damage)
 {
-	if(health < 0) return;
-	if(x - hx > 0)
+	if(health <= 0) return;
+	if(!falling)
 	{
-		if(y - hy > 0)
+		if(x - hx > 0)
 		{
-			if(hx + hw - x < hy + hh - y) MoveSolid(hitJump, 0);
-			else MoveSolid(0, hitJump);
+			if(y - hy > 0)
+			{
+				if(hx + hw - x < hy + hh - y) MoveSolid(hitJump, 0);
+				else MoveSolid(0, hitJump);
+			}
+			else
+			{
+				if(hx + hw - x < y + height - hy) MoveSolid(hitJump, 0);
+				else MoveSolid(0, -hitJump);
+			}
 		}
 		else
 		{
-			if(hx + hw - x < y + height - hy) MoveSolid(hitJump, 0);
-			else MoveSolid(0, -hitJump);
+			if(y - hy > 0)
+			{
+				if(x + width - hx < hy + hh - y) MoveSolid(-hitJump, 0);
+				else MoveSolid(0, hitJump);
+			}
+			else
+			{
+				if(x + width - hx < y + height - hy) MoveSolid(-hitJump, 0);
+				else MoveSolid(0, -hitJump);
+			}
 		}
 	}
-	else
-	{
-		if(y - hy > 0)
-		{
-			if(x + width - hx < hy + hh - y) MoveSolid(-hitJump, 0);
-			else MoveSolid(0, hitJump);
-		}
-		else
-		{
-			if(x + width - hx < y + height - hy) MoveSolid(-hitJump, 0);
-			else MoveSolid(0, -hitJump);
-		}
-	}
-	
 	OnHit(damage);
 }
 
@@ -301,6 +361,9 @@ void Player::Attack(int frame, int damage, int animSpeed)
 
 Player::Player()
 {
+	falling = false;
+	fallDamage = 2;
+	fallRespawnHit = 2;
 	width = 20;
 	height = 20;
 	persistent = true;
@@ -312,6 +375,7 @@ Player::Player()
 	y = 0;
 	inverseSpeed = walkAnimSpeed = 6;
 	deadAnimSpeed = 9;
+	fallAnimSpeed = 8;
 	spriteWidth = spriteHeight = 50;
 	offsetX = 15;
 	offsetY = 20;
@@ -334,11 +398,6 @@ Player::Player()
 Player::~Player()
 {
 	destroy_bitmap(sprite);
-}
-
-bool Player::IsBlockSolid(int b)
-{
-	return (b != 0);
 }
 
 bool Player::IsEntitySolid(Entity *e)

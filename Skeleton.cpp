@@ -72,16 +72,16 @@ void Skeleton::Update()
 			switch(orientation)
 			{
 				case 0:
-					MoveSolid(0, -walkSpeed);
+					MoveSmart(0, -walkSpeed);
 					break;
 				case 1:
-					MoveSolid(0, walkSpeed);
+					MoveSmart(0, walkSpeed);
 					break;
 				case 2:
-					MoveSolid(-walkSpeed, 0);
+					MoveSmart(-walkSpeed, 0);
 					break;
 				case 3:
-					MoveSolid(walkSpeed, 0);
+					MoveSmart(walkSpeed, 0);
 					break;
 			}
 		}
@@ -97,16 +97,16 @@ void Skeleton::Update()
 			switch(orientation)
 			{
 				case 0:
-					if(!MoveSolid(0, -walkSpeed)) randomWalkCounter = 0;
+					if(!MoveSmart(0, -walkSpeed)) randomWalkCounter = 0;
 					break;
 				case 1:
-					if(!MoveSolid(0, walkSpeed)) randomWalkCounter = 0;
+					if(!MoveSmart(0, walkSpeed)) randomWalkCounter = 0;
 					break;
 				case 2:
-					if(!MoveSolid(-walkSpeed, 0)) randomWalkCounter = 0;
+					if(!MoveSmart(-walkSpeed, 0)) randomWalkCounter = 0;
 					break;
 				case 3:
-					if(!MoveSolid(walkSpeed, 0)) randomWalkCounter = 0;
+					if(!MoveSmart(walkSpeed, 0)) randomWalkCounter = 0;
 					break;
 			}
 		}
@@ -146,6 +146,8 @@ void Skeleton::Update()
 	if(y <= 0) orientation = 1;
 	if(y >= 420) orientation = 0;
 	
+	if(!CheckFloor()) OnHit(999);
+	
 	SpriteEntity::Update();
 	if(frame == 10)
 	{
@@ -181,7 +183,12 @@ Skeleton::Skeleton()
 	followTurnTime = 15;
 	attackDelay = 2;
 	attackDamage = 2;
-	MoveToFreeSpot(60, 60, 570, 360);
+	for(int i = 0; i < 20; i++)
+	{
+		MoveToFreeSpot(60, 60, 570, 360);
+		if(CheckFloor()) return;
+	}
+	alive = false;
 }
 
 Entity *Skeleton::Create()

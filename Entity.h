@@ -34,6 +34,10 @@ class Entity
 		float GetMinDx();
 		float GetMinDy();
 		bool MoveSolid(float dx, float dy);		
+		
+		virtual bool IsBlockFloor(int b);
+		bool CheckFloor(float &floorX, float &floorY);
+		bool CheckFloor();
 };
 
 #endif

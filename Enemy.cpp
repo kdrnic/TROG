@@ -117,3 +117,17 @@ Enemy::Enemy()
 	hitJump = 60;
 	noDropChance = 5;
 }
+
+bool Enemy::MoveSmart(float dx, float dy)
+{
+	float oldX = x;
+	float oldY = y;
+	if(!MoveSolid(dx, dy)) return false;
+	if(!CheckFloor())
+	{
+		x = oldX;
+		y = oldY;
+		return false;
+	}
+	return true;
+}

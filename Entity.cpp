@@ -62,7 +62,7 @@ bool Entity::IsEntitySolid(Entity *e)
 
 bool Entity::IsBlockSolid(int b)
 {
-	return (b != 0);
+	return (b & 1);
 }
 
 bool Entity::MapCollision()
@@ -256,4 +256,37 @@ bool Entity::MoveSolid(float dx, float dy)
 
 void Entity::OnCreate()
 {
+}
+
+bool Entity::IsBlockFloor(int b)
+{
+	return ((b & 2) == 0);
+}
+
+bool Entity::CheckFloor(float &floorX, float &floorY)
+{
+	bool isOnFloor = false;
+	for(int bx = x / 15; (bx * 15) < x + width - 1; bx++)
+	{
+		for(int by = y / 15; (by * 15) < y + height - 1; by++)
+		{
+			if(by < 0) continue;
+			if(IsBlockFloor(game.mapManager.BlockTypeAt(bx, by)))
+			{
+				isOnFloor = true;
+				floorX = (bx * 15) + 7.5 - width * 0.5;
+				floorY = (by * 15) + 7.5 - height * 0.5;
+				break;
+			}
+			if(by == 28) break;
+		}
+		if(bx == 41) break;
+	}
+	return isOnFloor;
+}
+
+bool Entity::CheckFloor()
+{
+	float x, y;
+	return CheckFloor(x, y);
 }
