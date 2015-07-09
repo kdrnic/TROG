@@ -33,8 +33,3 @@ Heart::Heart()
 	//orientation = (rand() % 2);
 	orientation = 0;
 }
-
-Entity *Heart::Create()
-{
-	return new Heart();
-}

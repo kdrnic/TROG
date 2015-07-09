@@ -313,8 +313,3 @@ Werewolf::Werewolf()
 	//bool hasHit;
 	hasHit = false;
 }
-
-Entity *Werewolf::Create()
-{
-	return new Werewolf;
-}

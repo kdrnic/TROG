@@ -138,8 +138,3 @@ Slime::Slime(int fh)
 	pathIntegral = 0;
 	MoveToFreeSpot(60, 60, 570, 360);
 }
-
-Entity *Slime::Create()
-{
-	return new Slime();
-}

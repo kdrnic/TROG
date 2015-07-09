@@ -65,8 +65,3 @@ Plague::Plague()
 		}
 	}
 }
-
-Entity *Plague::Create()
-{
-	return new Plague;
-}

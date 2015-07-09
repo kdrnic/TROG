@@ -88,8 +88,3 @@ Door::Door()
 	offsetY = 15;
 	layer = -1;
 }
-
-Entity *Door::Create()
-{
-	return new Door;
-}

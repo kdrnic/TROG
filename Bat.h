@@ -13,9 +13,6 @@ class Bat : public HitHurtEnemy
 		
 		Bat();
 		Bat(int _x, int _y);
-		
-		static Entity *Create();
-	
 	private:
 		float dx, dy;
 };

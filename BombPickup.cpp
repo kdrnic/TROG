@@ -15,8 +15,3 @@ BombPickup::BombPickup()
 	item = "Bomb";
 	amount = 3;
 }
-
-Entity *BombPickup::Create()
-{
-	return new BombPickup;
-}

@@ -9,8 +9,6 @@ class BombPickup : public ItemPickup
 		static BITMAP *_sprite;
 		
 		BombPickup();
-		
-		static Entity *Create();
 };
 
 #endif

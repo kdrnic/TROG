@@ -92,11 +92,17 @@ SAMPLE *Enemy::GetDyingSound()
 	return 0;
 }
 
+template <class C>
+static Entity *InstantiateDrop()
+{
+	return new C;
+}
+
 std::vector<Enemy::CreateDropFunction> Enemy::PossibleDrops()
 {
 	std::vector<CreateDropFunction> drops;
-	drops.push_back(Heart::Create);
-	if(game.inventoryManager.Find("Bomb") != 0) drops.push_back(BombPickup::Create);
+	drops.push_back(&InstantiateDrop<Heart>);
+	if(game.inventoryManager.Find("Bomb") != 0) drops.push_back(&InstantiateDrop<BombPickup>);
 	return drops;
 }
 

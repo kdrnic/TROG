@@ -8,7 +8,6 @@ class VillageWall : public Entity
 		void OnCollision(Entity *e);
 		
 		VillageWall();
-		static Entity *Create();
 	private:
 		int coolDown;
 };

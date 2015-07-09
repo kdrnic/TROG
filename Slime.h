@@ -15,8 +15,6 @@ class Slime : public HitHurtEnemy
 		SAMPLE *GetDyingSound();
 		
 		Slime(int fh = 1);
-		
-		static Entity *Create();
 	private:
 		bool walking;
 		int walkTime;

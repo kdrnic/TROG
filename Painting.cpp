@@ -49,8 +49,3 @@ Painting::~Painting()
 {
     if(canvas != 0) destroy_bitmap(canvas);
 }
-
-Entity *Painting::Create()
-{
-	return new Painting;
-}

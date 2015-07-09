@@ -12,7 +12,6 @@ class Rock : public SpriteEntity
 		void OnCollision(Entity *e);
 		
 		Rock();
-		static Entity *Create();
 };
 
 #endif

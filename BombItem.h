@@ -9,8 +9,6 @@ class BombItem : public LimitedAmountItem
 		void OnActualUse();
 		
 		BombItem();
-		
-		static Item *Create();
 };
 
 #endif

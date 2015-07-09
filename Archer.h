@@ -11,8 +11,6 @@ class Archer : public Enemy
 		void Update();
 		
 		Archer();
-		
-		static Entity *Create();
 	private:
 		int walkTime;
 		int walkCounter;

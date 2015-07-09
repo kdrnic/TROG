@@ -66,8 +66,3 @@ Trap::Trap()
 	layer = -1;
 	lastActivationFrame = game.frame;
 }
-
-Entity *Trap::Create()
-{
-	return new Trap;
-}

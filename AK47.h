@@ -11,8 +11,6 @@ class AK47 : public Item
 		void OnUse();
 		
 		AK47();
-		
-		static Item *Create();
 	private:
 		unsigned int shotsCounter;
 		int voiceId;

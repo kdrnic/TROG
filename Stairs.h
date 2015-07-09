@@ -14,7 +14,6 @@ class Stairs : public SpriteEntity
 		void OnCreate();
 		
 		Stairs();
-		static Entity *Create();
 	private:
 		int type;
 		std::string id;

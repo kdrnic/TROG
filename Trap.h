@@ -13,8 +13,6 @@ class Trap : public SpriteEntity
 		void Update();
 		
 		Trap();
-		
-		static Entity *Create();
 	private:
 		int stakeX, stakeY, stakeO;
 		int lastActivationFrame;

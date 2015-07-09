@@ -9,8 +9,6 @@ class BarbedWire : public HitHurtEnemy
 		static BITMAP *_sprite;
 		
 		BarbedWire();
-		
-		static Entity *Create();
 };
 
 #endif

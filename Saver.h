@@ -7,7 +7,6 @@ class Saver : public Entity
 	    void Update();
 
 		Saver();
-		static Entity *Create();
 	private:
 };
 

@@ -13,8 +13,6 @@ class Werewolf : public Enemy
 		void OnHit(int hx, int hy, int hw, int hh, int damage);
 		
 		Werewolf();
-		
-		static Entity *Create();
 	private:
 		bool isTransforming;
 		bool isWerewolf;

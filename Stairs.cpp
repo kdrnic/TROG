@@ -143,8 +143,3 @@ Stairs::Stairs()
 	type = 2;
 	id = "undefined";
 }
-
-Entity *Stairs::Create()
-{
-	return new Stairs;
-}

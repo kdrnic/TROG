@@ -223,8 +223,3 @@ Vampire::Vampire()
 	
 	if(game.GetQuestState("vampire") == "defeated") alive = false;
 }
-
-Entity *Vampire::Create()
-{
-	return new Vampire;
-}

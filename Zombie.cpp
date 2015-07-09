@@ -124,11 +124,6 @@ Zombie::Zombie()
 	MoveToFreeSpot(60, 60, 570, 360);
 }
 
-Entity *Zombie::Create()
-{
-	return new Zombie;
-}
-
 int Zombie::RandomOrientation(int o)
 {
 	return rand() % 4;

@@ -40,8 +40,3 @@ AK47::AK47()
 	shotsCounter = 0;
 	voiceId = -1;
 }
-
-Item *AK47::Create()
-{
-	return new AK47;
-}

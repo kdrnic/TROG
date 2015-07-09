@@ -191,11 +191,6 @@ Skeleton::Skeleton()
 	alive = false;
 }
 
-Entity *Skeleton::Create()
-{
-	return new Skeleton;
-}
-
 int Skeleton::RandomOrientation(int o)
 {
 	return rand() % 4;

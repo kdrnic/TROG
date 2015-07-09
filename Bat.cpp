@@ -81,8 +81,3 @@ Bat::Bat(int _x, int _y)
 	x = _x - width / 2;
 	y = _y - height / 2;
 }
-
-Entity *Bat::Create()
-{
-	return new Bat;
-}

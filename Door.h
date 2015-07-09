@@ -16,7 +16,6 @@ class Door : public EventEntity
 		void Update();
 		
 		Door();
-		static Entity *Create();
 	private:
 		bool isOpen;
 		std::string map;

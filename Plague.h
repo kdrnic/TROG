@@ -12,8 +12,6 @@ class Plague : public EventEntity
 		void Update();
 		
 		Plague();
-		
-		static Entity *Create();
 };
 
 #endif

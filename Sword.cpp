@@ -14,8 +14,3 @@ Sword::Sword()
 	swishes[1] = (SAMPLE *) game.GetData("snd_swish2");
 	swishes[2] = (SAMPLE *) game.GetData("snd_swish3");
 }
-
-Item *Sword::Create()
-{
-	return new Sword;
-}

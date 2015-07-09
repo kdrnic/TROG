@@ -137,8 +137,3 @@ NPC::NPC()
 	MoveToFreeSpot();
 	agitation = 8;
 }
-
-Entity *NPC::Create()
-{
-	return new NPC;
-}

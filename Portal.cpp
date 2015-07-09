@@ -51,8 +51,3 @@ Portal::Portal()
 	width = 30;
 	height = 30;
 }
-
-Entity *Portal::Create()
-{
-	return new Portal;
-}

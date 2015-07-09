@@ -8,7 +8,6 @@ class Portal : public Entity
 		void OnCollision(Entity *e);
 		
 		Portal();
-		static Entity *Create();
 	private:
 		std::string map;
 		int toX, toY;

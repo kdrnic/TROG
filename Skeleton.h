@@ -11,8 +11,6 @@ class Skeleton : public Enemy
 		void Update();
 		
 		Skeleton();
-		
-		static Entity *Create();
 	private:
 		int seeDistance;
 		float walkSpeed;

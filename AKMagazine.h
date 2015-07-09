@@ -7,8 +7,6 @@ class AKMagazine : public Item
 {
 	public:
 		AKMagazine();
-		
-		static Item *Create();
 };
 
 #endif

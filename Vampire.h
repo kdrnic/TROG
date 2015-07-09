@@ -16,8 +16,6 @@ class Vampire : public SpriteEntity
 		void OnHit();
 		
 		Vampire();
-		
-		static Entity *Create();
 	private:
 		int state;
 		int health;

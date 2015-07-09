@@ -12,8 +12,6 @@ class Zombie : public HitHurtEnemy
 		void Update();
 		
 		Zombie();
-		
-		static Entity *Create();
 	private:
 		int seeDistance;
 		int digDistance;

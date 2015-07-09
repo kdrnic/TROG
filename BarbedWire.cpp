@@ -15,8 +15,3 @@ BarbedWire::BarbedWire()
 	hitDamage = 1;
 	MoveToFreeSpot(60, 60, 570, 360);
 }
-
-Entity *BarbedWire::Create()
-{
-	return new BarbedWire;
-}

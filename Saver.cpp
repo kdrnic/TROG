@@ -15,8 +15,3 @@ Saver::Saver()
     x = -9999;
     y = -9999;
 }
-
-Entity *Saver::Create()
-{
-    return new Saver;
-}

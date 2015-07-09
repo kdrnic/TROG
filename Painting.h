@@ -14,7 +14,6 @@ class Painting : public EventEntity
 
 		Painting();
 		~Painting();
-		static Entity *Create();
 	private:
 		int file;
 		BITMAP *canvas;

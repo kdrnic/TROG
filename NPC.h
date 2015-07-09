@@ -14,7 +14,6 @@ class NPC : public EventEntity
 		void Update();
 		
 		NPC();
-		static Entity *Create();
 	private:
 		std::vector<std::string> text;
 		int skin;

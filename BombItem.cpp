@@ -14,8 +14,3 @@ BombItem::BombItem()
 	iconBg = (BITMAP *) game.GetData("inv_bomb"); // load_bitmap("bombIcon.bmp", 0);
 	coolDownTime = 15;
 }
-
-Item *BombItem::Create()
-{
-	return new BombItem;
-}

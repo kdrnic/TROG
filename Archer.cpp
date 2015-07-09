@@ -111,8 +111,3 @@ Archer::Archer()
 	shootAnimSpeed = 15;
 	hasShot = false;
 }
-
-Entity *Archer::Create()
-{
-	return new Archer;
-}

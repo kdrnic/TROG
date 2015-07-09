@@ -7,8 +7,6 @@ class Sword : public GenericSword
 {
 	public:
 		Sword();
-		
-		static Item *Create();
 };
 
 #endif

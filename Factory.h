@@ -10,9 +10,15 @@ class Factory
 	public:
 		typedef C (* CreateCFunction)();
 		
-		void Register(std::string name, CreateCFunction function)
+		void RegisterF(std::string name, CreateCFunction function)
 		{
 			registeredCs[name] = function;
+		}
+		
+		template <class D>
+		void Register(std::string name)
+		{
+			registeredCs[name] = &CreateInstance<D>;
 		}
 
 		C Create(std::string name)
@@ -21,6 +27,12 @@ class Factory
 		}
 	private:
 		std::map<std::string, CreateCFunction> registeredCs;
+		
+		template <class D>
+		static C CreateInstance()
+		{
+			return new D;
+		}
 };
 
 #endif

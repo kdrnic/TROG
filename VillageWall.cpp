@@ -62,8 +62,3 @@ VillageWall::VillageWall()
 {
 	coolDown = 0;
 }
-
-Entity *VillageWall::Create()
-{
-	return new VillageWall;
-}

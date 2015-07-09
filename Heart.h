@@ -11,8 +11,6 @@ class Heart : public SpriteEntity
 		void OnCollision(Entity *e);
 		
 		Heart();
-		
-		static Entity *Create();
 };
 
 #endif

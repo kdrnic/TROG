@@ -30,8 +30,3 @@ Sign::Sign()
 	spriteHeight = 30;
 	sprite = _sprite;
 }
-
-Entity *Sign::Create()
-{
-	return new Sign;
-}

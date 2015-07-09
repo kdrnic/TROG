@@ -13,7 +13,6 @@ class Sign : public EventEntity
 		void Interact();
 		
 		Sign();
-		static Entity *Create();
 	private:
 		std::vector<std::string> text;
 };

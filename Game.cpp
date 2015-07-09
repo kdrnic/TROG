@@ -256,33 +256,37 @@ void GameManager::PushDialogLine(std::string s)
 
 void GameManager::RegisterEntities()
 {
-	entitiesFactory.Register("BarbedWire", BarbedWire::Create);
-	entitiesFactory.Register("Zombie", Zombie::Create);
-	entitiesFactory.Register("Rock", Rock::Create);
-	entitiesFactory.Register("Sign", Sign::Create);
-	entitiesFactory.Register("Door", Door::Create);
-	entitiesFactory.Register("Bat", Bat::Create);
-	entitiesFactory.Register("Skeleton", Skeleton::Create);
-	entitiesFactory.Register("NPC", NPC::Create);
-	entitiesFactory.Register("Portal", Portal::Create);
-	entitiesFactory.Register("Vampire", Vampire::Create);
-	entitiesFactory.Register("Trap", Trap::Create);
-	entitiesFactory.Register("Plague", Plague::Create);
-	entitiesFactory.Register("Slime", Slime::Create);
-	entitiesFactory.Register("Archer", Archer::Create);
-	entitiesFactory.Register("Werewolf", Werewolf::Create);
-	entitiesFactory.Register("Painting", Painting::Create);
-	entitiesFactory.Register("Saver", Saver::Create);
-	entitiesFactory.Register("VillageWall", VillageWall::Create);
-	entitiesFactory.Register("Stairs", Stairs::Create);
+	#define REGISTER_ENTITY(e) entitiesFactory.Register<e>(#e);
+	REGISTER_ENTITY(BarbedWire)
+	REGISTER_ENTITY(Zombie)
+	REGISTER_ENTITY(Rock)
+	REGISTER_ENTITY(Sign)
+	REGISTER_ENTITY(Door)
+	REGISTER_ENTITY(Bat)
+	REGISTER_ENTITY(Skeleton)
+	REGISTER_ENTITY(NPC)
+	REGISTER_ENTITY(Portal)
+	REGISTER_ENTITY(Vampire)
+	REGISTER_ENTITY(Trap)
+	REGISTER_ENTITY(Plague)
+	REGISTER_ENTITY(Slime)
+	REGISTER_ENTITY(Archer)
+	REGISTER_ENTITY(Werewolf)
+	REGISTER_ENTITY(Painting)
+	REGISTER_ENTITY(Saver)
+	REGISTER_ENTITY(VillageWall)
+	REGISTER_ENTITY(Stairs)
+	#undef REGISTER_ENTITY
 }
 
 void GameManager::RegisterItems()
 {
-	itemsFactory.Register("AK47", AK47::Create);
-	itemsFactory.Register("AKMagazine", AKMagazine::Create);
-	itemsFactory.Register("Bomb", BombItem::Create);
-	itemsFactory.Register("Sword", Sword::Create);
+	#define REGISTER_ITEM(i) itemsFactory.Register<i>(#i);
+	REGISTER_ITEM(AK47)
+	REGISTER_ITEM(AKMagazine)
+	REGISTER_ITEM(Sword)
+	#undef REGISTER_ITEM
+	itemsFactory.Register<BombItem>("Bomb");
 }
 
 void GameManager::Update()

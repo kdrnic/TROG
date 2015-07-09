@@ -30,8 +30,3 @@ Rock::Rock()
 	spriteHeight = 30;
 	sprite = _sprite;
 }
-
-Entity *Rock::Create()
-{
-	return new Rock;
-}
