@@ -160,6 +160,7 @@ void Vampire::Update()
 			Entity *poof = new Poof(x + width / 2, y + height / 2);
 			game.entitiesManager.Add(poof);
 			game.SetQuestState("vampire", "defeated");
+			game.SaveStatus();
 			play_sample((SAMPLE *) game.GetData("snd_victory"), 255, 0, 1000, false);
 			game.PushDialogLine("The vampire has been defeated!");
 			alive = false;
