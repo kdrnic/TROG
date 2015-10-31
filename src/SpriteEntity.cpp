@@ -3,7 +3,7 @@
 void SpriteEntity::Draw(BITMAP *doubleBuffer)
 {
 	frame = frameStart + ((counter / inverseSpeed) % (frameEnd - frameStart + 1));
-	masked_blit(sprite, doubleBuffer, orientation * spriteWidth, frame * spriteHeight, x - offsetX, y - offsetY, spriteWidth, spriteHeight);
+	if(sprite != 0) masked_blit(sprite, doubleBuffer, orientation * spriteWidth, frame * spriteHeight, x - offsetX, y - offsetY, spriteWidth, spriteHeight);
 }
 
 void SpriteEntity::Update()
@@ -42,4 +42,5 @@ SpriteEntity::SpriteEntity()
 {
 	counter = frame = orientation = frameStart = frameEnd = offsetX = offsetY = 0;
 	inverseSpeed = 1;
+	sprite = 0;
 }
