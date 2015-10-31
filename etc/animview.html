@@ -1,0 +1,110 @@
+ch<html>
+	<head>
+		<script>
+		var context;
+		var counter;
+		var frame;
+		var orientation;
+		var frameStart, frameEnd, inverseSpeed;
+		var spriteWidth, spriteHeight;
+		var okay;
+		var sprite;
+		var fw, fh, sf, ef, fn, o, s;
+		var loadOK = false;
+		var prev;
+		function Start()
+		{
+			context = document.getElementById("screenCanvas").getContext("2d");
+			okay = false;
+			counter = frame = 0;
+			sprite = new Image;
+			setTimeout("DoFrame()", 1000.0 / 60.0);
+			fw = document.getElementById("fw");
+			fh = document.getElementById("fh");
+			sf = document.getElementById("sf");
+			ef = document.getElementById("ef");
+			fn = document.getElementById("fn");
+			o = document.getElementById("o");
+			s = document.getElementById("s");
+			prev = document.getElementById("prev");
+		}
+		function DoFrame()
+		{
+			if(okay)
+			{
+				counter++;
+				frame = frameStart + (Math.floor(counter / inverseSpeed) % (frameEnd - frameStart + 1));
+				if(loadOK)
+				{
+					context.drawImage(prev, orientation * spriteWidth, frame * spriteHeight, spriteWidth, spriteHeight, 0, 0, spriteWidth * 4, spriteHeight * 4);
+				}
+			}
+			setTimeout("DoFrame()", 1000.0 / 60.0);
+		}
+		function Refresh()
+		{
+			okay = true;
+			if(fw.value == parseInt(fw.value)) spriteWidth = fw.value;
+			else
+			{
+				alert("Invalid with");
+				okay = false;
+			}
+			if(fh.value == parseInt(fh.value)) spriteHeight = fh.value;
+			else
+			{
+				alert("Invalid height");
+				okay = false;
+			}
+			if(sf.value == parseInt(sf.value)) frameStart = parseInt(sf.value);
+			else
+			{
+				alert("Invalid start frame");
+				okay = false;
+			}
+			if(ef.value == parseInt(ef.value)) frameEnd = ef.value;
+			else
+			{
+				alert("Invalid end frame");
+				okay = false;
+			}
+			if(o.value == parseInt(o.value)) orientation = o.value;
+			else
+			{
+				alert("Invalid orientation");
+				okay = false;
+			}
+			if(s.value == parseInt(s.value)) inverseSpeed = s.value;
+			else
+			{
+				alert("Invalid speed");
+				okay = false;
+			}
+			loadOK = false;
+			
+			sprite.onload = function()
+			{
+				loadOK = true;
+			}
+			sprite.src = fn.value;
+			prev.src = fn.value;
+			
+		}
+		</script>
+	</head>
+	<body onload="Start()">
+		<center>
+			<img src="archer.bmp" id="prev"><br>
+			File: <input id="fn" type="text"><br>
+			Frame width: <input id="fw" type="text"><br>
+			Frame height: <input id="fh" type="text"><br>
+			Start frame: <input id="sf" type="text"><br>
+			End frame: <input id="ef" type="text"><br>
+			Orientation (direction): <input id="o" type="text"><br>
+			Speed (1 = 60 FPS; 2 = 30 FPS; 3 = 15 FPS; ...): <input id="s" type="text"><br>
+			<input type="button" value="Refresh" onclick="Refresh()"><br>
+			<canvas id="screenCanvas" width="640" height="480" style="border:solid 1px;">
+			</canvas>
+		</center>
+	</body>
+</html>
