@@ -9,6 +9,8 @@ class Projectile : public SpriteEntity
 		void OnCollision(Entity *e);
 		void Update();
 		
+		void SetSpeed(int _orientation, float speed);
+		
 		Projectile();
 		
 		float speedX, speedY;

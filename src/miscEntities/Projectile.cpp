@@ -19,6 +19,26 @@ void Projectile::Update()
 	else birthCollision = false;
 }
 
+void SetSpeed(int _orientation, float speed)
+{
+	orientation = _orientation;
+	switch(orientation)
+	{
+		case 0:
+			speedY = -speed;
+			break;
+		case 1:
+			speedY = speed;
+			break;
+		case 2:
+			speedX = -speed;
+			break;
+		case 3:
+			speedX = speed;
+			break;
+	}
+}
+
 void Projectile::OnPlayer()
 {
 	game.player->OnHit(x, y, width, height, damage);
