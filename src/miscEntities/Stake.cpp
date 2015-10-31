@@ -12,7 +12,7 @@ Stake::Stake(int _x, int _y, int o)
 	orientation = o;
 	speedX = speedY = 0;
 	int speed = 5;
-	SetOrientation(o, speed);
+	SetSpeed(o, speed);
 	spriteWidth = 44;
 	spriteHeight = 44;
 	offsetX = 8;
