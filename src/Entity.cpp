@@ -263,12 +263,18 @@ bool Entity::IsBlockFloor(int b)
 	return ((b & 2) == 0);
 }
 
+float Entity::GetFeetHeight()
+{
+	return 15;
+}
+
 bool Entity::CheckFloor(float &floorX, float &floorY)
 {
 	bool isOnFloor = false;
+	float feetY = y + height - GetFeetHeight();
 	for(int bx = x / 15; (bx * 15) < x + width - 1; bx++)
 	{
-		for(int by = y / 15; (by * 15) < y + height - 1; by++)
+		for(int by = (feetY / 15); (by * 15) < y + height - 1; by++)
 		{
 			if(by < 0) continue;
 			if(IsBlockFloor(game.mapManager.BlockTypeAt(bx, by)))
@@ -289,4 +295,12 @@ bool Entity::CheckFloor()
 {
 	float x, y;
 	return CheckFloor(x, y);
+}
+
+bool Entity::WithinDistanceTo(Entity *other, float distance)
+{
+	float dx = (other->x + other->width * 0.5) - x - width * 0.5;
+	float dy = (other->y + other->height * 0.5) - y - height * 0.5;
+	if(dx * dx + dy * dy  < distance * distance) return true;
+	return false;
 }

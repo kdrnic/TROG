@@ -23,6 +23,8 @@ class Entity
 		bool Collision(Entity *e);		
 		bool Collision(int _x, int _y, int _w, int _h);
 		
+		bool WithinDistanceTo(Entity *other, float distance);
+		
 		Entity();
 	protected:
 		virtual bool IsEntitySolid(Entity *e);
@@ -36,6 +38,7 @@ class Entity
 		bool MoveSolid(float dx, float dy);		
 		
 		virtual bool IsBlockFloor(int b);
+		virtual float GetFeetHeight();
 		bool CheckFloor(float &floorX, float &floorY);
 		bool CheckFloor();
 };
