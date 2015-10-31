@@ -26,15 +26,19 @@ void Projectile::SetSpeed(int _orientation, float speed)
 	{
 		case 0:
 			speedY = -speed;
+			speedX = 0;
 			break;
 		case 1:
 			speedY = speed;
+			speedX = 0;
 			break;
 		case 2:
 			speedX = -speed;
+			speedY = 0;
 			break;
 		case 3:
 			speedX = speed;
+			speedY = 0;
 			break;
 	}
 }

@@ -16,10 +16,10 @@ class Projectile : public SpriteEntity
 		float speedX, speedY;
 		int damage;
 	private:
-		void OnPlayer();
-		void OnEnemy(Entity *e);
-		void OnSolid(Entity *e);
-		void OnMapCollision(bool isCollisionAtBirth);
+		virtual void OnPlayer();
+		virtual void OnEnemy(Entity *e);
+		virtual void OnSolid(Entity *e);
+		virtual void OnMapCollision(bool isCollisionAtBirth);
 		
 		bool birthCollision;
 };
