@@ -253,7 +253,7 @@ std::string GetFile(const char *msg, const char *ext, std::string dir = "")
 	return std::string(n);
 }
 
-#define numberOfButtons 33
+#define numberOfButtons 256
 
 class EditMode
 {
