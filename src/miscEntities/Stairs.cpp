@@ -5,6 +5,15 @@
 
 #include "Stairs.h"
 
+// Opens when the area is cleared of enemies
+#define TYPE_AREA_CLEAR 0
+// Opens with a key, remains open afterwards
+#define TYPE_KEY 1
+// Is already open
+#define TYPE_OPEN 3
+// Is already open, goes up
+#define TYPE_OPEN_ASCENDING 4
+
 void Stairs::SetParameter(std::string p, std::string v)
 {
 	if(p == "toMap")
@@ -36,7 +45,7 @@ void Stairs::SetParameter(std::string p, std::string v)
 
 void Stairs::OnCollision(Entity *e)
 {
-	if(type == 1)
+	if(type == TYPE_KEY)
 	{
 		if(frameEnd == 0)
 		{
@@ -75,7 +84,7 @@ void Stairs::OnCollision(Entity *e)
 
 void Stairs::Update()
 {
-	if(type == 0)
+	if(type == TYPE_AREA_CLEAR)
 	{
 		if((frameEnd == 0) && (game.entitiesManager.Count("ENEMY") == 0))
 		{
@@ -93,14 +102,14 @@ void Stairs::Update()
 
 void Stairs::OnCreate()
 {
-	if(type == 0)
+	if(type == TYPE_AREA_CLEAR)
 	{
 		orientation = 0;
 		frameStart = 0;
 		frameEnd = 0;
 		layer = -1;
 	}
-	else if(type == 1)
+	if(type == TYPE_KEY)
 	{
 		orientation = 1;
 		frameStart = 0;
@@ -111,14 +120,14 @@ void Stairs::OnCreate()
 			frameStart = frameEnd = 4;
 		}
 	}
-	else if(type == 2)
+	if(type == TYPE_OPEN_ASCENDING)
 	{
 		orientation = 2;
 		frameStart = 4;
 		frameEnd = 4;
 		layer = 0;
 	}
-	else if(type == 3)
+	if(type == TYPE_OPEN)
 	{
 		orientation = 0;
 		frameStart = 4;
