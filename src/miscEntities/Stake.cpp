@@ -4,50 +4,9 @@
 
 #include "Stake.h"
 
-BITMAP *Stake::_sprite = 0;
-
-void Stake::Update()
-{
-	x += speedX;
-	y += speedY;
-	if(x > 630) alive = false;
-	if(x < 0) alive = false;
-	if(y < 0) alive = false;
-	if(y > 420) alive = false;
-	if(MapCollision())
-	{
-		if(!c) alive = false;
-		c = true;
-	}
-	else c = false;
-}
-
-void Stake::OnCollision(Entity *e)
-{
-	if(e == game.player)
-	{
-		game.player->OnHit(x, y, width, height, 1);
-		alive = false;
-		return;
-	}
-	if(e->Is("VAMPIRE"))
-	{
-		((Vampire *) e)->OnHit();
-		alive = false;
-		return;
-	}
-	if(e->Is("ENEMY"))
-	{
-		((Enemy *) e)->OnHit(2);
-		alive = false;
-		return;
-	}
-	if(e->Is("SOLID")) alive = false;
-}
-
 Stake::Stake(int _x, int _y, int o)
 {
-	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_stake"); // load_bitmap("stake.bmp", 0);
+	sprite = (BITMAP *) game.GetData("spr_stake");
 	x = _x;
 	y = _y;
 	orientation = o;
@@ -80,6 +39,5 @@ Stake::Stake(int _x, int _y, int o)
 	spriteHeight = 44;
 	offsetX = 8;
 	offsetY = 8;
-	sprite = _sprite;
-	c = MapCollision();
+	damage = 2;
 }
