@@ -812,6 +812,31 @@ class EntityMode : public EditMode
 						ity = j;
 					}
 				}
+				if(itx == i->parameters.end())
+				{
+					std::pair<std::string, std::string> p;
+					p.first = "x";
+					p.second = "0";
+					i->parameters.insert(parameterIt, p);
+				}
+				if(ity == i->parameters.end())
+				{
+					std::pair<std::string, std::string> p;
+					p.first = "y";
+					p.second = "0";
+					i->parameters.insert(parameterIt, p);
+				}
+				for(std::list<std::pair<std::string, std::string> >::iterator j = i->parameters.begin(); j != i->parameters.end(); j++)
+				{
+					if(j->first == "x")
+					{
+						itx = j;
+					}
+					if(j->first == "y")
+					{
+						ity = j;
+					}
+				}
 				if(itx != i->parameters.end())
 				{
 					if(ity != i->parameters.end())
