@@ -19,7 +19,7 @@ void Projectile::Update()
 	else birthCollision = false;
 }
 
-void SetSpeed(int _orientation, float speed)
+void Projectile::SetSpeed(int _orientation, float speed)
 {
 	orientation = _orientation;
 	switch(orientation)
