@@ -71,7 +71,7 @@ bool EntityCompareZ(Entity *first, Entity *second)
 void EntitiesManager::BeginDrawing(BITMAP *dest, int x, int y)
 {
 	GameDrawer::BeginDrawing(dest, x, y);
-	
+
 	entities.sort(EntityCompareZ);
 	drawIt = entities.begin();
 	while((drawIt != entities.end()) && ((*drawIt)->layer < 0))
@@ -87,7 +87,7 @@ void EntitiesManager::BeginDrawing(BITMAP *dest, int x, int y)
 void EntitiesManager::DrawRow()
 {
 	GameDrawer::DrawRow();
-	
+
 	while((drawIt != entities.end()) && ((*drawIt)->y + (*drawIt)->height > rowAt * 30) && ((*drawIt)->y + (*drawIt)->height <= (rowAt + 1) * 30) && ((*drawIt)->layer < 1))
 	{
 		if((*drawIt)->alive)
@@ -108,7 +108,7 @@ void EntitiesManager::FinishDrawing()
 		}
 		drawIt++;
 	}
-	
+
 	GameDrawer::FinishDrawing();
 }
 
@@ -144,4 +144,20 @@ int EntitiesManager::Count(std::string w)
 int EntitiesManager::Count()
 {
 	return entities.size();
+}
+
+int EntitiesManager::FilterEntities(std::string what, Entity **foundEntities, int maxEntities)
+{
+	int j = 0;
+	for(std::list<Entity *>::iterator i = entities.begin(); i != entities.end(); i++)
+	{
+		if(j == maxEntities) break;
+		if((*i)->alive == false) continue;
+		if((*i)->Is(what))
+		{
+			foundEntities[j] = *i;
+			j++;
+		}
+	}
+	return j;
 }

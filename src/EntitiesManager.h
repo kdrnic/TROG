@@ -24,6 +24,7 @@ class EntitiesManager : public GameDrawer
 		int SearchArea(int x, int y, int width, int height, Entity **entities, int maxEntities);
 		int Count(std::string w);
 		int Count();
+		int FilterEntities(std::string what, Entity **entities, int maxEntities);
 	private:
 		std::list<Entity *> entities;
 		std::list<Entity *>::iterator drawIt;
