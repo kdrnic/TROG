@@ -12,7 +12,9 @@
 // Is already open
 #define TYPE_OPEN 3
 // Is already open, goes up
-#define TYPE_OPEN_ASCENDING 4
+#define TYPE_OPEN_ASCENDING 2
+// Opens when triggered by button
+#define TYPE_TRIGGERED 4
 
 void Stairs::SetParameter(std::string p, std::string v)
 {
@@ -39,6 +41,12 @@ void Stairs::SetParameter(std::string p, std::string v)
 	if(p == "id")
 	{
 		id = v;
+		type = TYPE_KEY;
+	}
+	if(p == "trigger")
+	{
+		trigger = std::atoi(v.c_str());
+		type = TYPE_TRIGGERED;
 	}
 	Entity::SetParameter(p, v);
 }
@@ -82,6 +90,20 @@ void Stairs::OnCollision(Entity *e)
 	}
 }
 
+void Stairs::OnTrigger(int t)
+{
+	if(t != trigger) return;
+	if(type == TYPE_TRIGGERED)
+	{
+		if((frameEnd == 0) && (game.entitiesManager.Count("ENEMY") == 0))
+		{
+			frameEnd = 4;
+			counter = 0;
+			play_sample((SAMPLE *) game.GetData("snd_scrape"), 128, 0, 1000, false);
+		}
+	}
+}
+
 void Stairs::Update()
 {
 	if(type == TYPE_AREA_CLEAR)
@@ -102,15 +124,16 @@ void Stairs::Update()
 
 void Stairs::OnCreate()
 {
-	if(type == TYPE_AREA_CLEAR)
+	switch(type)
 	{
+	case TYPE_AREA_CLEAR:
+	case TYPE_TRIGGERED:
 		orientation = 0;
 		frameStart = 0;
 		frameEnd = 0;
 		layer = -1;
-	}
-	if(type == TYPE_KEY)
-	{
+		break;
+	case TYPE_KEY:
 		orientation = 1;
 		frameStart = 0;
 		frameEnd = 0;
@@ -119,20 +142,19 @@ void Stairs::OnCreate()
 		{
 			frameStart = frameEnd = 4;
 		}
-	}
-	if(type == TYPE_OPEN_ASCENDING)
-	{
+		break;
+	case TYPE_OPEN_ASCENDING:
 		orientation = 2;
 		frameStart = 4;
 		frameEnd = 4;
 		layer = 0;
-	}
-	if(type == TYPE_OPEN)
-	{
+		break;
+	case TYPE_OPEN:
 		orientation = 0;
 		frameStart = 4;
 		frameEnd = 4;
 		layer = -1;
+		break;
 	}
 }
 
@@ -151,4 +173,5 @@ Stairs::Stairs()
 	layer = 0;
 	type = 2;
 	id = "undefined";
+	trigger = 0;
 }
