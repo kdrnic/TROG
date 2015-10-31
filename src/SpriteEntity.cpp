@@ -33,6 +33,11 @@ void SpriteEntity::Orientate(float dx, float dy)
 	}
 }
 
+int SpriteEntity::RandomOrientation(int o)
+{
+	return orientation = rand() % 4;
+}
+
 SpriteEntity::SpriteEntity()
 {
 	counter = frame = orientation = frameStart = frameEnd = offsetX = offsetY = 0;

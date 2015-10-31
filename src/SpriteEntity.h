@@ -18,6 +18,7 @@ class SpriteEntity : public Entity
 		virtual void Update();
 		
 		void Orientate(float dx, float dy);
+		int RandomOrientation(int o);
 		
 		SpriteEntity();
 };

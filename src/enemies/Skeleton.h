@@ -20,8 +20,6 @@ class Skeleton : public Enemy
 		int attackCountdown, attackDelay;
 		bool hasHitPlayer;
 		int attackDamage;
-		
-		int RandomOrientation(int o);
 };
 
 #endif

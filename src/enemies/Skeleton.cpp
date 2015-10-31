@@ -190,8 +190,3 @@ Skeleton::Skeleton()
 	}
 	alive = false;
 }
-
-int Skeleton::RandomOrientation(int o)
-{
-	return rand() % 4;
-}
