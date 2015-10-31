@@ -1,21 +1,18 @@
 #ifndef TRAP_H
 #define TRAP_H
 
-#include "SpriteEntity.h"
+#include "TriggeredEntity.h"
 
-class Trap : public SpriteEntity
+class Trap : public TriggeredEntity
 {
 	public:
-		static BITMAP *_sprite;
-		
 		void SetParameter(std::string p, std::string v);
-		void OnCollision(Entity *e);
-		void Update();
+		void OnTrigger(int t);
 		
 		Trap();
 	private:
-		int stakeX, stakeY, stakeO;
-		int lastActivationFrame;
+		int stakeO;
+		int trigger;
 		
 		SAMPLE *sounds[3];
 };
