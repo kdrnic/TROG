@@ -778,6 +778,8 @@ class EntityMode : public EditMode
 			if(alignToGrid) DrawButton(20);
 			for(std::list<MapEntity>::iterator i = entities.begin(); i != entities.end(); i++)
 			{
+				int color = 0;
+				if(i == entityIt) color = 0xFF0000;
 				int x = 0xB16B00B5;
 				int y = 0xB16B00B5;
 				for(std::list<std::pair<std::string, std::string> >::iterator j = i->parameters.begin(); j != i->parameters.end(); j++)
@@ -787,8 +789,8 @@ class EntityMode : public EditMode
 				}
 				if(x == 0xB16B00B5) continue;
 				if(y == 0xB16B00B5) continue;
-				rect(db, x, y, x + 29, y + 29, 0);
-				textprintf_ex(db, font, x, y + 15 - 4, 0, -1, "%s", MozDong(i->name).c_str());
+				rect(db, x, y, x + 29, y + 29, color);
+				textprintf_ex(db, font, x, y + 15 - 4, color, -1, "%s", MozDong(i->name).c_str());
 			}
 		}
 
@@ -1295,7 +1297,7 @@ int main()
 	show_os_cursor(MOUSE_CURSOR_ARROW);
 	while(!key[KEY_ESC])
 	{
-		
+
 		std::string title;
 		int titleStart = 0;
 		if(fileName.length() > 32)
@@ -1305,7 +1307,7 @@ int main()
 		}
 		else title = fileName;
 		set_window_title(title.c_str());
-		
+
 		clear(db);
 		int m = 0;
 		bool editModeKey = false;
