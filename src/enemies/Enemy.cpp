@@ -120,7 +120,7 @@ void Enemy::Drop()
 
 Enemy::Enemy()
 {
-	hitJump = 60;
+	hitJump = 29.9;
 	noDropChance = 5;
 }
 
@@ -136,4 +136,19 @@ bool Enemy::MoveSmart(float dx, float dy)
 		return false;
 	}
 	return true;
+}
+
+bool Enemy::MoveSmart(float speed)
+{
+	switch(orientation)
+	{
+		case 0:
+			return MoveSmart(0, -speed);
+		case 1:
+			return MoveSmart(0, speed);
+		case 2:
+			return MoveSmart(-speed, 0);
+		case 3:
+			return MoveSmart(speed, 0);
+	}
 }

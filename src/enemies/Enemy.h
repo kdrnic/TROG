@@ -31,6 +31,7 @@ class Enemy : public SpriteEntity
 		int noDropChance;
 		
 		bool MoveSmart(float dx, float dy);
+		bool MoveSmart(float speed);
 };
 
 #endif
