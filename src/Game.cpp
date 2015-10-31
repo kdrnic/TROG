@@ -20,6 +20,7 @@
 #include "VillageWall.h"
 #include "Stairs.h"
 #include "KnifeSkeleton.h"
+#include "Button.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -278,6 +279,7 @@ void GameManager::RegisterEntities()
 	REGISTER_ENTITY(VillageWall)
 	REGISTER_ENTITY(Stairs)
 	REGISTER_ENTITY(KnifeSkeleton)
+	REGISTER_ENTITY(Button)
 	#undef REGISTER_ENTITY
 }
 
