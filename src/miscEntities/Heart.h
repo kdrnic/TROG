@@ -1,14 +1,12 @@
 #ifndef HEART_H
 #define HEART_H
 
-#include "SpriteEntity.h"
+#include "Pickup.h"
 
-class Heart : public SpriteEntity
+class Heart : public Pickup
 {
 	public:
-		static BITMAP *_sprite;
-		
-		void OnCollision(Entity *e);
+		void OnPickup();
 		
 		Heart();
 };
