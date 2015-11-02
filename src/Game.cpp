@@ -21,6 +21,7 @@
 #include "Stairs.h"
 #include "KnifeSkeleton.h"
 #include "Button.h"
+#include "Statue.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -280,6 +281,7 @@ void GameManager::RegisterEntities()
 	REGISTER_ENTITY(Stairs)
 	REGISTER_ENTITY(KnifeSkeleton)
 	REGISTER_ENTITY(Button)
+	REGISTER_ENTITY(Statue)
 	#undef REGISTER_ENTITY
 }
 
