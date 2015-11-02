@@ -15,5 +15,5 @@ Knife::Knife()
 	damage = 2;
 	inverseSpeed = 3;
 	frameStart = 0;
-	frameEnd = 3;	
+	frameEnd = 2;	
 }

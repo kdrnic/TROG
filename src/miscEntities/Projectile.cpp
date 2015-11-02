@@ -5,6 +5,7 @@
 
 void Projectile::Update()
 {
+	SpriteEntity::Update();
 	birthCollision = MapCollision();
 	x += speedX;
 	y += speedY;
