@@ -130,26 +130,34 @@ void GameManager::Load()
 	if(file < 0) fileName = "saves/newgame.sav";
 	else fileName = files[file];
 	std::fstream gameStream(fileName.c_str(), std::fstream::in);
+	std::stringstream hashStream;
 
 	std::string _line;
 
 	getline(gameStream, _line);
 	mapManager.SetMap(_line);
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	player->x = std::atoi(_line.c_str());
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	player->y = std::atoi(_line.c_str());
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	player->gold = std::atoi(_line.c_str());
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	player->health = player->maxHealth = std::atoi(_line.c_str());
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	std::vector<std::string> items = StringToStrings(_line);
+	hashStream << _line.c_str() << '\n';
+	
 	for(int i = 0; i < items.size(); i++)
 	{
 		Item *newItem = itemsFactory.Create(items[i].substr(0, items[i].find(":")));
@@ -159,17 +167,39 @@ void GameManager::Load()
 
 	getline(gameStream, _line);
 	if(_line != "none") player->equippedItems[0] = inventoryManager.Find(_line);
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	if(_line != "none") player->equippedItems[1] = inventoryManager.Find(_line);
+	hashStream << _line.c_str() << '\n';
 
 	getline(gameStream, _line);
 	std::vector<std::string> questStateStrings = StringToStrings(_line);
+	hashStream << _line.c_str() << '\n';
+	
 	for(int i = 0; i < questStateStrings.size(); i++)
 	{
 		questStates[questStateStrings[i].substr(0, questStateStrings[i].find(":"))] = questStateStrings[i].substr(questStateStrings[i].find(":") + 1).c_str();
 	}
-
+	
+	const char *toHash = hashStream.str().c_str();
+	Int64Tuple hash = {0, 0};
+	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
+	std::stringstream hexStream;
+	hexStream << std::hex << hash.a << '\n' << hash.b;
+	std::string strA, strB;
+	getline(hexStream, strA);
+	getline(hexStream, strB);
+	
+	getline(gameStream, _line);
+	if(_line != strA)
+	{
+	}
+	getline(gameStream, _line);
+	if(_line != strB)
+	{
+	}
+	
 	gameStream.close();
 }
 
@@ -187,26 +217,60 @@ void GameManager::Save()
 	destroy_bitmap(temp);
 
 	std::fstream gameStream(fileName.c_str(), std::fstream::out | std::fstream::trunc);
+	std::stringstream hashStream;
 
 	gameStream << mapManager.currentMapName.c_str() << '\n';
+	hashStream << mapManager.currentMapName.c_str() << '\n';
 	gameStream << player->x << '\n';
+	hashStream << player->x << '\n';
 	gameStream << player->y << '\n';
+	hashStream << player->y << '\n';
 	gameStream << player->gold << '\n';
+	hashStream << player->gold << '\n';
 	gameStream << player->maxHealth << '\n';
+	hashStream << player->maxHealth << '\n';
 	gameStream << inventoryManager.ToString() << '\n';
-	if(player->equippedItems[0] != 0) gameStream << player->equippedItems[0]->name << '\n';
-	else gameStream << "none" << '\n';
-	if(player->equippedItems[1] != 0) gameStream << player->equippedItems[1]->name << '\n';
-	else gameStream << "none" << '\n';
+	hashStream << inventoryManager.ToString() << '\n';
+	if(player->equippedItems[0] != 0)
+	{
+		gameStream << player->equippedItems[0]->name << '\n';
+		hashStream << player->equippedItems[0]->name << '\n';
+	}
+	else
+	{
+		gameStream << "none" << '\n';
+		hashStream << "none" << '\n';
+	}
+	if(player->equippedItems[1] != 0)
+	{
+		gameStream << player->equippedItems[1]->name << '\n';
+		hashStream << player->equippedItems[1]->name << '\n';
+	}
+	else
+	{
+		gameStream << "none" << '\n';
+		hashStream << "none" << '\n';
+	}
 	bool b = false;
 	for(std::map<std::string, std::string>::iterator i = questStates.begin(); i != questStates.end(); i++)
 	{
-		if(b) gameStream << ' ';
+		if(b)
+		{
+			gameStream << ' ';
+			hashStream << ' ';
+		}
 		gameStream << i->first << ':' << i->second;
+		hashStream << i->first << ':' << i->second;
 		b = true;
 	}
-	b << '\n';
-
+	gameStream << '\n';
+	hashStream << '\n';
+	
+	const char *toHash = hashStream.str().c_str();
+	Int64Tuple hash = {0, 0};
+	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
+	gameStream << std::hex << hash.a << '\n' << hash.b;
+	
 	gameStream.close();
 }
 
@@ -223,20 +287,55 @@ void GameManager::SaveStatus()
 	loadStream.close();
 
 	std::fstream saveStream(fileName.c_str(), std::fstream::out | std::fstream::trunc);
-	for(int i = 0; i < 5; i++) saveStream << lines[i] << '\n';
+	std::stringstream hashStream;
+	
+	for(int i = 0; i < 5; i++)
+	{
+		saveStream << lines[i] << '\n';
+		hashStream << lines[i] << '\n';
+	}
 	saveStream << inventoryManager.ToString() << '\n';
-	if(player->equippedItems[0] != 0) saveStream << player->equippedItems[0]->name << '\n';
-	else saveStream << "none" << '\n';
-	if(player->equippedItems[1] != 0) saveStream << player->equippedItems[1]->name << '\n';
-	else saveStream << "none" << '\n';
+	hashStream << inventoryManager.ToString() << '\n';
+	if(player->equippedItems[0] != 0)
+	{
+		saveStream << player->equippedItems[0]->name << '\n';
+		hashStream << player->equippedItems[0]->name << '\n';
+	}
+	else
+	{
+		saveStream << "none" << '\n';
+		hashStream << "none" << '\n';
+	}
+	if(player->equippedItems[1] != 0)
+	{
+		saveStream << player->equippedItems[1]->name << '\n';
+		hashStream << player->equippedItems[1]->name << '\n';
+	}
+	else
+	{
+		saveStream << "none" << '\n';
+		hashStream << "none" << '\n';
+	}
 	bool b = false;
 	for(std::map<std::string, std::string>::iterator i = questStates.begin(); i != questStates.end(); i++)
 	{
-		if(b) saveStream << ' ';
+		if(b)
+		{
+			saveStream << ' ';
+			hashStream << ' ';
+		}
 		saveStream << i->first << ':' << i->second;
+		hashStream << i->first << ':' << i->second;
 		b = true;
 	}
 	saveStream << '\n';
+	hashStream << '\n';
+	
+	const char *toHash = hashStream.str().c_str();
+	Int64Tuple hash = {0, 0};
+	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
+	saveStream << std::hex << hash.a << '\n' << hash.b;
+	
 	saveStream.close();
 }
 

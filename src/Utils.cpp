@@ -139,3 +139,15 @@ void DrawParallax(BITMAP *bmp, BITMAP *bg, int sx, int sy)
 		coveredWidth += bg->w;
 	}
 }
+
+void CustomHash(std::uint8_t *data, std::size_t n, Int64Tuple *st)
+{
+	for(std::size_t i = 0; i < n; i++)
+	{
+		for(unsigned int j = 0; j < 25; j++) // 25 is minimum to avoid keeping top bits
+		{
+			st->a = (st->a * -7 + st->b + 0x31415926) ^ data[i];
+			st->b = (st->b /  3 + st->a + 0x53589793) ^ data[i];
+		}
+	}
+}
