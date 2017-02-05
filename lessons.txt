@@ -1,0 +1,19 @@
+Lessons from TROG:
+-Apply at least 2X zoom for pixel art
+-Scrolling is great
+-The walls in Zelda are weird for a reason
+-Do not make player character too small (can use subpixel precision with above)
+-Do not make any player entity a global
+-Do not make game manager a global
+-Do not implement one's own map format
+-Do not write your own map editor, use Tiled
+-Do not make up your own serialising, use JSON
+-Do not rely heavily on class inheritance
+-Do not write a monolithic game manager
+-Have a proper (continuous) collision system early on
+-Have an animation system for entities' sprites early on
+-Implement pathfinding and use it
+-Make enemies more interesting
+-Embedding Lua or Js (Duktape) can be useful for quests/NPCs/etc.
+-Push back on damage should be a continuous motion rather than instant snap
+-Sounds don't need to be the last thing added
