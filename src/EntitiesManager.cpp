@@ -88,7 +88,7 @@ void EntitiesManager::DrawRow()
 {
 	GameDrawer::DrawRow();
 
-	while((drawIt != entities.end()) && ((*drawIt)->y + (*drawIt)->height > rowAt * 30) && ((*drawIt)->y + (*drawIt)->height <= (rowAt + 1) * 30) && ((*drawIt)->layer < 1))
+	while((drawIt != entities.end()) && ((*drawIt)->y + (*drawIt)->height <= (rowAt + 1) * 30) && ((*drawIt)->layer < 1))
 	{
 		if((*drawIt)->alive)
 		{
