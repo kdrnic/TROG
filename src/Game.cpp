@@ -554,8 +554,8 @@ void GameManager::Draw()
 			mapManager.DrawRow();
 		}
 		
-		mapManager.FinishDrawing();
 		entitiesManager.FinishDrawing();
+		mapManager.FinishDrawing();
 	}
 	if((gameState == GameStatePlaying) || (gameState == GameStateInventory) || (gameState == GameStateDialog) || (gameState == GameStateDead) || (gameState == GameStateQuit)) draw_sprite(doubleBuffer, playArea, 5, 5);
 	if(gameState == GameStateTransition)
