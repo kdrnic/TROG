@@ -20,7 +20,7 @@ void Player::Draw(BITMAP *bmp)
 void Player::Update()
 {
 	SpriteEntity::Update();
-	
+
 	if(health <= 0)
 	{
 		if(frameStart != 12)
@@ -33,9 +33,9 @@ void Player::Update()
 		if(frame == 21) dead = true;
 		return;
 	}
-	
+
 	if(falling) goto Falling;
-	
+
 	if(isAttacking)
 	{
 		speedX = speedY = 0;
@@ -87,7 +87,7 @@ void Player::Update()
 	{
 		//speedX = speedY = 0;
 		int oldO = orientation;
-		
+
 		if(key[KEY_UP])
 		{
 			speedY += -accel;
@@ -138,7 +138,7 @@ void Player::Update()
 		if(speedX < -maxSpeed) speedX = -maxSpeed;
 		if(speedY > maxSpeed) speedY = maxSpeed;
 		if(speedY < -maxSpeed) speedY = -maxSpeed;
-		
+
 		if(movedLastFrame)
 		{
 			switch(oldO)
@@ -157,7 +157,7 @@ void Player::Update()
 					break;
 			}
 		}
-	
+
 		inverseSpeed = walkAnimSpeed;
 		frameStart = 0;
 		if(key[KEY_UP] || key[KEY_LEFT] || key[KEY_RIGHT] || key[KEY_DOWN])
@@ -238,9 +238,9 @@ void Player::Update()
 		}
 	}
 	if(invulnerabilityCounter > 0) invulnerabilityCounter--;
-	
+
 	if(!CheckFloor(lastFloorX, lastFloorY)) falling = true;
-	
+
 	Falling:
 	if(falling)
 	{
@@ -257,9 +257,9 @@ void Player::Update()
 				default:
 					break;
 			}
-			
+
 			invulnerabilityCounter = 0;
-			
+
 			orientation = 0;
 			frameStart = 22;
 			frameEnd = 28;
@@ -271,15 +271,15 @@ void Player::Update()
 			if(nextFrame == 28)
 			{
 				OnHit(fallDamage);
-				
+
 				frameStart = frameEnd = 0;
 				inverseSpeed = walkAnimSpeed;
 				SpriteEntity::Update();
 				falling = false;
-				
+
 				x = lastFloorX;
 				y = lastFloorY;
-				
+
 				Entity *entities[10];
 				int n = 0;
 				n = game.entitiesManager.SearchArea(x, y, width, height, entities, 10);
@@ -344,9 +344,9 @@ void Player::Heal(int h)
 	if(health > maxHealth) health = maxHealth;
 }
 
-void Player::Attack(int frame, int damage, int animSpeed)
+bool Player::Attack(int frame, int damage, int animSpeed)
 {
-	if(health < 0) return;
+	if(health < 0) return false;
 	if(!isAttacking)
 	{
 		isAttacking = true;
@@ -356,7 +356,9 @@ void Player::Attack(int frame, int damage, int animSpeed)
 		attackDamage = damage;
 		counter = 0;
 		inverseSpeed = animSpeed;
+		return true;
 	}
+	return false;
 }
 
 Player::Player()

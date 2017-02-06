@@ -22,7 +22,7 @@ class Player : public SpriteEntity
 		void OnHit(int hx, int hy, int hw, int hh, int damage);
 		void Heal(int h);
 
-		void Attack(int frame, int damage, int animSpeed = 5);
+		bool Attack(int frame, int damage, int animSpeed = 5);
 
 		Player();
 		~Player();

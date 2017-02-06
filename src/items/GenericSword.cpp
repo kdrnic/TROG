@@ -7,10 +7,13 @@ void GenericSword::OnUse()
 	if(game.frame - lastFrameUsed >= coolDownTime)
 	{
 		int randomNumber = rand() % 1000;
-		game.player->Attack(frames[randomNumber >= 500], damage, speed);
-		lastFrameUsed = game.frame;
-		SAMPLE *s = swishes[rand() % 3];
-		if(s != 0) play_sample(s, 255, 0, 1000, false);
+		bool success = game.player->Attack(frames[randomNumber >= 500], damage, speed);
+		if(success)
+		{
+			lastFrameUsed = game.frame;
+			SAMPLE *s = swishes[rand() % 3];
+			if(s != 0) play_sample(s, 255, 0, 1000, false);
+		}
 	}
 }
 
