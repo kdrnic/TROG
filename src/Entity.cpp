@@ -26,8 +26,13 @@ void Entity::OnCollision(Entity *e)
 
 void Entity::SetParameter(std::string p, std::string v)
 {
-	if(p == "x") x = std::atoi(v.c_str());
-	if(p == "y") y = std::atoi(v.c_str());
+	if(p == "x" && !ignorePos) x = std::atoi(v.c_str());
+	if(p == "y" && !ignorePos) y = std::atoi(v.c_str());
+	if(p == "randomize_pos")
+	{
+		ignorePos = true;
+		MoveToFreeSpot();
+	}
 }
 
 bool Entity::Collision(Entity *e)
@@ -50,6 +55,7 @@ bool Entity::Collision(int _x, int _y, int _w, int _h)
 
 Entity::Entity()
 {
+	ignorePos = false;
 	alive = true;
 	persistent = false;
 	layer = 0;

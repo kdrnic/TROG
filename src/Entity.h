@@ -8,6 +8,7 @@
 class Entity
 {
 	public:
+		bool ignorePos;
 		bool pushBack;
 		bool alive, persistent;
 		float x, y, width, height;
