@@ -8,18 +8,18 @@ class Statue : public SpriteEntity
 	public:
 		void SetParameter(std::string what, std::string value);
 		bool Is(std::string what);
-		
+
 		void Update();
-		
+
 		Statue();
 	private:
 		int attackTimer;
-		
-		static const int attackAnimSpeed = 4;
-		static const int attackDelay = 90;
-		static const float attackOffsetX = 8;
-		static const float attackOffsetY = -36;
-		static const float attackSpeed = 4;
+
+		static constexpr int attackAnimSpeed = 4;
+		static constexpr int attackDelay = 90;
+		static constexpr float attackOffsetX = 8;
+		static constexpr float attackOffsetY = -36;
+		static constexpr float attackSpeed = 4;
 };
 
 #endif
