@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "MapOwn.h"
+#include "MapTiled.h"
 #include "Game.h"
 
 void MapManager::LoadTileSet(std::string fileName)
@@ -41,6 +42,22 @@ void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 			maps[m->name] = (Map *) m;
 			
 			if(al_findnext(&fileInfo) != 0) break;
+		}
+	}
+	
+	al_ffblk fileInfo2;
+	if(al_findfirst("maps/*.tmx", &fileInfo2, FA_ALL) == 0)
+	{
+		while(true)
+		{
+			std::string fileName = "maps/";
+			fileName.append(fileInfo2.name);
+			
+			MapTiled *m = new MapTiled;
+			m->Load(fileName.c_str());
+			maps[m->name] = (Map *) m;
+			
+			if(al_findnext(&fileInfo2) != 0) break;
 		}
 	}
 }
