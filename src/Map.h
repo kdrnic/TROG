@@ -21,6 +21,7 @@ class Map
 		
 		int ***tiles;
 		int **blocks;
+		int numberOfLayers;
 		std::string exits[4];
 		std::string name;
 		std::list<MapEntity> entities;

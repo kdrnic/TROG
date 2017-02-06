@@ -11,6 +11,7 @@ void MapOwn::Load(std::istream &is)
 {
 	getline(is, name);
 	LoadBlocksLayer(blocks, is);
+	numberOfLayers = 3;
 	tiles = new int **[3];
 	for(int i = 0; i < 3; i++)
 	{

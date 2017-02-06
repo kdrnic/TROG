@@ -49,21 +49,27 @@ void MapManager::BeginDrawing(BITMAP *dest, int x, int y)
 {
 	GameDrawer::BeginDrawing(dest, x, y);
 	
-	currentMap->DrawLayer(destBitmap, tileSet, 0, 0, 14, topLeftX, topLeftY);
+	for(int i = 0; i < currentMap->numberOfLayers / 2; i++)
+	{
+		currentMap->DrawLayer(destBitmap, tileSet, i, 0, 14, topLeftX, topLeftY);
+	}
 }
 
 void MapManager::DrawRow()
 {
 	GameDrawer::DrawRow();
 	
-	currentMap->DrawLayer(destBitmap, tileSet, 1, rowAt, 1, topLeftX, topLeftY);
+	currentMap->DrawLayer(destBitmap, tileSet, currentMap->numberOfLayers / 2, rowAt, 1, topLeftX, topLeftY);
 }
 
 void MapManager::FinishDrawing()
 {
 	GameDrawer::FinishDrawing();
 	
-	currentMap->DrawLayer(destBitmap, tileSet, 2, 0, 14, topLeftX, topLeftY);
+	for(int i = (currentMap->numberOfLayers / 2) + 1; i < currentMap->numberOfLayers; i++)
+	{
+		currentMap->DrawLayer(destBitmap, tileSet, i, 0, 14, topLeftX, topLeftY);
+	}
 }
 
 int MapManager::BlockTypeAt(int x, int y)
