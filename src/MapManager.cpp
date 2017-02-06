@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "MapOwn.h"
 #include "Game.h"
 
 void MapManager::LoadTileSet(std::string fileName)
@@ -35,9 +36,9 @@ void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 			std::string fileName = "maps/";
 			fileName.append(fileInfo.name);
 			
-			Map *m = new Map;
+			MapOwn *m = new MapOwn;
 			m->Load(fileName.c_str());
-			maps[m->name] = m;
+			maps[m->name] = (Map *) m;
 			
 			if(al_findnext(&fileInfo) != 0) break;
 		}

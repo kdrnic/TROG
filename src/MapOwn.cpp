@@ -5,7 +5,7 @@
 #include "Utils.h"
 #include "Game.h"
 
-#include "Map.h"
+#include "MapOwn.h"
 
 void MapOwn::Load(std::istream &is)
 {
