@@ -7,9 +7,7 @@
 
 #include "Map.h"
 
-int Map::inverseSpeed = 5;
-
-void Map::Load(std::istream &is)
+void MapOwn::Load(std::istream &is)
 {
 	getline(is, name);
 	LoadBlocksLayer(blocks, is);
@@ -28,7 +26,7 @@ void Map::Load(std::istream &is)
 	timeLastVisited = 0;
 }
 
-void Map::Load(std::string fileName)
+void MapOwn::Load(std::string fileName)
 {
 	std::fstream mapFile;
 	mapFile.open(fileName.c_str(), std::fstream::in);
@@ -36,7 +34,7 @@ void Map::Load(std::string fileName)
 	mapFile.close();
 }
 
-void Map::DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0, int y0)
+void MapOwn::DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0, int y0)
 {
 	for(int y = row0; y < row0 + rows; y++)
 	{
@@ -47,7 +45,7 @@ void Map::DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows
 	}
 }
 
-void Map::LoadTilesLayer(int **&l, std::istream &is)
+void MapOwn::LoadTilesLayer(int **&l, std::istream &is)
 {
 	l = new int *[21];
 	for(int x = 0; x < 21; x++) l[x] = new int[14];
@@ -63,7 +61,7 @@ void Map::LoadTilesLayer(int **&l, std::istream &is)
 	}
 }
 
-void Map::LoadBlocksLayer(int **&l, std::istream &is)
+void MapOwn::LoadBlocksLayer(int **&l, std::istream &is)
 {
 	l = new int *[42];
 	int hadouken = 0;
@@ -81,7 +79,7 @@ void Map::LoadBlocksLayer(int **&l, std::istream &is)
 	}
 }
 
-void Map::LoadMapEntity(std::string l)
+void MapOwn::LoadMapEntity(std::string l)
 {
 	std::vector<std::string> lv  = StringToStrings(l);
 	MapEntity me;

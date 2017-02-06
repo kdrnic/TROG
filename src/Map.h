@@ -17,7 +17,7 @@ class Map
 			std::vector<std::pair<std::string, std::string> > parameters;
 		};
 		
-		static int inverseSpeed;
+		static const int inverseSpeed = 5;
 		
 		int ***tiles;
 		int **blocks;
@@ -26,14 +26,10 @@ class Map
 		std::list<MapEntity> entities;
 		int timeLastVisited;
 		
-		void Load(std::istream &is);		
-		void Load(std::string fileName);
+		virtual void Load(std::istream &is) = 0;		
+		virtual void Load(std::string fileName) = 0;
 		
-		void DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0 = 0, int y0 = 0);
-	private:
-		void LoadBlocksLayer(int **&l, std::istream &is);	
-		void LoadTilesLayer(int **&l, std::istream &is);		
-		void LoadMapEntity(std::string l);
+		virtual void DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0 = 0, int y0 = 0) = 0;
 };
 
 #endif
