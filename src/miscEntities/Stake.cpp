@@ -1,8 +1,19 @@
 #include "Vampire.h"
 #include "Game.h"
-#include "Enemy.h"
 
 #include "Stake.h"
+
+bool Stake::OnAny(Entity *e)
+{
+	if(e->Is("VAMPIRE"))
+	{
+		Vampire *v = (Vampire *) e;
+		v->OnHit();
+		alive = false;
+		return true;
+	}
+	return false;
+}
 
 Stake::Stake(int _x, int _y, int o)
 {

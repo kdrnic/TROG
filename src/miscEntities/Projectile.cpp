@@ -63,6 +63,11 @@ void Projectile::OnSolid(Entity *e)
 	alive = false;
 }
 
+bool Projectile::OnAny(Entity *e)
+{
+	return false;
+}
+
 void Projectile::OnMapCollision(bool isCollisionAtBirth)
 {
 	if(!isCollisionAtBirth) alive = false;
@@ -70,6 +75,7 @@ void Projectile::OnMapCollision(bool isCollisionAtBirth)
 
 void Projectile::OnCollision(Entity *e)
 {
+	if(OnAny(e)) return;
 	if(e == game.player)
 	{
 		OnPlayer();

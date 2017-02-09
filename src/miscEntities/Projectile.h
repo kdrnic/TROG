@@ -19,6 +19,7 @@ class Projectile : public SpriteEntity
 		virtual void OnPlayer();
 		virtual void OnEnemy(Entity *e);
 		virtual void OnSolid(Entity *e);
+		virtual bool OnAny(Entity *e);
 		virtual void OnMapCollision(bool isCollisionAtBirth);
 		
 		bool birthCollision;
