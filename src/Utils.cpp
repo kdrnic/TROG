@@ -156,7 +156,7 @@ void CustomHash(std::uint8_t *data, std::size_t n, Int64Tuple *st)
 
 static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "abcdefghijklmnopqrstuvwxyz" "0123456789+/";
 
-static inline bool IsBase64(unsigned char c)
+static inline bool is_base64(unsigned char c)
 {
 	return (std::isalnum(c) || (c == '+') || (c == '/'));
 }
