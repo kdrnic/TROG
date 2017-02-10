@@ -280,8 +280,8 @@ void GameManager::Save()
 	gameStream << '\n';
 	hashStream << '\n';
 	
-	std::string temp(hashStream.str());
-	const char *toHash = temp.c_str();
+	std::string sTemp(hashStream.str());
+	const char *toHash = sTemp.c_str();
 	Int64Tuple hash = {0, 0};
 	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
 	gameStream << std::hex << hash.a << '\n' << hash.b;
