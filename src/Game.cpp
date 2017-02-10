@@ -182,7 +182,8 @@ void GameManager::Load()
 		questStates[questStateStrings[i].substr(0, questStateStrings[i].find(":"))] = questStateStrings[i].substr(questStateStrings[i].find(":") + 1).c_str();
 	}
 	
-	const char *toHash = hashStream.str().c_str();
+	std::string temp(hashStream.str());
+	const char *toHash = temp.c_str();
 	Int64Tuple hash = {0, 0};
 	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
 	std::stringstream hexStream;
