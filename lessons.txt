@@ -17,3 +17,4 @@ Lessons from TROG:
 -Embedding Lua or Js (Duktape) can be useful for quests/NPCs/etc.
 -Push back on damage should be a continuous motion rather than instant snap
 -Sounds don't need to be the last thing added
+-Have multiple bounding boxes, at least separate movement collision from hit detection
