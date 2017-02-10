@@ -30,5 +30,8 @@ int MCM(int a, int b);
 void SmoothScale(BITMAP *source, BITMAP *dest);
 void DrawParallax(BITMAP *bmp, BITMAP *bg, int sx, int sy);
 void CustomHash(std::uint8_t *data, std::size_t n, Int64Tuple *st);
+std::string Base64Encode(unsigned char const* bytes_to_encode, unsigned int in_len);
+std::string Base64Decode(std::string const& encodedString);
+std::string RemoveWhitespace(std::string in);
 
 #endif
