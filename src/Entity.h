@@ -8,6 +8,8 @@
 class Entity
 {
 	public:
+		unsigned int mapId;
+		
 		bool ignorePos;
 		bool pushBack;
 		bool alive, persistent;

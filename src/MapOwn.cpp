@@ -18,6 +18,7 @@ void MapOwn::Load(std::istream &is)
 		LoadTilesLayer(tiles[i], is);
 	}
 	for(int i = 0; i < 4; i++) getline(is, exits[i]);
+	entityId = 0;
 	while(!is.eof())
 	{
 		std::string e;
@@ -84,6 +85,7 @@ void MapOwn::LoadMapEntity(std::string l)
 {
 	std::vector<std::string> lv  = StringToStrings(l);
 	MapEntity me;
+	me.id = entityId++;
 	me.respawnTime = std::atoi(lv[0].c_str());
 	me.name = lv[1];
 	for(int i = 2; i < lv.size(); i++)

@@ -22,6 +22,8 @@ class MapOwn : public Map
 		void LoadBlocksLayer(int **&l, std::istream &is);	
 		void LoadTilesLayer(int **&l, std::istream &is);		
 		void LoadMapEntity(std::string l);
+		
+		unsigned int entityId;
 };
 
 #endif

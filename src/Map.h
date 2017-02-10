@@ -12,6 +12,7 @@ class Map
 	public:
 		struct MapEntity
 		{
+			unsigned int id;
 			int respawnTime;
 			std::string name;
 			std::vector<std::pair<std::string, std::string> > parameters;

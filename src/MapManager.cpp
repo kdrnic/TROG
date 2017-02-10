@@ -111,6 +111,7 @@ void MapManager::SpawnEntities()
 		{
 			Entity *e = game.entitiesFactory.Create(i->name);
 			for(int j = 0; j < i->parameters.size(); j++) e->SetParameter(i->parameters[j].first, i->parameters[j].second);
+			e->mapId = i->id;
 			game.entitiesManager.Add(e);
 		}
 	}
