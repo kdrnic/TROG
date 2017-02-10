@@ -239,3 +239,13 @@ std::string Base64Decode(std::string const& encodedString)
 	
 	return ret;
 }
+
+std::string RemoveWhitespace(std::string in)
+{
+	std::string s;
+	for(int i = 0; i < in.size(); i++)
+	{
+		if(!isspace(in[i])) s += in[i];
+	}
+	return s;
+}
