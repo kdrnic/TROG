@@ -19,7 +19,6 @@ class Map
 		
 		static const int inverseSpeed = 5;
 		
-		int ***tiles;
 		int **blocks;
 		int numberOfLayers;
 		std::string exits[4];

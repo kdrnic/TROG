@@ -12,6 +12,8 @@
 class MapOwn : public Map
 {
 	public:
+		int ***tiles;
+		
 		void Load(std::istream &is);		
 		void Load(std::string fileName);
 		
