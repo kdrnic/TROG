@@ -191,13 +191,26 @@ void GameManager::Load()
 	getline(hexStream, strA);
 	getline(hexStream, strB);
 	
-	getline(gameStream, _line);
-	if(_line != strA)
+	if(file >= 0)
 	{
-	}
-	getline(gameStream, _line);
-	if(_line != strB)
-	{
+		getline(gameStream, _line);
+		if(gameStream.eof())
+		{
+			std::cerr << "WARNING: save file missing validation\n";
+		}
+		if(_line != strA)
+		{
+			std::cerr << "WARNING: save file has been tampered\n";
+			std::cerr << "hash.a\t\t\t: " << strA.c_str() << "\n";
+			std::cerr << "read\t\t\t: " << _line.c_str() << "\n";
+		}
+		getline(gameStream, _line);
+		if(_line != strB)
+		{
+			std::cerr << "WARNING: save file has been tampered\n";
+			std::cerr << "hash.a\t\t\t: " << strB.c_str() << "\n";
+			std::cerr << "read\t\t\t: " << _line.c_str() << "\n";
+		}
 	}
 	
 	gameStream.close();
