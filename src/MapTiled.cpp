@@ -58,6 +58,26 @@ void MapTiled::Load(std::istream &is)
 	if(a_tilewidth.as_int() != 15) ERROR("Invalid tile width");
 	if(a_tileheight.as_int() != 15) ERROR("Invalid tile height");
 	
+	if(n_map.child("properties"))
+	{
+		xml_node n_properties = n_map.child("properties");
+		if(n_properties)
+		{
+			for(xml_node n_property = n_properties.child("property"); n_property; n_property = n_property.next_sibling("property"))
+			{
+				std::string s_name(n_property.attribute("name").value());
+				std::string s_value(n_property.attribute("value").value());
+				if(s_name == "name") name = s_value;
+				else if(s_name == "west") exits[2] = s_value;
+				else if(s_name == "east") exits[3] = s_value;
+				else if(s_name == "north") exits[0] = s_value;
+				else if(s_name == "south") exits[1] = s_value;
+				else WARN("Unknown map property");
+			}
+		}
+	}
+	else ERROR("Map properties not found");
+	
 	std::vector<xml_node> n_tilesets;
 	for(xml_node n = n_map.child("tileset"); n; n = n.next_sibling("tileset")) n_tilesets.push_back(n);
 	numberOfTilesets = n_tilesets.size();
