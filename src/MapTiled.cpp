@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
+#include <utility>
 
 #include "libs\pugixml.hpp"
 
@@ -165,10 +167,8 @@ void MapTiled::Load(std::istream &is)
 	{
 		if((&tilesets[i]) == tilesetBlocks)
 		{
-			Tileset temp;
-			std::memcpy((void *) &temp, (void *) &tilesets[i], sizeof(Tileset));
-			std::memcpy((void *) &tilesets[i], (void *) &tilesets[numberOfTilesets - 1], sizeof(Tileset));
-			std::memcpy((void *) &tilesets[numberOfTilesets - 1], (void *) &temp, sizeof(Tileset));
+			std::swap(tilesets[i], tilesets[numberOfTilesets - 1]);
+			
 			tilesetBlocks = &tilesets[numberOfTilesets - 1];
 			numberOfTilesets--;
 			break;
