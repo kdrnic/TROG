@@ -73,13 +73,13 @@ bool Entity::IsBlockSolid(int b)
 
 bool Entity::MapCollision()
 {
-	for(int bx = x / blockWidth; (bx * blockWidth) < x + width - 1; bx++)
+	for(int bx = x / blockWidth; (bx * blockWidth) <= x + width - 1; bx++)
 	{
-		for(int by = y / blockHeight; (by * blockHeight) < y + height - 1; by++)
+		for(int by = y / blockHeight; (by * blockHeight) <= y + height - 1; by++)
 		{
 			if(by < 0) continue;
 			if(IsBlockSolid(game.mapManager.BlockTypeAt(bx, by))) return true;
-			if(by == 28) break;
+			if(by == 27) break;
 		}
 		if(bx == 41) break;
 	}
