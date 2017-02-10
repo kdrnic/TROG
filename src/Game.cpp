@@ -704,7 +704,7 @@ void GameManager::Draw()
 		textprintf_ex(doubleBuffer, dialogFont, 320 - (dialogBox->w / 2) + 5, 430 + ((45 - dialogBox->h) / 2) + 5, 0, -1, "%s", linesToDraw[0].c_str());
 		textprintf_ex(doubleBuffer, dialogFont, 320 - (dialogBox->w / 2) + 5, 430 + ((45 - dialogBox->h) / 2) + 5 + 14, 0, -1, "%s", linesToDraw[1].c_str());
 	}
-	textprintf_ex(doubleBuffer, font, 0, 0, 0xFFFFFF, 0, "FPS:%d gameState:%d file: %d", fps, gameState, file);
+	textprintf_ex(doubleBuffer, font, 0, 0, 0xFFFFFF, 0, "FPS:%d gameState:%d file: %d currentMapName: %s Entity count: %d", fps, gameState, file, mapManager.currentMapName.c_str(), entitiesManager.Count());
 	draw_sprite(screen, doubleBuffer, 0, 0);
 }
 
