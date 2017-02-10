@@ -25,8 +25,8 @@ int TilesetCompare(const void *a, const void *b)
 void MapTiled::Load(std::istream &is)
 {
 	static std::map<std::string, BITMAP *> loadedTilesetImages;
-	#define ERROR(e) std::cerr << __LINE__ << "\tERROR:\t\t" << (e) << "\n"; failure = true; return;
-	#define WARN(e) std::cerr << __LINE__ << "\tWARNING:\t\t" << (e) << "\n"; warn = true;
+	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << (e) << "\n"; failure = true; return; }
+	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
 	xml_document doc;
 	if(!doc.load(is)) ERROR("XML not parsed")
 	
@@ -51,7 +51,7 @@ void MapTiled::Load(std::istream &is)
 	
 	if(std::string(a_version.value()) != "1.0") WARN("Version not 1.0");
 	if(std::string(a_orientation.value()) != "orthogonal") WARN("Orientation not orthogonal");
-	if(std::string(a_orientation.value()) != "right-down") WARN("Render order not right-down");
+	if(std::string(a_renderorder.value()) != "right-down") WARN("Render order not right-down");
 	
 	if(a_width.as_int() != 42) ERROR("Invalid width");
 	if(a_height.as_int() != 28) ERROR("Invalid height");
@@ -114,9 +114,9 @@ void MapTiled::Load(std::istream &is)
 		if(!(n_image = n_tileset.child("image"))) ERROR("Tileset without image");
 		
 		xml_attribute a_imgSource, a_imgWidth, a_imgHeight;
-		if(!(a_imgSource = n_tileset.attribute("source"))) ERROR("Image without source");
-		if(!(a_imgWidth = n_tileset.attribute("width"))) WARN("Image without width");
-		if(!(a_imgHeight = n_tileset.attribute("height"))) WARN("Image without height");
+		if(!(a_imgSource = n_image.attribute("source"))) ERROR("Image without source");
+		if(!(a_imgWidth = n_image.attribute("width"))) WARN("Image without width");
+		if(!(a_imgHeight = n_image.attribute("height"))) WARN("Image without height");
 		
 		tileset->imageSource = a_imgSource.value();
 		tileset->imageWidth = a_imgWidth.as_int();
@@ -185,43 +185,52 @@ void MapTiled::Load(std::istream &is)
 		{
 			n_blocksLayer = n;
 		}
-		n_layers.push_back(n);
+		else n_layers.push_back(n);
 	}
 	numberOfLayers = n_layers.size();
 	if(numberOfLayers <= 0) ERROR("No layers");
 	layers = new unsigned int *[numberOfLayers];
 	
-	unsigned int *blocksLayer;
+	unsigned int *blocksLayer = 0;
 	
 	for(int i = 0; i < numberOfLayers + 1; i++)
 	{
 		unsigned int *layer;
+		xml_node n_data;
 		if(i < numberOfLayers)
 		{
 			layers[i] = new unsigned int[42 * 28];
 			layer = layers[i];
+			n_data = n_layers[i].child("data");
 		}
 		else
 		{
+			if(!n_blocksLayer) break;
 			blocksLayer = new unsigned int[42 * 28];
 			layer = blocksLayer;
+			n_data = n_blocksLayer.child("data");
 		}
 		
-		xml_node n_data = n_layers[i].child("data");
+		if(!n_data) ERROR("Layer data not found");
+		
 		xml_attribute a_encoding = n_data.attribute("encoding"), a_compression = n_data.attribute("compression");
 		if(!a_encoding) ERROR("Invalid enconding (none)");
 		if(std::string(a_encoding.value()) != "base64") ERROR("Invalid encoding");
 		if(a_compression) ERROR("Data compression unsupported");
 		
-		std::string data1 = n_data.value();
+		std::string data1 = n_data.child_value();
 		std::string data2 = RemoveWhitespace(data1);
 		std::string data3 = Base64Decode(data2);
 		
-		std::memcpy(layers[i], data3.data(), data3.size());
+		std::memcpy(layer, data3.data(), data3.size());
 	}
 	
 	blocks = new int *[42];
-	for(int i = 0; i < 42; i++) blocks[i] = new int[28];
+	for(int i = 0; i < 42; i++)
+	{
+		blocks[i] = new int[28];
+		std::memset(blocks[i], 0, sizeof(blocks[0][0]) * 28);
+	}
 	
 	for(int x = 0; x < 42; x++)
 	{
@@ -233,7 +242,8 @@ void MapTiled::Load(std::istream &is)
 			{
 				unsigned int *layer;
 				if(i < numberOfLayers) layer = layers[i];
-				else layer = blocksLayer;
+				else if(blocksLayer) layer = blocksLayer;
+				else break;
 				
 				int tile = layer[x + y * 42];
 				if(tileBits.find(tile) != tileBits.end()) block |= tileBits[tile];
@@ -249,6 +259,7 @@ void MapTiled::Load(std::istream &is)
 		for(xml_node n_object = n_objects.child("object"); n_object; n_object = n_object.next_sibling("object"))
 		{
 			MapEntity entity;
+			entity.respawnTime = 0;
 			
 			xml_attribute a_name = n_object.attribute("name");
 			if(!a_name) ERROR("Entity lacks name");
@@ -287,6 +298,8 @@ void MapTiled::Load(std::istream &is)
 	
 	#undef ERROR
 	#undef WARN
+	
+	timeLastVisited = 0;
 }
 
 void MapTiled::Load(std::string fileName)
@@ -299,7 +312,8 @@ void MapTiled::Load(std::string fileName)
 	mapFile.close();
 	if(failure || warn)
 	{
-		std::cerr << "Failure loading " << fileName.c_str() << "\n";
+		if(failure) std::cerr << "Failure loading " << fileName.c_str() << "\n";
+		else std::cerr << "Warnings concerning " << fileName.c_str() << "\n";
 	}
 }
 
@@ -311,14 +325,21 @@ void MapTiled::DrawLayer(BITMAP *bmp, BITMAP **unused, int layer, int row0, int 
 		{
 			int tile = layers[layer][x + y * 42];
 			if(!tile) continue;
-			int tilesetIndex;
-			for(tilesetIndex = 0; (tilesetIndex < numberOfTilesets) && (tilesets[tilesetIndex].firstgid < tile); tilesets++) continue;
-			tilesetIndex--;
-			int _tile = tile - tilesets[tilesetIndex].firstgid;
-			int sourceX = _tile * 15;
-			int sourceY = (sourceX / tilesets[tilesetIndex].imageWidth) * 15;
-			sourceX -= sourceX % tilesets[tilesetIndex].imageWidth;
-			masked_blit(tilesets[tilesetIndex].image, bmp, sourceX, sourceY, x0 + x * 15, y0 + y * 15, 15, 15);
+			int tilesetIndex = 0;
+			for(int i = 0; i < numberOfTilesets; i++) if(tilesets[i].firstgid < tile) tilesetIndex = i;
+			const Tileset *tileset = &tilesets[tilesetIndex];
+			
+			const int _tile = tile - tileset->firstgid;
+			const int rows = tileset->imageWidth / 15;
+			const int cols = tileset->imageHeight / 15;
+			const int tileC = _tile % rows;
+			const int tileR = (_tile - tileC) / rows;
+			
+			const int sourceX = tileC * 15;
+			const int sourceY = tileR * 15;
+			BITMAP *t_img = tileset->image;
+			
+			masked_blit(t_img, bmp, sourceX, sourceY, x0 + x * 15, y0 + y * 15, 15, 15);
 		}
 	}
 }
