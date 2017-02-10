@@ -32,6 +32,8 @@ class MapTiled : public Map
 	private:
 		bool failure;
 		bool warn;
+		
+		unsigned int **layers;
 };
 
 #endif

@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
 #include "libs\pugixml.hpp"
 
@@ -11,11 +13,20 @@
 
 using namespace pugi;
 
+int TilesetCompare(const void *a, const void *b)
+{
+	const MapTiled::Tileset *ta = (MapTiled::Tileset *) a;
+	const MapTiled::Tileset *tb = (MapTiled::Tileset *) b;
+	if(ta->firstgid < tb->firstgid) return -1;
+	if(ta->firstgid > tb->firstgid) return 1;
+	return 0;
+}
+
 void MapTiled::Load(std::istream &is)
 {
 	static std::map<std::string, BITMAP *> loadedTilesetImages;
-	#define ERROR(e) std::cerr << "Error :" << (e) << "\n"; failure = true; return;
-	#define WARN(e) std::cerr << "Warning: " << (e) << "\n"; warn = true;
+	#define ERROR(e) std::cerr << __LINE__ << "\tERROR:\t\t" << (e) << "\n"; failure = true; return;
+	#define WARN(e) std::cerr << __LINE__ << "\tWARNING:\t\t" << (e) << "\n"; warn = true;
 	xml_document doc;
 	if(!doc.load(is)) ERROR("XML not parsed")
 	
@@ -42,16 +53,20 @@ void MapTiled::Load(std::istream &is)
 	if(std::string(a_orientation.value()) != "orthogonal") WARN("Orientation not orthogonal");
 	if(std::string(a_orientation.value()) != "right-down") WARN("Render order not right-down");
 	
-	if(a_width.as_int() != 21) ERROR("Invalid width");
-	if(a_height.as_int() != 14) ERROR("Invalid height");
-	if(a_tilewidth.as_int() != 30) ERROR("Invalid tile width");
-	if(a_tileheight.as_int() != 30) ERROR("Invalid tile height");
+	if(a_width.as_int() != 42) ERROR("Invalid width");
+	if(a_height.as_int() != 28) ERROR("Invalid height");
+	if(a_tilewidth.as_int() != 15) ERROR("Invalid tile width");
+	if(a_tileheight.as_int() != 15) ERROR("Invalid tile height");
 	
 	std::vector<xml_node> n_tilesets;
 	for(xml_node n = n_map.child("tileset"); n; n = n.next_sibling("tileset")) n_tilesets.push_back(n);
 	numberOfTilesets = n_tilesets.size();
 	if(numberOfTilesets <= 0) ERROR("No tilesets");
 	tilesets = new Tileset[numberOfTilesets];
+	
+	std::map <int, int> tileBits;
+	
+	Tileset *tilesetBlocks = 0;
 	
 	for(int i = 0; i < n_tilesets.size(); i++)
 	{
@@ -64,7 +79,13 @@ void MapTiled::Load(std::istream &is)
 		if(!(a_tilewidth = n_tileset.attribute("tilewidth"))) WARN("Tileset without tilewidth");
 		if(!(a_tileheight = n_tileset.attribute("tileheight"))) WARN("Tileset without tileheight");
 		
-		if((a_tilewidth.as_int() != 30) || (a_tileheight.as_int() != 30)) ERROR("Invalid tileset tile size");
+		if((a_tilewidth.as_int() != 15) || (a_tileheight.as_int() != 15)) ERROR("Invalid tileset tile size");
+		
+		if(std::string(a_name.value()) == "blocks")
+		{
+			if(tilesetBlocks) ERROR("More than one blocks tileset found");
+			tilesetBlocks = tileset;
+		}
 		
 		tileset->firstgid = a_firstgid.as_int();
 		tileset->name = a_name.value();
@@ -81,16 +102,168 @@ void MapTiled::Load(std::istream &is)
 		tileset->imageWidth = a_imgWidth.as_int();
 		tileset->imageHeight = a_imgHeight.as_int();
 		
-		std::string imgSourceNoPath = tileset->imageSource.substr(tileset->imageSource.find_last_of("/") + 1);
-		std::string imgSourceNoPathNoExtension = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
-		if(!(tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoPathNoExtension).c_str())))
+		if(!tilesetBlocks)
 		{
-			WARN("Tileset image not in data file");
-			if(loadedTilesetImages.find(imgSourceNoPathNoExtension) == loadedTilesetImages.end()) loadedTilesetImages[imgSourceNoPathNoExtension] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
-			if(!loadedTilesetImages[imgSourceNoPathNoExtension]) ERROR("Tileset image not loaded");
-			tileset->image = loadedTilesetImages[imgSourceNoPathNoExtension];
+			std::string imgSourceNoPath = tileset->imageSource.substr(tileset->imageSource.find_last_of("/") + 1);
+			std::string imgSourceNoPathNoExtension = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
+			if(!(tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoPathNoExtension).c_str())))
+			{
+				WARN("Tileset image not in data file");
+				if(loadedTilesetImages.find(imgSourceNoPathNoExtension) == loadedTilesetImages.end()) loadedTilesetImages[imgSourceNoPathNoExtension] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
+				if(!loadedTilesetImages[imgSourceNoPathNoExtension]) ERROR("Tileset image not loaded");
+				tileset->image = loadedTilesetImages[imgSourceNoPathNoExtension];
+			}
+		}
+		
+		std::vector <xml_node> n_tiles;
+		for(xml_node n = n_tileset.child("tile"); n; n = n.next_sibling("tile"))
+		{
+			n_tiles.push_back(n);
+		}
+		for(int j = 0; j < n_tiles.size(); j++)
+		{
+			xml_node n_tile = n_tiles[j];
+			int id = n_tile.attribute("id").as_int();
+			id += tileset->firstgid;
+			xml_node n_properties = n_tile.child("properties");
+			if(!n_properties) WARN("Tile defined but no properties");
+			for(xml_node n_property = n_properties.child("property"); n_property; n_property = n_property.next_sibling("property"))
+			{
+				std::string name(n_property.attribute("name").value());
+				if(name == "bits")
+				{
+					int bits;
+					if(std::sscanf(n_property.attribute("value").value(), "%i", &bits) != 1) WARN("Failure reading bits");
+					tileBits[id] = bits;
+				}
+				else WARN("Unknown property");
+			}
 		}
 	}
+	
+	for(int i = 0; i < numberOfTilesets - 1; i++)
+	{
+		if((&tilesets[i]) == tilesetBlocks)
+		{
+			Tileset temp;
+			std::memcpy((void *) &temp, (void *) &tilesets[i], sizeof(Tileset));
+			std::memcpy((void *) &tilesets[i], (void *) &tilesets[numberOfTilesets - 1], sizeof(Tileset));
+			std::memcpy((void *) &tilesets[numberOfTilesets - 1], (void *) &temp, sizeof(Tileset));
+			tilesetBlocks = &tilesets[numberOfTilesets - 1];
+			numberOfTilesets--;
+			break;
+		}
+	}
+	
+	std::qsort((void *) tilesets, numberOfTilesets, sizeof(Tileset), TilesetCompare);
+	
+	std::vector<xml_node> n_layers;
+	xml_node n_blocksLayer;
+	for(xml_node n = n_map.child("layer"); n; n = n.next_sibling("layer"))
+	{
+		if(std::string(n.attribute("name").value()) == "blocks")
+		{
+			n_blocksLayer = n;
+		}
+		n_layers.push_back(n);
+	}
+	numberOfLayers = n_layers.size();
+	if(numberOfLayers <= 0) ERROR("No layers");
+	layers = new unsigned int *[numberOfLayers];
+	
+	unsigned int *blocksLayer;
+	
+	for(int i = 0; i < numberOfLayers + 1; i++)
+	{
+		unsigned int *layer;
+		if(i < numberOfLayers)
+		{
+			layers[i] = new unsigned int[42 * 28];
+			layer = layers[i];
+		}
+		else
+		{
+			blocksLayer = new unsigned int[42 * 28];
+			layer = blocksLayer;
+		}
+		
+		xml_node n_data = n_layers[i].child("data");
+		xml_attribute a_encoding = n_data.attribute("encoding"), a_compression = n_data.attribute("compression");
+		if(!a_encoding) ERROR("Invalid enconding (none)");
+		if(std::string(a_encoding.value()) != "base64") ERROR("Invalid encoding");
+		if(a_compression) ERROR("Data compression unsupported");
+		
+		std::string data1 = n_data.value();
+		std::string data2 = RemoveWhitespace(data1);
+		std::string data3 = Base64Decode(data2);
+		
+		std::memcpy(layers[i], data3.data(), data3.size());
+	}
+	
+	blocks = new int *[42];
+	for(int i = 0; i < 42; i++) blocks[i] = new int[28];
+	
+	for(int x = 0; x < 42; x++)
+	{
+		for(int y = 0; y < 28; y++)
+		{
+			int block = 0;
+			
+			for(int i = 0; i < numberOfLayers + 1; i++)
+			{
+				unsigned int *layer;
+				if(i < numberOfLayers) layer = layers[i];
+				else layer = blocksLayer;
+				
+				int tile = layer[x + y * 42];
+				if(tileBits.find(tile) != tileBits.end()) block |= tileBits[tile];
+			}
+			
+			blocks[x][y] = block;
+		}
+	}
+	
+	xml_node n_objects = n_map.child("objectgroup");
+	if(n_objects)
+	{
+		for(xml_node n_object = n_objects.child("object"); n_object; n_object = n_object.next_sibling("object"))
+		{
+			MapEntity entity;
+			
+			xml_attribute a_name = n_object.attribute("name");
+			if(!a_name) ERROR("Entity lacks name");
+			entity.name = a_name.value();
+			if(entity.name == "") ERROR("Entity name empty");
+			
+			entity.id = n_object.attribute("id").as_int();
+			
+			std::pair<std::string, std::string> parameter;
+			
+			parameter.first = "x";
+			parameter.second = n_object.attribute("x").value();
+			entity.parameters.push_back(parameter);
+			
+			parameter.first = "y";
+			parameter.second = n_object.attribute("y").value();
+			entity.parameters.push_back(parameter);
+			
+			xml_node n_properties = n_object.child("properties");
+			if(n_properties)
+			{
+				for(xml_node n_property = n_properties.child("property"); n_property; n_property = n_property.next_sibling("property"))
+				{
+					parameter.first = n_property.attribute("name").value();
+					parameter.second = n_property.attribute("value").value();
+					entity.parameters.push_back(parameter);
+				}
+			}
+			
+			entities.push_back(entity);
+		}
+	}
+	else WARN("No objects group found");
+	
+	delete [] blocksLayer;
 	
 	#undef ERROR
 	#undef WARN
@@ -110,13 +283,22 @@ void MapTiled::Load(std::string fileName)
 	}
 }
 
-void MapTiled::DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0, int y0)
+void MapTiled::DrawLayer(BITMAP *bmp, BITMAP **unused, int layer, int row0, int rows, int x0, int y0)
 {
-	for(int y = row0; y < row0 + rows; y++)
+	for(int y = row0 * 2; y < (row0 + rows) * 2; y++)
 	{
-		for(int x = 0; x < 21; x++)
+		for(int x = 0; x < 42; x++)
 		{
-			//masked_blit(tileSet[tiles[layer][x][y]], bmp, ((game.frame / inverseSpeed) % (tileSet[tiles[2][x][y]]->w / 30)) * 30, 0, x0 + x * 30, y0 + y * 30, 30, 30);
+			int tile = layers[layer][x + y * 42];
+			if(!tile) continue;
+			int tilesetIndex;
+			for(tilesetIndex = 0; (tilesetIndex < numberOfTilesets) && (tilesets[tilesetIndex].firstgid < tile); tilesets++) continue;
+			tilesetIndex--;
+			int _tile = tile - tilesets[tilesetIndex].firstgid;
+			int sourceX = _tile * 15;
+			int sourceY = (sourceX / tilesets[tilesetIndex].imageWidth) * 15;
+			sourceX -= sourceX % tilesets[tilesetIndex].imageWidth;
+			masked_blit(tilesets[tilesetIndex].image, bmp, sourceX, sourceY, x0 + x * 15, y0 + y * 15, 15, 15);
 		}
 	}
 }
