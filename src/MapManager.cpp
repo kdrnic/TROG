@@ -110,7 +110,10 @@ void MapManager::SpawnEntities()
 		if(game.frame - currentMap->timeLastVisited >= i->respawnTime)
 		{
 			Entity *e = game.entitiesFactory.Create(i->name);
-			for(int j = 0; j < i->parameters.size(); j++) e->SetParameter(i->parameters[j].first, i->parameters[j].second);
+			for(int j = 0; j < i->parameters.size(); j++)
+			{	
+				e->SetParameter(i->parameters[j].first, i->parameters[j].second);
+			}
 			e->mapId = i->id;
 			game.entitiesManager.Add(e);
 		}
@@ -120,6 +123,11 @@ void MapManager::SpawnEntities()
 
 void MapManager::SetMap(std::string n)
 {
+	if(maps.find(n) == maps.end())
+	{
+		std::cerr << "Map not found";
+		return;
+	}
 	currentMap = maps[n];
 	currentMapName = n;
 }
