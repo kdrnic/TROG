@@ -133,7 +133,7 @@ void Vampire::Update()
 			{
 				Entity *bat = new Bat(x + width / 2, y + height / 2);
 				game.entitiesManager.Add(bat);
-				play_sample((SAMPLE *) game.GetData("snd_bat"), 255, 0, 1000, false);
+				PlaySample((SAMPLE *) game.GetData("snd_bat"), 255);
 				batCounter = 0;
 			}
 		}

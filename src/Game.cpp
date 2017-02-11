@@ -517,7 +517,7 @@ void GameManager::Update()
 				{
 					if(std::isalnum(currentDialogLines[currentDialogLine][dialogProgress]) != 0)
 					{
-						if(dialogProgress % 3 == 0) play_sample(blip, 128, 0, 1000, false);
+						if(dialogProgress % 3 == 0) player->PlaySample(blip, 128);
 					}
 				}
 				dialogProgress++;

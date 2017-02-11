@@ -28,6 +28,8 @@ class Entity
 		
 		bool WithinDistanceTo(Entity *other, float distance);
 		
+		int PlaySample(const SAMPLE *spl, int vol = 255, int freq = 1000);
+		
 		Entity();
 	protected:
 		virtual bool IsEntitySolid(Entity *e);

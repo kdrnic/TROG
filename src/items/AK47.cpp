@@ -17,14 +17,14 @@ void AK47::OnUse()
 		if(shotsCounter >= 30)
 		{
 			shotsCounter = 0;
-			voiceId = play_sample((SAMPLE *) game.GetData("snd_akReload"), 255, 0, 1000, false);
+			voiceId = game.player->PlaySample((SAMPLE *) game.GetData("snd_akReload"), 255);
 		}
 		else
 		{
 			if((voiceId < 0) || (voice_check(voiceId) != game.GetData("snd_akReload")))
 			{
 				game.entitiesManager.Add(new AKBullet(game.player->orientation));
-				play_sample((SAMPLE *) game.GetData("snd_akShot"), 255, 0, 950 + rand() % 100, false);
+				game.player->PlaySample((SAMPLE *) game.GetData("snd_akShot"), 255, 950 + rand() % 100);
 				shotsCounter++;
 			}
 		}

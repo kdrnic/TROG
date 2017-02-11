@@ -68,7 +68,7 @@ void Archer::Update()
 			game.entitiesManager.Add(arrow);
 			arrow = new Arrow(x + width / 2, y + height / 2, LineAngle(x + width / 2, y + height / 2, game.player->x + game.player->width / 2, game.player->y + game.player->height / 2) + M_PI * 0.125);
 			game.entitiesManager.Add(arrow);
-			play_sample(arrowSounds[rand() % 3], 255, 0, 1000, false);
+			PlaySample(arrowSounds[rand() % 3]);
 		}
 	}
 	if(frame == 6)

@@ -12,7 +12,7 @@ void Poof::Update()
 	}
 	if(!soundPlayed)
 	{
-		play_sample((SAMPLE *) game.GetData("snd_poof"), 128, 0, 1000, false);
+		PlaySample((SAMPLE *) game.GetData("snd_poof"), 128);
 		soundPlayed = true;
 	}
 }

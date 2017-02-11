@@ -33,7 +33,7 @@ void Enemy::Die()
 	if(dyingSound == 0) poof = new Poof(x + width / 2, y + height / 2);
 	else
 	{
-		play_sample(dyingSound, 255, 0, 1000, false);
+		PlaySample(dyingSound);
 		poof = new Poof(x + width / 2, y + height / 2, 0, true);	// Silent poof
 	}
 	game.entitiesManager.Add(poof);
@@ -46,7 +46,7 @@ void Enemy::OnHit(int damage)
 	else
 	{
 		SAMPLE *hurtSound = GetHurtSound();
-		if(hurtSound != 0) play_sample(hurtSound, 255, 0, 1000, false);
+		if(hurtSound != 0) PlaySample(hurtSound);
 	}
 }
 

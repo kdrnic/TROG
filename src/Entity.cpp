@@ -310,3 +310,11 @@ bool Entity::WithinDistanceTo(Entity *other, float distance)
 	if(dx * dx + dy * dy  < distance * distance) return true;
 	return false;
 }
+
+int Entity::PlaySample(const SAMPLE *spl, int vol, int freq)
+{
+	int pan = ((x + (width * 0.5f)) / 630.0f) * 255.0f;
+	if(pan < 0) pan = 0;
+	if(pan > 255) pan = 255;
+	return play_sample(spl, vol, pan, freq, 0);
+}

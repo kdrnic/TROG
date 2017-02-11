@@ -26,7 +26,7 @@ void Trap::OnTrigger(int t)
 	{
 		Entity *stake = new Stake(x, y, stakeO);
 		game.entitiesManager.Add(stake);
-		play_sample(sounds[rand() % 3], 255, 0, 1000, false);
+		PlaySample(sounds[rand() % 3], 255);
 	}
 }
 
