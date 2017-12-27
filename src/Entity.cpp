@@ -53,6 +53,12 @@ bool Entity::Collision(int _x, int _y, int _w, int _h)
 	return true;
 }
 
+void Entity::GetCenter(float &_x, float &_y)
+{
+	_x = x + width * 0.5;
+	_y = y + height * 0.5;
+}
+
 Entity::Entity()
 {
 	ignorePos = false;

@@ -11,7 +11,10 @@
 bool Enemy::Is(std::string what)
 {
 	if(what == "ENEMY") return true;
-	if(what == "SOLID") return true;
+	if(what == "SOLID")
+	{
+		return true;
+	}
 	return false;
 }
 

@@ -30,6 +30,8 @@ class Entity
 		
 		int PlaySample(const SAMPLE *spl, int vol = 255, int freq = 1000);
 		
+		void GetCenter(float &x, float &y);
+		
 		Entity();
 	protected:
 		virtual bool IsEntitySolid(Entity *e);

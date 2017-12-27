@@ -23,6 +23,8 @@
 #include "Button.h"
 #include "Statue.h"
 #include "Chest.h"
+#include "Devil.h"
+#include "Gargoyle.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -399,6 +401,8 @@ void GameManager::RegisterEntities()
 	REGISTER_ENTITY(Button)
 	REGISTER_ENTITY(Statue)
 	REGISTER_ENTITY(Chest)
+	REGISTER_ENTITY(Devil)
+	REGISTER_ENTITY(Gargoyle)
 	#undef REGISTER_ENTITY
 }
 
