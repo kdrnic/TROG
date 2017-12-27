@@ -3,6 +3,8 @@
 
 #include "Chest.h"
 
+#include "LimitedAmountItem.h"
+
 #include <cstdlib>
 
 void Chest::SetParameter(std::string p, std::string v)
@@ -25,7 +27,7 @@ void Chest::OnCreate()
 	if(game.GetQuestState(std::string("chest") + std::string(Itoa(uid))) == "open")
 	{
 		isOpen = true;
-		frameStart = frameEnd = 1;
+		orientation = 1;
 	}
 }
 
@@ -33,12 +35,22 @@ void Chest::Interact()
 {
 	if(isOpen) return;
 	
-	Item *newItem = itemsFactory.Create(items[i].substr(0, item.find(":")));
-	newItem->SetAmount(std::atoi(items[i].substr(item.find(":") + 1).c_str()));
-	inventoryManager.Add(newItem);
+	if(game.inventoryManager.Find(item.substr(0, item.find(":"))) != 0)
+	{
+		if(item.substr(item.find(":") + 1) != "0")
+		{
+			((LimitedAmountItem *) game.inventoryManager.Find(item.substr(0, item.find(":"))))->AddAmount(std::atoi(item.substr(item.find(":") + 1).c_str()));
+		}
+	}
+	else
+	{
+		Item *newItem = game.itemsFactory.Create(item.substr(0, item.find(":")));
+		newItem->SetAmount(std::atoi(item.substr(item.find(":") + 1).c_str()));
+		game.inventoryManager.Add(newItem);
+	}
 	
 	isOpen = true;
-	frameStart = frameEnd = 1;
+	orientation = 1;
 	
 	game.SetQuestState(std::string("chest") + std::string(Itoa(uid)), "open");
 }
