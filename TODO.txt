@@ -1,0 +1,9 @@
+finish Tiled support						OK
+find out why Vampire doesn't get hit/hurt/killed		OK
+fix random freeze
+add tampered game devil
+add main menu
+add new game +
+find out why release crashes					OK
+make sounds stereo						OK
+add antitampering for maps (use Allegro packfile stuff)		
