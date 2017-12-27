@@ -470,7 +470,7 @@ void GameManager::Update()
 				ToGrayscale(transitionBitmap);
 				continuePlaying = true;
 			}
-			if(key[KEY_ESC])
+			if(trogStartKey)
 			{
 				gameState = GameStateQuit;
 				pauseFading = 0;
@@ -553,6 +553,7 @@ void GameManager::Update()
 			break;
 	}
 	UpdateKeys();
+	//std::cout << "A " << aKey << " S " << sKey << " X " << xKey << " C " << cKey << " l " << leftKey << " r " << rightKey << " u " << upKey << " d " << downKey << "\n";
 	if(f11Key == KeyDown)
 	{
 		std::string fileName = "screenshots/screenshot_frame";

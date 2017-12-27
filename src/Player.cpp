@@ -5,6 +5,11 @@
 
 #include "Player.h"
 
+#define KEYRIGHT ((rightKey == KeyDown) || (rightKey == KeyPressed))
+#define KEYUP ((upKey == KeyDown) || (upKey == KeyPressed))
+#define KEYLEFT ((leftKey == KeyDown) || (leftKey == KeyPressed))
+#define KEYDOWN ((downKey == KeyDown) || (downKey == KeyPressed))
+
 bool Player::Is(std::string what)
 {
 	if(what == "PLAYER") return true;
@@ -88,12 +93,12 @@ void Player::Update()
 		//speedX = speedY = 0;
 		int oldO = orientation;
 
-		if(key[KEY_UP])
+		if(KEYUP)
 		{
 			speedY += -accel;
 			orientation = 0;
 		}
-		else if(key[KEY_DOWN])
+		else if(KEYDOWN)
 		{
 			speedY += accel;
 			orientation = 1;
@@ -111,12 +116,12 @@ void Player::Update()
 				if(speedY < 0) speedY = 0;
 			}
 		}
-		if(key[KEY_LEFT])
+		if(KEYLEFT)
 		{
 			speedX += -accel;
 			orientation = 2;
 		}
-		else if(key[KEY_RIGHT])
+		else if(KEYRIGHT)
 		{
 			speedX += accel;
 			orientation = 3;
@@ -144,23 +149,23 @@ void Player::Update()
 			switch(oldO)
 			{
 				case 0:
-					if(key[KEY_UP]) orientation = 0;
+					if(KEYUP) orientation = 0;
 					break;
 				case 1:
-					if(key[KEY_DOWN]) orientation = 1;
+					if(KEYDOWN) orientation = 1;
 					break;
 				case 2:
-					if(key[KEY_LEFT]) orientation = 2;
+					if(KEYLEFT) orientation = 2;
 					break;
 				case 3:
-					if(key[KEY_RIGHT]) orientation = 3;
+					if(KEYRIGHT) orientation = 3;
 					break;
 			}
 		}
 
 		inverseSpeed = walkAnimSpeed;
 		frameStart = 0;
-		if(key[KEY_UP] || key[KEY_LEFT] || key[KEY_RIGHT] || key[KEY_DOWN])
+		if(KEYUP || KEYLEFT || KEYRIGHT || KEYDOWN)
 		{
 			frameEnd = 3;
 			movedLastFrame = true;

@@ -11,7 +11,11 @@ enum KeyState
 	KeyUp
 };
 
+extern bool trogStartKey;
+
 extern KeyState aKey, sKey, xKey, cKey, f11Key, leftKey, rightKey, upKey, downKey;
+
+void LoadControls(const char *filename);
 
 void UpdateKey(bool key, KeyState &_key);
 void UpdateKeys();
