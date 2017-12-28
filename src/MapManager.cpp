@@ -6,6 +6,7 @@
 #include "MapOwn.h"
 #include "MapTiled.h"
 #include "Game.h"
+#include "Utils.h"
 
 void MapManager::LoadTileSet(std::string fileName)
 {
@@ -59,6 +60,26 @@ void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 			
 			if(al_findnext(&fileInfo2) != 0) break;
 		}
+	}
+	
+	std::string mapDatN;
+	for(int i = 1; game.HasData((mapDatN = std::string("map_") + Itoa(i)).c_str()); i++)
+	{
+		DATAFILE *d = game.GetDataRaw(mapDatN.c_str());
+		std::stringstream ss;
+		char *cstr = new char[d->size + 1];
+		memcpy(cstr, d->dat, d->size);
+		cstr[d->size] = 0;
+		std::string cppStr(cstr);
+		ss.str(cppStr);
+		
+		std::cout << "Map " << i << " loaded\n";
+		
+		MapTiled *m = new MapTiled;
+		m->Load(ss);
+		maps[m->name] = (Map *) m;
+		
+		delete cstr;
 	}
 }
 

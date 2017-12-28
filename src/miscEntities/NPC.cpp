@@ -33,6 +33,11 @@ void NPC::SetParameter(std::string p, std::string v)
 		agitation = std::atoi(v.c_str());
 		return;
 	}
+	if(p == "sprite")
+	{
+		sprite = (BITMAP *) game.GetData(v.c_str());
+		return;
+	}
 	Entity::SetParameter(p, v);
 }
 

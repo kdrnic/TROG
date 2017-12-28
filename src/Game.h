@@ -49,6 +49,8 @@ class GameManager
 		bool tampered;
 
 		void *GetData(const char *name);
+		bool HasData(const char *name);
+		DATAFILE *GetDataRaw(const char *name);
 
 		void Init();
 		void Start(int f);

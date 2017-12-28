@@ -86,6 +86,21 @@ void *GameManager::GetData(const char *name)
 	return (void *) obj->dat;
 }
 
+bool GameManager::HasData(const char *name)
+{
+	DATAFILE *obj = find_datafile_object(data, name);
+	if(obj == 0)
+	{
+		return false;
+	}
+	return true;
+}
+
+DATAFILE *GameManager::GetDataRaw(const char *name)
+{
+	return find_datafile_object(data, name);
+}
+
 void GameManager::Init()
 {
 	data = load_datafile("game.dat");
@@ -558,6 +573,10 @@ void GameManager::Update()
 			if((aKey == KeyDown) || (sKey == KeyDown)) gameState = GameStateFinished;
 			break;
 		case GameStateQuit:
+			if(!pauseFading)
+			{
+				midi_pause();
+			}
 			pauseFading += pauseFadingSpeed;
 			if(pauseFading > 255) pauseFading = 255;
 			if(upKey == KeyDown) continuePlaying = true;
@@ -569,7 +588,11 @@ void GameManager::Update()
 					SaveStatus();
 					gameState = GameStateFinished;
 				}
-				else gameState = GameStatePlaying;
+				else
+				{
+					midi_resume();
+					gameState = GameStatePlaying;
+				}
 			}
 			break;
 	}
@@ -735,7 +758,9 @@ void GameManager::Draw()
 		textprintf_ex(doubleBuffer, dialogFont, 320 - (dialogBox->w / 2) + 5, 430 + ((45 - dialogBox->h) / 2) + 5, 0, -1, "%s", linesToDraw[0].c_str());
 		textprintf_ex(doubleBuffer, dialogFont, 320 - (dialogBox->w / 2) + 5, 430 + ((45 - dialogBox->h) / 2) + 5 + 14, 0, -1, "%s", linesToDraw[1].c_str());
 	}
+	#ifdef DEBUGBUILD
 	textprintf_ex(doubleBuffer, font, 0, 0, 0xFFFFFF, 0, "FPS:%d gameState:%d file: %d currentMapName: %s Entity count: %d", fps, gameState, file, mapManager.currentMapName.c_str(), entitiesManager.Count());
+	#endif
 	DrawToScreen(doubleBuffer);
 }
 
