@@ -37,10 +37,8 @@ int keyCodes[9];
 int joyCodes[4];
 int joystickNumber, joystickStick;
 
-void LoadControls(const char *filename)
+void LoadControls()
 {
-	set_config_file(filename);
-	
 	#define GETKC(a, b) keyCodes[kc_ ## a] = get_config_int("keyboard", #a, b);
 	GETKC(a, KEY_A);
 	GETKC(s, KEY_S);

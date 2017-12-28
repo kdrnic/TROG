@@ -128,5 +128,5 @@ Devil::Devil()
 	talkCounter = 0;	
 	hasTalked = false;
 	
-	if(game.entitiesManager.Count("DEVIL") >= MAXDEVILS) alive = false;
+	if((!game.tampered) || (game.entitiesManager.Count("DEVIL") >= MAXDEVILS)) alive = false;
 }

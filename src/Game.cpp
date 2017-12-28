@@ -25,6 +25,7 @@
 #include "Chest.h"
 #include "Devil.h"
 #include "Gargoyle.h"
+#include "MusicSetter.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -57,6 +58,21 @@ void SaveFrame()
 {
 	fps = game.frame - fpsFrame;
 	fpsFrame = game.frame;
+}
+
+void DrawToScreen(BITMAP *bmp)
+{
+	if(screen->h == 480) draw_sprite(screen, bmp, 0, 0);
+	else stretch_blit(bmp, screen, 0, 0, 640, 480, 0, 0, screen->w, screen->h);
+}
+
+void GameManager::SetMusic(std::string m)
+{
+	if(currentMusic != m)
+	{
+		play_midi((MIDI *) GetData(m.c_str()), true);
+		currentMusic = m;
+	}
 }
 
 void *GameManager::GetData(const char *name)
@@ -195,18 +211,21 @@ void GameManager::Load()
 	getline(hexStream, strA);
 	getline(hexStream, strB);
 	
+	tampered = false;
 	if(file >= 0)
 	{
 		getline(gameStream, _line);
 		if(gameStream.eof())
 		{
 			std::cerr << "WARNING: save file missing validation\n";
+			tampered = true;
 		}
 		if(_line != strA)
 		{
 			std::cerr << "WARNING: save file has been tampered\n";
 			std::cerr << "hash.a\t\t\t: " << strA.c_str() << "\n";
 			std::cerr << "read\t\t\t: " << _line.c_str() << "\n";
+			tampered = true;
 		}
 		getline(gameStream, _line);
 		if(_line != strB)
@@ -214,6 +233,7 @@ void GameManager::Load()
 			std::cerr << "WARNING: save file has been tampered\n";
 			std::cerr << "hash.a\t\t\t: " << strB.c_str() << "\n";
 			std::cerr << "read\t\t\t: " << _line.c_str() << "\n";
+			tampered = true;
 		}
 	}
 	
@@ -403,6 +423,7 @@ void GameManager::RegisterEntities()
 	REGISTER_ENTITY(Chest)
 	REGISTER_ENTITY(Devil)
 	REGISTER_ENTITY(Gargoyle)
+	REGISTER_ENTITY(MusicSetter)
 	#undef REGISTER_ENTITY
 }
 
@@ -715,7 +736,7 @@ void GameManager::Draw()
 		textprintf_ex(doubleBuffer, dialogFont, 320 - (dialogBox->w / 2) + 5, 430 + ((45 - dialogBox->h) / 2) + 5 + 14, 0, -1, "%s", linesToDraw[1].c_str());
 	}
 	textprintf_ex(doubleBuffer, font, 0, 0, 0xFFFFFF, 0, "FPS:%d gameState:%d file: %d currentMapName: %s Entity count: %d", fps, gameState, file, mapManager.currentMapName.c_str(), entitiesManager.Count());
-	draw_sprite(screen, doubleBuffer, 0, 0);
+	DrawToScreen(doubleBuffer);
 }
 
 void GameManager::DoFrame()

@@ -23,7 +23,8 @@ enum GameState
 	GameStateDialog,
 	GameStateDead,
 	GameStateFinished,
-	GameStateQuit
+	GameStateQuit,
+	GameStateStory
 };
 
 enum TransitionType
@@ -45,6 +46,7 @@ class GameManager
 		Player *player;
 		int frame;
 		int file;
+		bool tampered;
 
 		void *GetData(const char *name);
 
@@ -53,7 +55,9 @@ class GameManager
 		void Load();
 		void Save();
 		void SaveStatus();
-
+		
+		void SetMusic(std::string m);
+		
 		void SetFadingTransition();
 		void SetScrollingTransition(int direction, int speed = 10);
 		void PushDialogLine(std::string s);
@@ -72,6 +76,8 @@ class GameManager
 		BITMAP *heartSprite;
 		BITMAP *continueBg;
 		SAMPLE *blip;
+		
+		std::string currentMusic;
 
 		Item *selectedItem;
 		TransitionType transition, currentTransition;
