@@ -249,3 +249,13 @@ std::string RemoveWhitespace(std::string in)
 	}
 	return s;
 }
+
+std::string DatafileToString(DATAFILE *d)
+{
+	char *cstr = new char[d->size + 1];
+	memcpy(cstr, d->dat, d->size);
+	cstr[d->size] = 0;
+	std::string cppStr(cstr);
+	delete cstr;
+	return cppStr;
+}

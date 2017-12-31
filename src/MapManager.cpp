@@ -67,19 +67,11 @@ void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 	{
 		DATAFILE *d = game.GetDataRaw(mapDatN.c_str());
 		std::stringstream ss;
-		char *cstr = new char[d->size + 1];
-		memcpy(cstr, d->dat, d->size);
-		cstr[d->size] = 0;
-		std::string cppStr(cstr);
-		ss.str(cppStr);
-		
-		std::cout << "Map " << i << " loaded\n";
+		ss.str(DatafileToString(d));
 		
 		MapTiled *m = new MapTiled;
 		m->Load(ss);
 		maps[m->name] = (Map *) m;
-		
-		delete cstr;
 	}
 }
 

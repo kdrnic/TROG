@@ -12,6 +12,7 @@ Lessons from TROG:
 -Do not write a monolithic game manager
 -Have a proper (continuous) collision system early on
 -Have an animation system for entities' sprites early on
+ -ZDoom style DECORATE state machine
 -Implement pathfinding and use it
 -Make enemies more interesting
 -Embedding Lua or Js (Duktape) can be useful for quests/NPCs/etc.

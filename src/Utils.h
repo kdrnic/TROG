@@ -33,5 +33,6 @@ void CustomHash(std::uint8_t *data, std::size_t n, Int64Tuple *st);
 std::string Base64Encode(unsigned char const* bytes_to_encode, unsigned int in_len);
 std::string Base64Decode(std::string const& encodedString);
 std::string RemoveWhitespace(std::string in);
+std::string DatafileToString(DATAFILE *d);
 
 #endif

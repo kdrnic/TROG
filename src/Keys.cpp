@@ -97,7 +97,7 @@ void UpdateKeys()
 	
 	#define READC(a) key[keyCodes[kc_ ## a]] \
 	|| ((kc_ ## a <= kc_c) && (joystickNumber < num_joysticks) && (joyCodes[kc_ ## a] < joy[joystickNumber].num_buttons) && joy[joystickNumber].button[joyCodes[kc_ ## a]].b) \
-	|| ((kc_ ## a >= kc_left) && (joystickNumber < num_joysticks) && (joystickStick < joy[joystickNumber].num_sticks) && (joy[joystickNumber].stick[joystickStick].axis[kcToAxis[kc_ ## a]].pos * kcToCoeff[kc_ ## a] > 0.75))
+	|| ((kc_ ## a >= kc_left) && (joystickNumber < num_joysticks) && (joystickStick < joy[joystickNumber].num_sticks) && (joy[joystickNumber].stick[joystickStick].num_axis >= 2) && (joy[joystickNumber].stick[joystickStick].axis[kcToAxis[kc_ ## a]].pos * kcToCoeff[kc_ ## a] > 0.75))
 	
 	UpdateKey(READC(a), aKey);
 	UpdateKey(READC(s), sKey);

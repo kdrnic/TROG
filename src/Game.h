@@ -23,8 +23,7 @@ enum GameState
 	GameStateDialog,
 	GameStateDead,
 	GameStateFinished,
-	GameStateQuit,
-	GameStateStory
+	GameStateQuit
 };
 
 enum TransitionType
