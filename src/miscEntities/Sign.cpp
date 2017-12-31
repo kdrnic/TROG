@@ -13,7 +13,7 @@ void Sign::SetParameter(std::string p, std::string v)
 		text.push_back(v);
 		return;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void Sign::Interact()

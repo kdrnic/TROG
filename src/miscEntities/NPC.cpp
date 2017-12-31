@@ -14,9 +14,22 @@ void NPC::SetParameter(std::string p, std::string v)
 	}
 	if(p == "text")
 	{
-		UnderlinesToSpaces(v);
-		text.push_back(v);
-		return;
+		if(v.find("\\n") == std::string::npos)
+		{
+			UnderlinesToSpaces(v);
+			text.push_back(v);
+			return;
+		}
+		
+		std::string curr = v;
+		std::string line;
+		while(true)
+		{
+			line = curr.substr(0, curr.find("\\n"));
+			text.push_back(line);
+			if(curr.find("\\n") != std::string::npos) curr = curr.substr(curr.find("\\n") + std::string("\\n").size());
+			else break;
+		}
 	}
 	if(p == "walkTime")
 	{
@@ -38,7 +51,7 @@ void NPC::SetParameter(std::string p, std::string v)
 		sprite = (BITMAP *) game.GetData(v.c_str());
 		return;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void NPC::Interact()

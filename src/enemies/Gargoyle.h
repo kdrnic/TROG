@@ -9,8 +9,6 @@ class Gargoyle : public SpriteEntity
 		void BallDied();
 		void Update();
 		
-		void SetParameter(std::string p, std::string v);
-		
 		Gargoyle();
 	private:
 		bool ballAlive;

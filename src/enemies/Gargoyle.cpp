@@ -6,12 +6,6 @@ void Gargoyle::BallDied()
 	ballAlive = false;
 }
 
-void Gargoyle::SetParameter(std::string p, std::string v)
-{
-	if(p == "orientation") orientation = std::atoi(v.c_str());
-	else Entity::SetParameter(p, v);
-}
-
 void Gargoyle::Update()
 {
 	if(!ballAlive)

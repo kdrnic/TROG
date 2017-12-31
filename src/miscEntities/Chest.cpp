@@ -19,7 +19,7 @@ void Chest::SetParameter(std::string p, std::string v)
 		item = v;
 		return;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void Chest::OnCreate()
@@ -48,6 +48,8 @@ void Chest::Interact()
 		newItem->SetAmount(std::atoi(item.substr(item.find(":") + 1).c_str()));
 		game.inventoryManager.Add(newItem);
 	}
+	
+	PlaySample((SAMPLE *) game.GetData("snd_door"));
 	
 	isOpen = true;
 	orientation = 1;

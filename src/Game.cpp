@@ -140,6 +140,8 @@ void GameManager::Init()
 	continueBg = (BITMAP *) GetData("gui_continue"); // load_bitmap("continue.bmp", 0);
 	
 	blip = (SAMPLE *) GetData("snd_blip");
+	
+	shallPause = false;
 }
 
 void GameManager::Start(int f)
@@ -506,7 +508,7 @@ void GameManager::Update()
 				ToGrayscale(transitionBitmap);
 				continuePlaying = true;
 			}
-			if(trogStartKey)
+			if(trogStartKey || shallPause)
 			{
 				gameState = GameStateQuit;
 				pauseFading = 0;
@@ -573,6 +575,7 @@ void GameManager::Update()
 			if((aKey == KeyDown) || (sKey == KeyDown)) gameState = GameStateFinished;
 			break;
 		case GameStateQuit:
+			shallPause = false;
 			if(!pauseFading)
 			{
 				midi_pause();

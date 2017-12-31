@@ -48,7 +48,7 @@ void Stairs::SetParameter(std::string p, std::string v)
 		trigger = std::atoi(v.c_str());
 		type = TYPE_TRIGGERED;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void Stairs::OnCollision(Entity *e)

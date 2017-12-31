@@ -67,7 +67,7 @@ void UpdateKeys()
 {
 	poll_joystick();
 	
-	trogStartKey = key[KEY_ALT] || key[keyCodePause] || ((joystickNumber < num_joysticks) && (joyCodePause < joy[joystickNumber].num_buttons) && joy[joystickNumber].button[joyCodePause].b);
+	trogStartKey = key[keyCodePause] || ((joystickNumber < num_joysticks) && (joyCodePause < joy[joystickNumber].num_buttons) && joy[joystickNumber].button[joyCodePause].b);
 	
 	const int kcToAxis[] = 
 	{

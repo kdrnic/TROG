@@ -14,6 +14,7 @@ class SpriteEntity : public Entity
 		int spriteWidth, spriteHeight;
 		int offsetX, offsetY;
 		
+		virtual void SetParameter(std::string p, std::string v);
 		virtual void Draw(BITMAP *bmp);
 		virtual void Update();
 		

@@ -34,7 +34,7 @@ void Door::SetParameter(std::string p, std::string v)
 		frameStart = frameEnd = std::atoi(v.c_str()) * 4;
 		return;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void Door::Interact()

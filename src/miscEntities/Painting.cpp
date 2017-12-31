@@ -18,7 +18,7 @@ void Painting::SetParameter(std::string p, std::string v)
         canvas = load_bitmap(canvasFileName.c_str(), 0);
 		return;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void Painting::Interact()

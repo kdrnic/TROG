@@ -4,7 +4,7 @@
 #include "Utils.h"
 
 #include "Keys.h"
-
+/*
 DIALOG cfgDialog[] =
 {
 //	(dialog proc)		(x)		(y)		(w)		(h)		(fg)	(bg)	(key)	(flags)		(d1)					(d2)	(dp)				(dp2)	(dp3)
@@ -33,13 +33,14 @@ DIALOG cfgDialog[] =
 	{d_button_proc,		496,	400,	128,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		"Send",				0,		0		},//22
 	{NULL,				0,		0,		0,		0,		0,		0,		0,		0,			0,						0,		NULL,				NULL,	NULL	}
 };
-
+*/
 void ConfigurationOptions()
 {
 }
 
 void SwitchOut()
 {
+	game.shallPause = true;
 }
 
 int main(int argc, char **argv)
@@ -64,6 +65,7 @@ int main(int argc, char **argv)
 	install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, 0);
 
 	set_window_title("The Revenge of Gregorius");
+	set_display_switch_mode(SWITCH_BACKGROUND);
 	set_display_switch_callback(SWITCH_OUT, &SwitchOut);
 
 	LoadControls();

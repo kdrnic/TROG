@@ -1,3 +1,5 @@
+#include "Game.h"
+
 #include "SpriteEntity.h"
 
 void SpriteEntity::Draw(BITMAP *doubleBuffer)
@@ -12,6 +14,21 @@ void SpriteEntity::Update()
 	frame = frameStart + ((counter / inverseSpeed) % (frameEnd - frameStart + 1));
 	nextFrame = frameStart + (((counter + 1) / inverseSpeed) % (frameEnd - frameStart + 1));
 }
+
+ void SpriteEntity::SetParameter(std::string p, std::string v)
+ {
+	 if(p == "sprite")
+	 {
+		 sprite = (BITMAP *) game.GetData(v.c_str());
+		 return;
+	 }
+	 if(p == "orientation")
+	 {
+		 orientation = std::atoi(v.c_str());
+		 return;
+	 }
+	 Entity::SetParameter(p, v);
+ }
 
 void SpriteEntity::Orientate(float dx, float dy)
 {

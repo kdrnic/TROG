@@ -4,8 +4,8 @@
 
 #include "Game.h"
 
-const int blockWidth = 15;
-const int blockHeight = 15;
+const float blockWidth = 15.0f;
+const float blockHeight = 15.0f;
 
 bool Entity::Is(std::string what)
 {
@@ -79,9 +79,9 @@ bool Entity::IsBlockSolid(int b)
 
 bool Entity::MapCollision()
 {
-	for(int bx = x / blockWidth; (bx * blockWidth) <= x + width - 1; bx++)
+	for(int bx = std::floor(x / blockWidth); (bx * blockWidth) <= std::floor(x + width - 1); bx++)
 	{
-		for(int by = y / blockHeight; (by * blockHeight) <= y + height - 1; by++)
+		for(int by = std::floor(y / blockHeight); (by * blockHeight) <= std::floor(y + height - 1); by++)
 		{
 			if(by < 0) continue;
 			if(IsBlockSolid(game.mapManager.BlockTypeAt(bx, by))) return true;
@@ -100,8 +100,8 @@ void Entity::MoveToFreeSpot(int minX, int minY, int maxX, int maxY)
 		x = (rand() % 42) * blockWidth;
 		y = (rand() % 28) * blockHeight;
 		collided = MapCollision();
-		Entity *entities[5];
-		int n = game.entitiesManager.SearchArea(x, y, width, height, entities, 5);
+		Entity *entities[999];
+		int n = game.entitiesManager.SearchArea(x, y, width, height, entities, 999);
 		for(int i = 0; i < n; i++)
 		{
 			if(entities[i] == this) continue;

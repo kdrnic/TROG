@@ -46,6 +46,7 @@ class GameManager
 		int frame;
 		int file;
 		bool tampered;
+		bool shallPause;
 
 		void *GetData(const char *name);
 		bool HasData(const char *name);

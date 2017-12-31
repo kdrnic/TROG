@@ -12,7 +12,7 @@ void Button::SetParameter(std::string p, std::string v)
 		trigger = std::atoi(v.c_str());
 		return;
 	}
-	Entity::SetParameter(p, v);
+	SpriteEntity::SetParameter(p, v);
 }
 
 void Button::OnCollision(Entity *e)
