@@ -1,7 +1,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include <allegro.h>
+struct BITMAP;
 
 #include <string>
 

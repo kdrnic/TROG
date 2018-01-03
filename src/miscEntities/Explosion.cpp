@@ -1,6 +1,6 @@
 #include "Enemy.h"
 #include "Game.h"
-
+#include "Player.h"
 #include "Explosion.h"
 
 BITMAP *Explosion::_sprite = 0;

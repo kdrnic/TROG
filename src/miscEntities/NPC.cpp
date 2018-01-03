@@ -1,7 +1,9 @@
 #include "Game.h"
 #include "Utils.h"
-
+#include "Player.h"
 #include "NPC.h"
+
+#include <sstream>
 
 BITMAP *NPC::_sprite = 0;
 
@@ -14,13 +16,14 @@ void NPC::SetParameter(std::string p, std::string v)
 	}
 	if(p == "text")
 	{
-		if(v.find("\\n") == std::string::npos)
+		if(v.find("\n") == std::string::npos)
 		{
 			UnderlinesToSpaces(v);
 			text.push_back(v);
 			return;
 		}
-		
+
+		#if 0
 		std::string curr = v;
 		std::string line;
 		while(true)
@@ -29,6 +32,15 @@ void NPC::SetParameter(std::string p, std::string v)
 			text.push_back(line);
 			if(curr.find("\\n") != std::string::npos) curr = curr.substr(curr.find("\\n") + std::string("\\n").size());
 			else break;
+		}
+		#endif
+
+		std::stringstream ss(v);
+		std::string line;
+		while(!ss.eof())
+		{
+			std::getline(ss, line);
+			text.push_back(line);
 		}
 	}
 	if(p == "walkTime")

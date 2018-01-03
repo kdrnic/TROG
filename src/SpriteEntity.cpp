@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <allegro.h>
+
 #include "SpriteEntity.h"
 
 void SpriteEntity::Draw(BITMAP *doubleBuffer)

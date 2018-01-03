@@ -2,7 +2,7 @@
 
 #include "Game.h"
 #include "Utils.h"
-
+#include <allegro.h>
 #include "Painting.h"
 
 BITMAP *Painting::_sprite = 0;

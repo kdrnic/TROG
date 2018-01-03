@@ -1,8 +1,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
+#include <allegro.h>
 
 #include "Game.h"
+#include "Entity.h"
 
 const float blockWidth = 15.0f;
 const float blockHeight = 15.0f;
@@ -54,6 +56,12 @@ bool Entity::Collision(int _x, int _y, int _w, int _h)
 }
 
 void Entity::GetCenter(float &_x, float &_y)
+{
+	_x = x + width * 0.5;
+	_y = y + height * 0.5;
+}
+
+void Entity::GetCenter(int &_x, int &_y)
 {
 	_x = x + width * 0.5;
 	_y = y + height * 0.5;
@@ -251,7 +259,7 @@ bool Entity::MoveSolid(float dx, float dy)
 	{
 		if(GetMinDx() > dx) x += GetMinDx();
 		else x += dx;
-	}	
+	}
 	if(dy > 0)
 	{
 		if(GetMaxDy() < dy) y += GetMaxDy();

@@ -1,3 +1,4 @@
+#include <allegro.h>
 #include "Keys.h"
 
 KeyState aKey, sKey, xKey, cKey, f11Key, leftKey, rightKey, upKey, downKey;

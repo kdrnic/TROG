@@ -10,7 +10,6 @@
   <object id="6" name="Chest" x="105" y="-15" width="30" height="30">
    <properties>
     <property name="item" value="name:amount"/>
-    <property name="uid" value="26498"/>
    </properties>
   </object>
   <object id="7" name="Door" x="165" y="-15" width="30" height="30">
@@ -41,7 +40,7 @@
     <property name="file" value="1"/>
    </properties>
   </object>
-  <object id="11" name="Portal" x="30" y="45" width="60" height="30">
+  <object id="11" name="Portal" x="45" y="45" width="30" height="30">
    <properties>
     <property name="toMap" value="name"/>
     <property name="toX" value="320"/>

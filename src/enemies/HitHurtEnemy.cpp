@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "Player.h"
 #include "HitHurtEnemy.h"
 
 bool HitHurtEnemy::Is(std::string what)

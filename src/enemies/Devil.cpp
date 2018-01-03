@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include "Game.h"
+#include "Player.h"
 #include "DevilProjectile.h"
 
 #include "Devil.h"
@@ -55,18 +56,18 @@ void Devil::Update()
 			}
 		}
 	}
-	
+
 	x += SPEED * std::cos(angle);
 	y += SPEED * std::sin(angle);
 	angle += dAngle * ANGSPEED;
-	
+
 	angCounter--;
 	if(angCounter <= 0)
 	{
 		angCounter = ANGMIN + (std::rand() % (ANGMAX - ANGMIN));
 		dAngle *= -1;
 	}
-	
+
 	projCounter--;
 	if(projCounter <= 0)
 	{
@@ -79,22 +80,22 @@ void Devil::Update()
 			distance = distance * distance;
 			distance += (selfY - targY) * (selfY - targY);
 			distance = std::sqrt(distance);
-			
+
 			targX += game.player->speedX * (distance / PROJSPEED);
 			targY += game.player->speedY * (distance / PROJSPEED);
 		}
-		
+
 		float pAngle = LineAngle(selfX, selfY, targX, targY);
-		
+
 		DevilProjectile *proj = new DevilProjectile(x + width / 2, y + height / 2, std::cos(pAngle) * PROJSPEED, std::sin(pAngle) * PROJSPEED);
 		proj->hitDamage = PROJDMG;
 		game.entitiesManager.Add((Entity *) proj);
-		
+
 		PlaySample((SAMPLE *) game.GetData("snd_devilproj"));
-		
+
 		projCounter = PROJCOUNTERMIN + (std::rand() % (PROJCOUNTERMAX - PROJCOUNTERMIN));
 	}
-	
+
 	if(x < 0 - spriteWidth) x = 630 + spriteWidth;
 	if(x > 630 + spriteWidth) x = 0 - spriteWidth;
 	if(y < 0 - spriteHeight) y = 420 + spriteHeight;
@@ -106,10 +107,10 @@ Devil::Devil()
 	sprite = (BITMAP *) game.GetData("spr_devil");
 	width = 25;
 	height = 25;
-	offsetX = (sprite->w - width) / 2;
-	offsetY = (sprite->w - height) / 2;
-	spriteWidth = sprite->w;
-	spriteHeight = sprite->w;
+	offsetX = (30.0f - width) / 2.0f;
+	offsetY = (30.0f - height) / 2.0f;
+	spriteWidth = 30;
+	spriteHeight = 30;
 	health = DHEALTH;
 	inverseSpeed = ANIMSPEED;
 	frameStart = 0;
@@ -120,13 +121,13 @@ Devil::Devil()
 	angCounter = 0;
 	if(std::rand() % 100 < 50) dAngle = 1;
 	else dAngle = -1;
-	
+
 	layer = 1;
-	
+
 	persistent = true;
-	
-	talkCounter = 0;	
+
+	talkCounter = 0;
 	hasTalked = false;
-	
+
 	if((!game.tampered) || (game.entitiesManager.Count("DEVIL") >= MAXDEVILS)) alive = false;
 }

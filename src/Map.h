@@ -5,7 +5,7 @@
 #include <list>
 #include <string>
 
-#include <allegro.h>
+struct BITMAP;
 
 class Map
 {

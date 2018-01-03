@@ -14,7 +14,6 @@ class Chest : public EventEntity
 		Chest();
 	private:
 		bool isOpen;
-		int uid;
 		std::string item;
 };
 

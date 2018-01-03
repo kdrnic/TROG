@@ -1,17 +1,15 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <cmath>
-#include <ctime>
 #include <map>
 #include <queue>
-#include <time.h>
 
 #include "MapManager.h"
 #include "EntitiesManager.h"
 #include "InventoryManager.h"
 #include "Factory.h"
-#include "Player.h"
+
+class Player;
 
 enum GameState
 {
@@ -33,6 +31,11 @@ enum TransitionType
 	TransitionFading
 };
 
+struct SAMPLE;
+struct BITMAP;
+struct DATAFILE;
+struct FONT;
+
 class GameManager
 {
 	public:
@@ -47,6 +50,7 @@ class GameManager
 		int file;
 		bool tampered;
 		bool shallPause;
+		bool zoomMode;
 
 		void *GetData(const char *name);
 		bool HasData(const char *name);
@@ -70,6 +74,7 @@ class GameManager
 
 		BITMAP *doubleBuffer;
 		BITMAP *playArea;
+		BITMAP *zoomBuffer;
 		BITMAP *hud;
 		BITMAP *transitionBitmap;
 		FONT *dialogFont;
@@ -100,6 +105,9 @@ class GameManager
 		void Draw();
 		void DoFrame();
 		void Play();
+		
+		float preTransPlayerX, preTransPlayerY;
+		void GetZoomPos(int &zx, int &zy);
 };
 
 extern GameManager game;

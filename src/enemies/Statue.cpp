@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "StatueFire.h"
-
+#include <cmath>
 #include "Statue.h"
 
 void Statue::SetParameter(std::string what, std::string value)
@@ -26,14 +26,14 @@ void Statue::Update()
 {
 	attackTimer--;
 	SpriteEntity::Update();
-	
+
 	if(attackTimer == 0)
 	{
 		frameStart = 1;
 		frameEnd = 9;
 		counter = 0;
 	}
-	
+
 	if((frame == 6) && (nextFrame == 7))
 	{
 		StatueFire *f = new StatueFire();
@@ -53,7 +53,7 @@ void Statue::Update()
 		attackTimer = attackDelay;
 	}
 }
-		
+
 Statue::Statue()
 {
 	width = 15;
@@ -63,7 +63,7 @@ Statue::Statue()
 	offsetX = 9;
 	offsetY = 38;
 	sprite = (BITMAP *) game.GetData("spr_statue");
-	
+
 	inverseSpeed = attackAnimSpeed;
 	attackTimer = attackDelay;
 	frameStart = 0;

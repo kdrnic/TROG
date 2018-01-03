@@ -1,4 +1,5 @@
 #include "EntitiesManager.h"
+#include "Entity.h"
 
 void EntitiesManager::Add(Entity *e)
 {

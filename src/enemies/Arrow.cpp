@@ -1,7 +1,9 @@
 #include <cmath>
+#include <allegro.h>
 
 #include "Utils.h"
 #include "Game.h"
+#include "Player.h"
 
 #include "Arrow.h"
 
@@ -9,7 +11,9 @@ BITMAP *Arrow::_sprite = 0;
 
 void Arrow::Draw(BITMAP *bmp)
 {
-	pivot_sprite(bmp, sprite, int(x) + 1, int(y) + 1, centerX, centerY, RadiansToAllegro(angle));
+	fixed fixAngle;
+	RadiansToAllegro(angle, (void *) &fixAngle);
+	pivot_sprite(bmp, sprite, int(x) + 1, int(y) + 1, centerX, centerY, fixAngle);
 }
 
 void Arrow::OnCollision(Entity *e)

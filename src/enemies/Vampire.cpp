@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "Game.h"
+#include "Player.h"
 #include "Bat.h"
 #include "Poof.h"
 
@@ -125,7 +126,7 @@ void Vampire::Update()
 			destY = minY + (rand() % (maxY - minY));
 			axis = !axis;
 		}
-		
+
 		batCounter++;
 		if(batCounter > batTime)
 		{
@@ -137,7 +138,7 @@ void Vampire::Update()
 				batCounter = 0;
 			}
 		}
-		
+
 		if(health < 0)
 		{
 			state = 3;
@@ -161,7 +162,7 @@ void Vampire::Update()
 			game.entitiesManager.Add(poof);
 			game.SetQuestState("vampire", "defeated");
 			game.SaveStatus();
-			play_sample((SAMPLE *) game.GetData("snd_victory"), 255, 0, 1000, false);
+			PlaySample((SAMPLE *) game.GetData("snd_victory"));
 			game.PushDialogLine("The vampire has been defeated!");
 			alive = false;
 		}
@@ -180,7 +181,7 @@ void Vampire::OnHit()
 Vampire::Vampire()
 {
 	width = 20;
-	height = 20;		
+	height = 20;
 	spriteWidth = 40;
 	spriteHeight = 40;
 	offsetX = 10;
@@ -188,7 +189,7 @@ Vampire::Vampire()
 	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_vampire"); // load_bitmap("vampire.bmp", 0);
 	sprite = _sprite;
 	frameStart = frameEnd = 0;
-	
+
 	// int state;
 	state = 0;
 	// int health;
@@ -221,6 +222,6 @@ Vampire::Vampire()
 	blinkingCounter = 0;
 	blinkingTime = 60;
 	blinkingHz = 6;
-	
+
 	if(game.GetQuestState("vampire") == "defeated") alive = false;
 }

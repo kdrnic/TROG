@@ -1,7 +1,7 @@
 #include <cstdlib>
 
 #include "Game.h"
-
+#include "Player.h"
 #include "Portal.h"
 
 void Portal::SetParameter(std::string p, std::string v)
@@ -38,10 +38,10 @@ void Portal::OnCollision(Entity *e)
 {
 	if(e == game.player)
 	{
+		game.SetFadingTransition();
 		game.player->x = toX;
 		game.player->y = toY;
 		game.mapManager.SetMap(map);
-		game.SetFadingTransition();
 		game.gameState = GameStateEnteringMap;
 	}
 }

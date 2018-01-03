@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include <allegro.h>
 #include "LimitedAmountItem.h"
 
 void LimitedAmountItem::OnUse()
@@ -11,7 +11,7 @@ void LimitedAmountItem::OnUse()
 			amount--;
 			blit(iconBg, icon, 0, 0, 0, 0, 40, 40);
 			textprintf_ex(icon, font, 23, 31, 0xFFFFFF, -1, "%02d", amount);
-			OnActualUse();			
+			OnActualUse();
 			lastFrameUsed = game.frame;
 		}
 	}

@@ -1,6 +1,6 @@
 #include "Bomb.h"
 #include "Game.h"
-
+#include "Player.h"
 #include "BombItem.h"
 
 void BombItem::OnActualUse()

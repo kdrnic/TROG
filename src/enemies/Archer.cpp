@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include "Game.h"
+#include "Player.h"
 #include "Arrow.h"
 
 #include "Archer.h"

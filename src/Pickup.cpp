@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "Player.h"
 #include "Pickup.h"
 
 void Pickup::OnCollision(Entity *e)

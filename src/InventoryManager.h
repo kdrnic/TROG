@@ -4,7 +4,7 @@
 #include <set>
 #include <string>
 
-#include "Item.h"
+class Item;
 
 class InventoryManager
 {

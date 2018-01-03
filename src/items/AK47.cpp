@@ -1,7 +1,8 @@
 #include "AKBullet.h"
 #include "Game.h"
-
+#include "Player.h"
 #include "AK47.h"
+#include <allegro.h>
 
 void AK47::OnUse()
 {

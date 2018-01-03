@@ -4,8 +4,9 @@
 #include <map>
 #include <string>
 
-#include "Map.h"
 #include "GameDrawer.h"
+
+class Map;
 
 class MapManager : public GameDrawer
 {

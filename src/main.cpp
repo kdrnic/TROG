@@ -69,6 +69,8 @@ int main(int argc, char **argv)
 	set_display_switch_callback(SWITCH_OUT, &SwitchOut);
 
 	LoadControls();
+	
+	game.zoomMode = get_config_int("gfxmode", "zoomin", 0);
 
 	game.Init();
 	game.Start(-1);

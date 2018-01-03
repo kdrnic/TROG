@@ -1,5 +1,9 @@
 #include "Game.h"
 
+#include <allegro.h>
+
+#include "Player.h"
+
 #include "BarbedWire.h"
 #include "Zombie.h"
 #include "Bat.h"
@@ -41,6 +45,8 @@
 #include <cstdlib>
 #include <cmath>
 #include <cctype>
+#include <ctime>
+#include <time.h>
 
 GameManager game;
 
@@ -114,6 +120,7 @@ void GameManager::Init()
 	doubleBuffer = create_bitmap(640, 480);
 	transitionBitmap = create_bitmap(630, 420);
 	playArea = create_bitmap(630, 420);
+	if(zoomMode) zoomBuffer = create_bitmap(640, 430);
 
 	hud = (BITMAP *) GetData("gui_hud"); // load_bitmap("hud.bmp", 0);
 	inventoryManager.inventoryBackground = (BITMAP *) GetData("gui_inventory"); // load_bitmap("inventory.bmp", 0);
@@ -138,9 +145,9 @@ void GameManager::Init()
 
 	heartSprite = (BITMAP *) GetData("gui_heart"); // load_bitmap("heart.bmp", 0);
 	continueBg = (BITMAP *) GetData("gui_continue"); // load_bitmap("continue.bmp", 0);
-	
+
 	blip = (SAMPLE *) GetData("snd_blip");
-	
+
 	shallPause = false;
 }
 
@@ -193,7 +200,7 @@ void GameManager::Load()
 	getline(gameStream, _line);
 	std::vector<std::string> items = StringToStrings(_line);
 	hashStream << _line.c_str() << '\n';
-	
+
 	for(int i = 0; i < items.size(); i++)
 	{
 		Item *newItem = itemsFactory.Create(items[i].substr(0, items[i].find(":")));
@@ -212,12 +219,12 @@ void GameManager::Load()
 	getline(gameStream, _line);
 	std::vector<std::string> questStateStrings = StringToStrings(_line);
 	hashStream << _line.c_str() << '\n';
-	
+
 	for(int i = 0; i < questStateStrings.size(); i++)
 	{
 		questStates[questStateStrings[i].substr(0, questStateStrings[i].find(":"))] = questStateStrings[i].substr(questStateStrings[i].find(":") + 1).c_str();
 	}
-	
+
 	std::string temp(hashStream.str());
 	const char *toHash = temp.c_str();
 	Int64Tuple hash = {0, 0};
@@ -227,7 +234,7 @@ void GameManager::Load()
 	std::string strA, strB;
 	getline(hexStream, strA);
 	getline(hexStream, strB);
-	
+
 	tampered = false;
 	if(file >= 0)
 	{
@@ -253,7 +260,7 @@ void GameManager::Load()
 			tampered = true;
 		}
 	}
-	
+
 	gameStream.close();
 }
 
@@ -319,13 +326,13 @@ void GameManager::Save()
 	}
 	gameStream << '\n';
 	hashStream << '\n';
-	
+
 	std::string sTemp(hashStream.str());
 	const char *toHash = sTemp.c_str();
 	Int64Tuple hash = {0, 0};
 	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
 	gameStream << std::hex << hash.a << '\n' << hash.b;
-	
+
 	gameStream.close();
 }
 
@@ -343,7 +350,7 @@ void GameManager::SaveStatus()
 
 	std::fstream saveStream(fileName.c_str(), std::fstream::out | std::fstream::trunc);
 	std::stringstream hashStream;
-	
+
 	for(int i = 0; i < 5; i++)
 	{
 		saveStream << lines[i] << '\n';
@@ -385,23 +392,25 @@ void GameManager::SaveStatus()
 	}
 	saveStream << '\n';
 	hashStream << '\n';
-	
+
 	std::string temp(hashStream.str());
 	const char *toHash = temp.c_str();
 	Int64Tuple hash = {0, 0};
 	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
 	saveStream << std::hex << hash.a << '\n' << hash.b;
-	
+
 	saveStream.close();
 }
 
 void GameManager::SetFadingTransition()
 {
+	player->GetCenter(preTransPlayerX, preTransPlayerY);
 	transition = TransitionFading;
 }
 
 void GameManager::SetScrollingTransition(int direction, int speed)
 {
+	player->GetCenter(preTransPlayerX, preTransPlayerY);
 	transitionDirection = direction;
 	transitionSpeed = speed;
 	transition = TransitionScrolling;
@@ -456,16 +465,18 @@ void GameManager::RegisterItems()
 
 void GameManager::Update()
 {
+	static int uFrame = 0;
+	uFrame++;
 	switch(gameState)
 	{
 		case GameStateEnteringMap:
 			entitiesManager.RemoveDead();
 			entitiesManager.RemoveNonPersistent();
 			mapManager.SpawnEntities();
-			
+
 			player->speedX = 0;
 			player->speedY = 0;
-			
+
 			if(transition == TransitionNone) gameState = GameStatePlaying;
 			else
 			{
@@ -482,6 +493,18 @@ void GameManager::Update()
 			{
 				if(((transitionFrame + 1) * transitionSpeed >= 420) && (transitionDirection <= 1)) gameState = GameStatePlaying;
 				if(((transitionFrame + 1) * transitionSpeed >= 630) && (transitionDirection >= 2)) gameState = GameStatePlaying;
+				
+				if(zoomMode)
+				{
+					if(transitionDirection <= 1)
+					{
+						if(transitionFrame == 11) transitionFrame = 33;
+					}
+					if(transitionDirection >= 2)
+					{
+						if(transitionFrame == 16) transitionFrame = 48;
+					}
+				}
 			}
 			if(currentTransition == TransitionFading)
 			{
@@ -604,7 +627,7 @@ void GameManager::Update()
 	if(f11Key == KeyDown)
 	{
 		std::string fileName = "screenshots/screenshot_frame";
-		fileName += Itoa(frame);
+		fileName += Itoa(uFrame);
 		fileName += ".bmp";
 		save_bitmap(fileName.c_str(), doubleBuffer, 0);
 	}
@@ -612,22 +635,28 @@ void GameManager::Update()
 
 void GameManager::Draw()
 {
-	if(gameState != GameStateEnteringMap) clear(doubleBuffer);
+	if(gameState != GameStateEnteringMap)
+	{
+		clear(doubleBuffer);
+	}
 	if((gameState == GameStatePlaying) || (gameState == GameStateTransition) || (gameState == GameStateInventory) || (gameState == GameStateDialog))
 	{
 		mapManager.BeginDrawing(playArea, 0, 0);
 		entitiesManager.BeginDrawing(playArea, 0, 0);
-		
+
 		for(int i = 0; i < 14; i++)
 		{
 			entitiesManager.DrawRow();
 			mapManager.DrawRow();
 		}
-		
+
 		entitiesManager.FinishDrawing();
 		mapManager.FinishDrawing();
 	}
-	if((gameState == GameStatePlaying) || (gameState == GameStateInventory) || (gameState == GameStateDialog) || (gameState == GameStateDead) || (gameState == GameStateQuit)) draw_sprite(doubleBuffer, playArea, 5, 5);
+	if((gameState == GameStatePlaying) || (gameState == GameStateInventory) || (gameState == GameStateDialog) || (gameState == GameStateDead) || (gameState == GameStateQuit) || (gameState == GameStateEnteringMap))
+	{
+		draw_sprite(doubleBuffer, playArea, 5, 5);
+	}
 	if(gameState == GameStateTransition)
 	{
 		if(currentTransition == TransitionScrolling)
@@ -668,28 +697,25 @@ void GameManager::Draw()
 			}
 		}
 	}
-	if(gameState == GameStateDead)
+	if((gameState == GameStateDead) || (gameState == GameStateQuit))
 	{
 		set_trans_blender(0, 0, 0, int(pauseFading));
 		draw_trans_sprite(doubleBuffer, transitionBitmap, 5, 5);
-		float bgx, bgy;
-		bgx = player->x - 315;
-		bgy = player->y - 210;
-		float l = std::sqrt(bgx * bgx + bgy * bgy);
-		bgx /= l;
-		bgy /= l;
-		bgx = 315 - (bgx * 150);
-		bgy = 210 - (bgy * 150);
-		if(continuePlaying) blit(continueBg, doubleBuffer, 0, 0, bgx, bgy, 109, 52);
-		else blit(continueBg, doubleBuffer, 0, 52, bgx, bgy, 109, 52);
-		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5, 0, -1, "Game over");
-		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5 + 14, 0, -1, " Continue");
-		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5 + 14 + 14, 0, -1, " Quit");
 	}
-	if(gameState == GameStateQuit)
+
+	if(zoomMode)
 	{
-		set_trans_blender(0, 0, 0, int(pauseFading));
-		draw_trans_sprite(doubleBuffer, transitionBitmap, 5, 5);
+		int x, y;
+		GetZoomPos(x, y);
+		draw_sprite(zoomBuffer, doubleBuffer, 0, 0);
+		stretch_blit(zoomBuffer, doubleBuffer, x + 5, y + 5, 315, 210, 5, 5, 630, 420);
+	}
+
+	if((gameState == GameStateDead) || (gameState == GameStateQuit))
+	{
+		const char *deadCaption = "Game over";
+		const char *quitCaption = "Paused";
+		const char *captions[] = {deadCaption, quitCaption};
 		float bgx, bgy;
 		bgx = player->x - 315;
 		bgy = player->y - 210;
@@ -698,9 +724,10 @@ void GameManager::Draw()
 		bgy /= l;
 		bgx = 315 - (bgx * 150);
 		bgy = 210 - (bgy * 150);
+
 		if(continuePlaying) blit(continueBg, doubleBuffer, 0, 0, bgx, bgy, 109, 52);
 		else blit(continueBg, doubleBuffer, 0, 52, bgx, bgy, 109, 52);
-		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5, 0, -1, "Paused");
+		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5, 0, -1, captions[gameState == GameStateQuit]);
 		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5 + 14, 0, -1, " Continue");
 		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5 + 14 + 14, 0, -1, " Quit");
 	}
@@ -762,7 +789,9 @@ void GameManager::Draw()
 		textprintf_ex(doubleBuffer, dialogFont, 320 - (dialogBox->w / 2) + 5, 430 + ((45 - dialogBox->h) / 2) + 5 + 14, 0, -1, "%s", linesToDraw[1].c_str());
 	}
 	#ifdef DEBUGBUILD
-	textprintf_ex(doubleBuffer, font, 0, 0, 0xFFFFFF, 0, "FPS:%d gameState:%d file: %d currentMapName: %s Entity count: %d", fps, gameState, file, mapManager.currentMapName.c_str(), entitiesManager.Count());
+	int zx, zy;
+	GetZoomPos(zx, zy);
+	textprintf_ex(doubleBuffer, font, 0, 0, 0xFFFFFF, 0, "FPS:%d gameState:%d file: %d currentMapName: %s Entity count: %d ZP: %d %d", fps, gameState, file, mapManager.currentMapName.c_str(), entitiesManager.Count(), zx, zy);
 	#endif
 	DrawToScreen(doubleBuffer);
 }
@@ -805,4 +834,77 @@ void GameManager::SetQuestState(std::string s, std::string v)
 std::string GameManager::GetQuestState(std::string s)
 {
 	return questStates[s];
+}
+
+void ClampPos(int &x, int &y)
+{
+	if(x < 0) x = 0;
+	if(y < 0) y = 0;
+	if(x + 315 > 630) x = 630 - 315;
+	if(y + 210 > 420) y = 420 - 210;
+}
+
+void ClampPos(float &x, float &y)
+{
+	if(x < 0) x = 0;
+	if(y < 0) y = 0;
+	if(x + 315 > 630) x = 630 - 315;
+	if(y + 210 > 420) y = 420 - 210;
+}
+
+void GameManager::GetZoomPos(int &zx, int &zy)
+{
+	int cx, cy;
+
+	if((gameState != GameStateTransition) && (gameState != GameStateEnteringMap))
+	{
+		player->GetCenter(cx, cy);
+	}
+	if(gameState == GameStateEnteringMap)
+	{
+		cx = preTransPlayerX;
+		cy = preTransPlayerY;
+	}
+	if(gameState == GameStateTransition)
+	{
+		if(currentTransition == TransitionFading)
+		{
+			if(transitionFrame * transitionFadingSpeed <= 255)
+			{
+				cx = preTransPlayerX;
+				cy = preTransPlayerY;
+			}
+			else
+			{
+				player->GetCenter(cx, cy);
+			}
+		}
+		if(currentTransition == TransitionScrolling)
+		{
+			float interp;
+			float px, py;
+			player->GetCenter(px, py);
+			if(transitionDirection <= 1) interp = (float(transitionFrame) * float(transitionSpeed)) / 420.0f;
+			if(transitionDirection >= 2) interp = (float(transitionFrame) * float(transitionSpeed)) / 630.0f;
+			
+			cx = (preTransPlayerX + (px - preTransPlayerX) * interp);
+			cy = (preTransPlayerY + (py - preTransPlayerY) * interp);
+		}
+	}
+	int topX, topY;
+	topX = cx - 157;
+	topY = cy - 105;
+	ClampPos(topX, topY);
+
+	zx = topX;
+	zy = topY;
+	
+	#if 0
+	if((gameState == GameStateTransition) && (currentTransition == TransitionScrolling))
+	{
+		#ifdef DEBUGBUILD
+		std::cout << transitionFrame << "," << zx << "," << zy << "\n";
+		#endif
+	}
+	#endif
 }

@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Enemy.h"
-
+#include "Player.h"
 #include "Projectile.h"
 
 void Projectile::Update()

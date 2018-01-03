@@ -1,7 +1,7 @@
 #include <cstdlib>
 
 #include "Game.h"
-
+#include "Player.h"
 #include "Door.h"
 
 BITMAP *Door::_sprite = 0;
@@ -53,10 +53,10 @@ void Door::OnCollision(Entity *e)
 	{
 		if(e == game.player)
 		{
+			game.SetFadingTransition();
 			game.player->x = toX;
 			game.player->y = toY;
 			game.mapManager.SetMap(map);
-			game.SetFadingTransition();
 			game.gameState = GameStateEnteringMap;
 		}
 	}

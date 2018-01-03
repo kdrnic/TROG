@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Goo.h"
-
+#include "Player.h"
 #include "Slime.h"
 
 BITMAP *Slime::_sprite = 0;

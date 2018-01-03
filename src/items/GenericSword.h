@@ -3,6 +3,8 @@
 
 #include "Item.h"
 
+struct SAMPLE;
+
 class GenericSword : public Item
 {
 	public:

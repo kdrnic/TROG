@@ -1,5 +1,6 @@
 #include "Utils.h"
-
+#include <allegro.h>
+#include "Item.h"
 #include "InventoryManager.h"
 
 void InventoryManager::Add(Item *i)

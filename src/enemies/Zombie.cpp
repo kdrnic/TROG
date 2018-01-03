@@ -1,7 +1,7 @@
 #include "Game.h"
 
 #include "Zombie.h"
-
+#include "Player.h"
 #include "ZombieHole.h"
 
 BITMAP *Zombie::_sprite = 0;
@@ -84,7 +84,7 @@ void Zombie::Update()
 				case 3:
 					if(!MoveSolid(walkSpeed, 0)) randomWalkCounter = 0;
 					break;
-			}			
+			}
 		}
 		if(x <= 0) orientation = 3;
 		if(x >= 630) orientation = 2;
@@ -94,11 +94,11 @@ void Zombie::Update()
 	SpriteEntity::Update();
 	Enemy::Update();
 }
-		
+
 Zombie::Zombie()
 {
 	width = 20;
-	height = 20;		
+	height = 20;
 	spriteWidth = 30;
 	spriteHeight = 30;
 	offsetX = 5;

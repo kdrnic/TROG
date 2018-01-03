@@ -7,13 +7,10 @@
 
 #include <cstdlib>
 
+#define QUEST_STRING (game.mapManager.currentMapName + std::string("_chest_") + std::string(Itoa(mapId)))
+
 void Chest::SetParameter(std::string p, std::string v)
 {
-	if(p == "uid")
-	{
-		uid = std::atoi(v.c_str());
-		return;
-	}
 	if(p == "item")
 	{
 		item = v;
@@ -24,7 +21,7 @@ void Chest::SetParameter(std::string p, std::string v)
 
 void Chest::OnCreate()
 {
-	if(game.GetQuestState(std::string("chest") + std::string(Itoa(uid))) == "open")
+	if(game.GetQuestState(QUEST_STRING) == "open")
 	{
 		isOpen = true;
 		orientation = 1;
@@ -54,7 +51,7 @@ void Chest::Interact()
 	isOpen = true;
 	orientation = 1;
 	
-	game.SetQuestState(std::string("chest") + std::string(Itoa(uid)), "open");
+	game.SetQuestState(QUEST_STRING, "open");
 }
 
 Chest::Chest()

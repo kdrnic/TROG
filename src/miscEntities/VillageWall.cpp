@@ -1,7 +1,7 @@
 #include <cstdlib>
 
 #include "Game.h"
-
+#include "Player.h"
 #include "VillageWall.h"
 
 void VillageWall::SetParameter(std::string p, std::string v)

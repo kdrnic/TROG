@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "EventEntity.h"
 #include "Enemy.h"
+#include "Item.h"
 
 #include "Player.h"
 
@@ -182,27 +183,27 @@ void Player::Update()
 		game.gameState = GameStateEnteringMap;
 		if(y + height - 1 < 0)
 		{
-			y = 390;
 			game.mapManager.SetMap(game.mapManager.GetExit(0));
 			game.SetScrollingTransition(0);
+			y = 390;
 		}
 		if(y > 420)
 		{
-			y = 0;
 			game.mapManager.SetMap(game.mapManager.GetExit(1));
 			game.SetScrollingTransition(1);
+			y = 0;
 		}
 		if(x + width - 1 < 0)
 		{
-			x = 600;
 			game.mapManager.SetMap(game.mapManager.GetExit(2));
 			game.SetScrollingTransition(2);
+			x = 600;
 		}
 		if(x > 630)
 		{
-			x = 0;
 			game.mapManager.SetMap(game.mapManager.GetExit(3));
 			game.SetScrollingTransition(3);
+			x = 0;
 		}
 	}
 	if(xKey == KeyDown)
@@ -404,7 +405,6 @@ Player::Player()
 
 Player::~Player()
 {
-	destroy_bitmap(sprite);
 }
 
 bool Player::IsEntitySolid(Entity *e)

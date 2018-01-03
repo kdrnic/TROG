@@ -6,6 +6,8 @@
 
 #include "Utils.h"
 
+#include <allegro.h>
+
 std::vector<std::string> StringToStrings(std::string s)
 {
 	std::vector<std::string> v;
@@ -55,13 +57,11 @@ float LineAngle(float x1, float y1, float x2, float y2)
 	return std::atan2(y2 - y1, x2 - x1);
 }
 
-fixed RadiansToAllegro(float angle)
+void RadiansToAllegro(float rad, void *theFix)
 {
 	fixed fAngleRad;
-	fAngleRad = ftofix(angle);
-	fixed fAngleAlDeg;
-	fAngleAlDeg = fixmul(fAngleRad, radtofix_r);
-	return fAngleAlDeg;
+	fAngleRad = ftofix(*((fixed *)theFix));
+	*((fixed *) theFix) = fixmul(fAngleRad, radtofix_r);
 }
 
 int LCM(int a, int b)
@@ -128,7 +128,7 @@ void DrawParallax(BITMAP *bmp, BITMAP *bg, int sx, int sy)
 	while(coveredWidth < -bg->w) coveredWidth += bg->w;
 	while(coveredHeight > 0) coveredHeight -= bg->h;
 	while(coveredHeight < -bg->h) coveredHeight += bg->h;
-	
+
 	while(coveredWidth < 640)
 	{
 		int _coveredHeight = coveredHeight;
@@ -182,21 +182,21 @@ std::string Base64Encode(unsigned char const* bytes_to_encode, unsigned int in_l
 			i = 0;
 		}
 	}
-	
+
 	if(i)
 	{
 		for(j = i; j < 3; j++) char_array_3[j] = '\0';
-		
+
 		char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
 		char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
 		char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
 		char_array_4[3] = char_array_3[2] & 0x3f;
-		
+
 		for(j = 0; (j < i + 1); j++) ret += base64_chars[char_array_4[j]];
-		
+
 		while((i++ < 3)) ret += '=';
 	}
-	
+
 	return ret;
 }
 
@@ -207,36 +207,36 @@ std::string Base64Decode(std::string const& encodedString)
 	int inputLength = encodedString.size();
 	unsigned char char_array_4[4], char_array_3[3];
 	std::string ret;
-	
+
 	while(inputLength-- && ( encodedString[in_] != '=') && is_base64(encodedString[in_]))
 	{
 		char_array_4[i++] = encodedString[in_]; in_++;
 		if(i ==4)
 		{
 			for(i = 0; i <4; i++) char_array_4[i] = base64_chars.find(char_array_4[i]);
-		
+
 			char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
 			char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
 			char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-		
+
 			for(i = 0; (i < 3); i++) ret += char_array_3[i];
 			i = 0;
 		}
 	}
-	
+
 	if(i)
 	{
 		for(j = i; j <4; j++) char_array_4[j] = 0;
-		
+
 		for(j = 0; j <4; j++) char_array_4[j] = base64_chars.find(char_array_4[j]);
-		
+
 		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
 		char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
 		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-		
+
 		for(j = 0; (j < i - 1); j++) ret += char_array_3[j];
 	}
-	
+
 	return ret;
 }
 

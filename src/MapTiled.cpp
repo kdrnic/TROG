@@ -1,3 +1,5 @@
+#include <allegro.h>
+
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -285,6 +287,7 @@ void MapTiled::Load(std::istream &is)
 				{
 					parameter.first = n_property.attribute("name").value();
 					parameter.second = n_property.attribute("value").value();
+					parameter.second += n_property.child_value();
 					entity.parameters.push_back(parameter);
 				}
 			}

@@ -1,6 +1,6 @@
 #include "Enemy.h"
 #include "Game.h"
-
+#include "Player.h"
 #include "AKBullet.h"
 
 BITMAP *AKBullet::_sprite = 0;
@@ -31,7 +31,7 @@ AKBullet::AKBullet(int o)
 {
 	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bullet"); // load_bitmap("bullet.bmp", 0);
 	x = game.player->x;
-	y = game.player->y; 
+	y = game.player->y;
 	width = 7;
 	height = 5;
 	orientation = o;

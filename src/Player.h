@@ -2,7 +2,8 @@
 #define PLAYER_H
 
 #include "SpriteEntity.h"
-#include "Item.h"
+
+class Item;
 
 class Player : public SpriteEntity
 {

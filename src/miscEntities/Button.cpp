@@ -1,6 +1,7 @@
 #include <cstdlib>
 
 #include "Game.h"
+#include "Player.h"
 #include "TriggeredEntity.h"
 
 #include "Button.h"

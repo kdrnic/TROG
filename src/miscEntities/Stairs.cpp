@@ -2,7 +2,7 @@
 
 #include "Game.h"
 #include "LimitedAmountItem.h"
-
+#include "Player.h"
 #include "Stairs.h"
 
 // Opens when the area is cleared of enemies
@@ -63,15 +63,15 @@ void Stairs::OnCollision(Entity *e)
 				if(keys->amount > 0)
 				{
 					keys->AddAmount(-1);
-					
+
 					frameEnd = 4;
 					counter = 0;
-					
+
 					std::string q = game.GetQuestState("stairs");
 					q.append(id);
 					q.append(";");
 					game.SetQuestState("stairs", q);
-					
+
 					PlaySample((SAMPLE *) game.GetData("snd_scrape"), 128);
 				}
 			}
@@ -81,10 +81,10 @@ void Stairs::OnCollision(Entity *e)
 	{
 		if(e == game.player)
 		{
+			game.SetFadingTransition();
 			game.player->x = toX;
 			game.player->y = toY;
 			game.mapManager.SetMap(toMap);
-			game.SetFadingTransition();
 			game.gameState = GameStateEnteringMap;
 		}
 	}
@@ -163,7 +163,7 @@ Stairs::Stairs()
 	sprite = (BITMAP *) game.GetData("spr_stairs");
 	width = 30;
 	height = 30;
-	spriteWidth = 30;	
+	spriteWidth = 30;
 	spriteHeight = 60;
 	frameStart = 0;
 	frameEnd = 0;

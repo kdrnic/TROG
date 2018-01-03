@@ -1,7 +1,7 @@
 #ifndef GAMEDRAWER_H
 #define GAMEDRAWER_H
 
-#include <allegro.h>
+struct BITMAP;
 
 class GameDrawer
 {

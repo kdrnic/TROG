@@ -8,7 +8,8 @@
 #include <cstdint>
 #include <cmath>
 
-#include <allegro.h>
+struct BITMAP;
+struct DATAFILE;
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -25,7 +26,7 @@ void UnderlinesToSpaces(std::string &s);
 std::string Itoa(int value);
 void ToGrayscale(BITMAP *bmp);
 float LineAngle(float x1, float y1, float x2, float y2);
-fixed RadiansToAllegro(float rad);
+void RadiansToAllegro(float rad, void *theFix);
 int MCM(int a, int b);
 void SmoothScale(BITMAP *source, BITMAP *dest);
 void DrawParallax(BITMAP *bmp, BITMAP *bg, int sx, int sy);

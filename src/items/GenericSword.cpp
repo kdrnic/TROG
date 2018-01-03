@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "Player.h"
 #include "GenericSword.h"
 
 void GenericSword::OnUse()

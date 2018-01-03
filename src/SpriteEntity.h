@@ -1,6 +1,8 @@
 #ifndef SPRITEENTITY_H
 #define SPRITEENTITY_H
 
+struct BITMAP;
+
 #include "Entity.h"
 
 class SpriteEntity : public Entity

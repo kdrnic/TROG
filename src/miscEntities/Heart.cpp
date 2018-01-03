@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "Player.h"
 #include "Heart.h"
 
 void Heart::OnPickup()

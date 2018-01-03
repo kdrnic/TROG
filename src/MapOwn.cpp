@@ -1,6 +1,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
+#include <allegro.h>
 
 #include "Utils.h"
 #include "Game.h"
