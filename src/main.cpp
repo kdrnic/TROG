@@ -4,43 +4,201 @@
 #include "Utils.h"
 
 #include "Keys.h"
-/*
+
+#include <cstring>
+#include <iostream>
+
+#define WHITE 0xFFFFFF
+
+bool availableMIDIs[3];
+int numMIDIs;
+
+void CheckMIDIs()
+{
+	availableMIDIs[0] = detect_midi_driver(MIDI_NONE) != 0;
+	availableMIDIs[1] = detect_midi_driver(MIDI_AUTODETECT) != 0;
+	availableMIDIs[2] = detect_midi_driver(MIDI_DIGMID) != 0;
+	numMIDIs = (availableMIDIs[0]) + (availableMIDIs[1]) + (availableMIDIs[2]);
+}
+
+char *MIDIDriverGetter(int index, int *list_size)
+{
+	const char *names[] = 
+	{
+		"None (no music)",
+		"Default OS driver",
+		"Allegro synth (uses patches.dat)"
+	};
+	if(index < 0)
+	{
+		*list_size = numMIDIs;
+		return 0;
+	}
+	else
+	{
+		if(numMIDIs < 3)
+		{
+			if(index == 0)
+			{
+				if(availableMIDIs[0]) return (char *) names[0];
+				if(availableMIDIs[1]) return (char *) names[0];
+				if(availableMIDIs[2]) return (char *) names[0];
+				return 0;
+			}
+			if(index == 1)
+			{
+				if(availableMIDIs[0])
+				{
+					if(availableMIDIs[1]) return (char *) names[0];
+					if(availableMIDIs[2]) return (char *) names[0];
+					return 0;
+				}
+				if(availableMIDIs[1])
+				{
+					if(availableMIDIs[2]) return (char *) names[0];
+					return 0;
+				}
+				return 0;
+			}
+			if(index == 3)
+			{
+				if(availableMIDIs[2]) return (char *) names[0];
+				return 0;
+			}
+		}
+		else
+		{
+			return (char *) names[index];
+		}
+	}
+}
+
+char *JoystickGetter(int index, int *list_size)
+{
+	const char *names[] = 
+	{
+		"Joystick #1",
+		"Joystick #2",
+		"Joystick #3",
+		"Joystick #4",
+		"Joystick #5",
+		"Joystick #6",
+		"Joystick #7",
+		"Joystick #8",
+		"Joystick #9",
+		"Joystick #10",
+		"Joystick #11",
+		"Joystick #12",
+		"Joystick #13",
+		"Joystick #14",
+		"Joystick #15",
+		"Joystick #16"
+	};
+	if(index < 0)
+	{
+		*list_size = num_joysticks;
+		return 0;
+	}
+	else return (char *) names[index];
+}
+
+char cfgW[5], cfgH[5];
+bool cfgFull, cfgZoom;
+
 DIALOG cfgDialog[] =
 {
-//	(dialog proc)		(x)		(y)		(w)		(h)		(fg)	(bg)	(key)	(flags)		(d1)					(d2)	(dp)				(dp2)	(dp3)
-	{d_clear_proc,		0,		0,		0,		0,		WHITE,	0,		0,		0,			0,						0,		NULL,				NULL,	NULL	},//0
-	{d_rtext_proc,		96,		32,		0,		0,		WHITE,	0,		0,		0,			0,						0,		"Address:",			0,		0		},//1
-	{d_edit_proc,		96,		32,		224,	8,		WHITE,	0,		0,		0,			sizeof(address)-1,		0,		address,			NULL,	NULL	},//2
-	{d_radio_proc,		320,	32,		160,	16,		WHITE,	0,		0,		D_SELECTED,	0,						0,		"Server",			0,		0		},//3
-	{d_radio_proc,		480,	32,		160,	16,		WHITE,	0,		0,		0,			0,						0,		"Client",			0,		0		},//4
-	{d_button_proc,		80,		64,		160,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		"Connect/Listen",	NULL,	NULL	},//5
-	{d_ctext_proc,		320,	8,		0,		0,		WHITE,	0,		0,		0,			0,						0,		status,				0,		0		},//6
-	{d_list_proc,		340,	64,		280,	64,		WHITE,	0,		0,		D_EXIT,		1,						0,		driverlist_getter,	0,		0		},//7
-	{d_textbox_proc,	16,		136,	608,	96,		WHITE,	0,		0,		D_SELECTED,	0,						0,		logp_buffer,		0,		0		},//8
-	{update_proc,		0,		0,		0,		0,		0,		0,		0,		0,			0,						0,		0,					0,		0		},//9
-	{d_edit_proc,		96,		48,		224,	16,		WHITE,	0,		0,		0,			sizeof(name)-1,			0,		name,				0,		0		},//10
-	{d_rtext_proc,		96,		48,		0,		0,		WHITE,	0,		0,		0,			0,						0,		"Client name:",		0,		0		},//11
-	{d_button_proc,		16,		240,	160,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		"Click me",			0,		0		},//12
-	{d_text_proc,		128,	96,		0,		0,		WHITE,	0,		0,		0,			0,						0,		str_mrec,			0,		0		},//13
-	{d_rtext_proc,		128,	96,		0,		0,		WHITE,	0,		0,		0,			0,						0,		"Msgs. received:",	0,		0		},//14
-	{d_text_proc,		128,	104,	0,		0,		WHITE,	0,		0,		0,			0,						0,		str_msnt,			0,		0		},//15
-	{d_rtext_proc,		128,	104,	0,		0,		WHITE,	0,		0,		0,			0,						0,		"Msgs. sent:",		0,		0		},//16
-	{d_bitmap_proc,		16, 	272, 	608,	96,		WHITE,	0,		0,		0,			0,						0,		0,					0,		0,		},//17
-	{d_button_proc,		320,	240,	160,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		"Clear buffer",		0,		0		},//18
-	{d_button_proc,		16,		376,	160,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		"Send RESET",		0,		0		},//19
-	{d_check_proc,		320,	376,	160,	16,		WHITE,	0,		0,		D_SELECTED,	1,						0,		"Send time msgs.",	0,		0		},//20
-	{d_edit_proc,		16,		400,	464,	8,		WHITE,	0,		0,		0,			sizeof(chat_string)-1,	0,		chat_string,		0,		0		},//21
-	{d_button_proc,		496,	400,	128,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		"Send",				0,		0		},//22
-	{NULL,				0,		0,		0,		0,		0,		0,		0,		0,			0,						0,		NULL,				NULL,	NULL	}
+//	(dialog proc)		(x)		(y)		(w)		(h)		(fg)	(bg)	(key)	(flags)		(d1)					(d2)	(dp)									(dp2)			(dp3)
+	{d_clear_proc,		0,		0,		0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)0,								(void *) 0,		(void *) 0		},//0
+	{d_check_proc,		320,	16,		160,	16,		WHITE,	0,		0,		0,			1,						0,		(void *)"Fullscreen",					(void *) 0,		(void *) 0		},//1
+	{d_check_proc,		320,	32,		160,	16,		WHITE,	0,		0,		0,			1,						0,		(void *)"Zoom in (2X)",					(void *) 0,		(void *) 0		},//2
+	{d_list_proc,		320,	48,		280,	48,		WHITE,	0,		0,		0,			0,						0,		(void *)MIDIDriverGetter,				(void *) 0,		(void *) 0		},//3
+	{d_button_proc,		60,		464,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Apply and save",				(void *) 0,		(void *) 0		},//4
+	{d_button_proc,		380,	464,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Leave (without saving)",		(void *) 0,		(void *) 0		},//5
+	{d_button_proc,		60,		224,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Configure keyboard input",		(void *) 0,		(void *) 0		},//6
+	{d_button_proc,		380,	224,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Configure joystick input",	(void *) 0,		(void *) 0		},//7
+	{d_list_proc,		320,	112,	280,	48,		WHITE,	0,		0,		0,			0,						0,		(void *)JoystickGetter,					(void *) 0,		(void *) 0		},//8
+	{d_rtext_proc,		320,	112,	0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)"Joystick select:",				(void *) 0,		(void *) 0		},//9
+	{d_edit_proc,		320,	192,	224,	8,		WHITE,	0,		0,		0,			sizeof(cfgW)-1,			0,		(void *)cfgW,							(void *) NULL,	(void *) NULL	},//10
+	{d_edit_proc,		320,	208,	224,	8,		WHITE,	0,		0,		0,			sizeof(cfgH)-1,			0,		(void *)cfgH,							(void *) NULL,	(void *) NULL	},//11
+	{d_rtext_proc,		320,	192,	0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)"Screen/window width:",			(void *) 0,		(void *) 0		},//12
+	{d_rtext_proc,		320,	208,	0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)"Screen/window height:",		(void *) 0,		(void *) 0		},//13
+	{d_rtext_proc,		320,	48,		0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)"MIDI Driver:",					(void *) 0,		(void *) 0		},//14
+	{d_ctext_proc,		320,	0,		0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)"CONFIGURATION",				(void *) 0,		(void *) 0		},//15
+	{d_button_proc,		380,	432,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Restore default and leave",	(void *) 0,		(void *) 0		},//16
+	{NULL,				0,		0,		0,		0,		0,		0,		0,		0,			0,						0,		(void *)0,					(void *) 0,		(void *) 0	}
 };
-*/
-void ConfigurationOptions()
+
+void CfgLoad()
 {
+	std::strcpy(cfgW, Itoa(get_config_int("gfxmode", "width", 640)).c_str());
+	std::strcpy(cfgH, Itoa(get_config_int("gfxmode", "height", 480)).c_str());
+	cfgFull = get_config_int("gfxmode", "fullscreen", 0);
+	cfgZoom = get_config_int("gfxmode", "zoomin", 0);
+	LoadControls();
+}
+
+void CfgSave()
+{
+	set_config_int("gfxmode", "fullscreen", cfgFull);
+	set_config_int("gfxmode", "zoomin", cfgZoom);
+	
+	set_config_int("gfxmode", "width", std::atoi(cfgW));
+	set_config_int("gfxmode", "height", std::atoi(cfgH));
+	
+	SaveControls();
+}
+
+void DoConfiguration()
+{
+	std::cout << numMIDIs;
+	LoadControls();
+	
+	int ret;
+	while((ret = do_dialog(cfgDialog, -1)) != 5)
+	{
+		switch(ret)
+		{
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+		}
+	}
 }
 
 void SwitchOut()
 {
 	game.shallPause = true;
+}
+
+int MainMenu()
+{
+	clear(screen);
+	
+	const char *strings[] = {"PLAY", "OPTIONS", "QUIT"};
+	int colorSel = 0xFFFF00;
+	int colorNot = 0xFFFFFF;
+	
+	int i;
+	int y;
+	int sel = 0;
+	
+	while(true)
+	{
+		for(i = 0, y = screen->h / 4; i < 3; i++, y += screen->h / 4)
+		{
+			textout_centre_ex(screen, font, strings[i], 320, y, (i == sel) ? colorSel : colorNot, 0);
+		}
+		UpdateKeys();
+		if(upKey == KeyDown) sel = (sel + 2) % 3;
+		if(downKey == KeyDown) sel = (sel + 1) % 3;
+		
+		if((aKey == KeyDown) || (sKey == KeyDown) || (xKey == KeyDown) || (cKey == KeyDown)) return sel;
+	}
 }
 
 int main(int argc, char **argv)
@@ -51,7 +209,7 @@ int main(int argc, char **argv)
 	srand(time(0));
 	allegro_init();
 	set_color_depth(32);
-
+	CheckMIDIs();
 	set_config_file("trog.cfg");
 	fullScreen = get_config_int("gfxmode", "fullscreen", 0);
 	windowW = get_config_int("gfxmode", "width", 640);
@@ -70,10 +228,26 @@ int main(int argc, char **argv)
 
 	LoadControls();
 	
-	game.zoomMode = get_config_int("gfxmode", "zoomin", 0);
-
 	game.Init();
-	game.Start(-1);
+	
+	bool notQuit = true;
+	while(notQuit)
+	{
+		int ret = MainMenu();
+		switch(ret)
+		{
+			case 0:
+				game.zoomMode = get_config_int("gfxmode", "zoomin", 0);
+				game.Start(-1);
+				break;
+			case 1:
+				DoConfiguration();
+				break;
+			case 2:
+				notQuit = false;
+				break;
+		}
+	}
 	return 0;
 }
 END_OF_MAIN();

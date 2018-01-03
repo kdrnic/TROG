@@ -14,6 +14,7 @@ extern bool trogStartKey;
 extern KeyState aKey, sKey, xKey, cKey, f11Key, leftKey, rightKey, upKey, downKey;
 
 void LoadControls();
+void SaveControls();
 
 void UpdateKey(bool key, KeyState &_key);
 void UpdateKeys();
