@@ -5,6 +5,8 @@
 
 #include "Keys.h"
 
+#include "SoundVolume.h"
+
 #include <cstring>
 #include <iostream>
 
@@ -23,7 +25,7 @@ void CheckMIDIs()
 
 char *MIDIDriverGetter(int index, int *list_size)
 {
-	const char *names[] = 
+	const char *names[] =
 	{
 		"None (no music)",
 		"Default OS driver",
@@ -75,7 +77,7 @@ char *MIDIDriverGetter(int index, int *list_size)
 
 char *JoystickGetter(int index, int *list_size)
 {
-	const char *names[] = 
+	const char *names[] =
 	{
 		"Joystick #1",
 		"Joystick #2",
@@ -102,7 +104,7 @@ char *JoystickGetter(int index, int *list_size)
 	else return (char *) names[index];
 }
 
-char cfgW[5], cfgH[5];
+char cfgW[5] = "", cfgH[5] = "";
 bool cfgFull, cfgZoom;
 
 DIALOG cfgDialog[] =
@@ -141,11 +143,41 @@ void CfgSave()
 {
 	set_config_int("gfxmode", "fullscreen", cfgFull);
 	set_config_int("gfxmode", "zoomin", cfgZoom);
-	
+
 	set_config_int("gfxmode", "width", std::atoi(cfgW));
 	set_config_int("gfxmode", "height", std::atoi(cfgH));
-	
+
 	SaveControls();
+}
+
+void CfgApply()
+{
+	bool resGood = true;
+	for(int i = 0; i < 4; i++)
+	{
+		if((i < strlen(cfgW)) && ((cfgW[i] > '9') || (cfgW[i] < '0'))) resGood = false;
+		if((i < strlen(cfgH)) && ((cfgH[i] > '9') || (cfgH[i] < '0'))) resGood = false;
+	}
+	if(!resGood)
+	{
+		strcpy(cfgW, "640");
+		strcpy(cfgH, "480");
+	}
+
+	cfgFull = (cfgDialog[1].flags & D_SELECTED) && true;
+	cfgZoom = (cfgDialog[2].flags & D_SELECTED) && true;
+}
+
+void CfgKb()
+{
+}
+
+void CfgJoy()
+{
+}
+
+void CfgDefaults()
+{
 }
 
 void DoConfiguration()
@@ -153,18 +185,46 @@ void DoConfiguration()
 	std::cout << numMIDIs;
 	LoadControls();
 	
+	if(cfgFull) cfgDialog[1].flags |= D_SELECTED;
+	if(cfgZoom) cfgDialog[2].flags |= D_SELECTED;
+
 	int ret;
 	while((ret = do_dialog(cfgDialog, -1)) != 5)
 	{
 		switch(ret)
 		{
-			case 4:
+			case 4:		//apply
+				CfgApply();
+				if((screen->w != std::atoi(cfgW)) || (screen->h != std::atoi(cfgH)))
+				{
+					if(!set_gfx_mode(cfgFull ? GFX_AUTODETECT_FULLSCREEN : GFX_AUTODETECT_WINDOWED, std::atoi(cfgW), std::atoi(cfgH), 0, 0))
+					{
+						if(alert("Keep this graphics mode?", "If not, configuration won't be saved", "", "Yes", "No", 0, 0) == 1) CfgSave();
+						else
+						{
+							strcpy(cfgW, "640");
+							strcpy(cfgH, "480");
+							set_gfx_mode(cfgFull ? GFX_AUTODETECT_FULLSCREEN : GFX_AUTODETECT_WINDOWED, std::atoi(cfgW), std::atoi(cfgH), 0, 0);
+						}
+					}
+					else
+					{
+						strcpy(cfgW, "640");
+						strcpy(cfgH, "480");
+						set_gfx_mode(cfgFull ? GFX_AUTODETECT_FULLSCREEN : GFX_AUTODETECT_WINDOWED, std::atoi(cfgW), std::atoi(cfgH), 0, 0);
+					}
+				}
 				break;
-			case 5:
+			case 5:		//leave
 				break;
-			case 6:
+			case 6:		//kb
+				CfgKb();
 				break;
-			case 7:
+			case 7:		//joy
+				CfgJoy();
+				break;
+			case 16:	//leave default
+				CfgDefaults();
 				break;
 		}
 	}
@@ -178,15 +238,15 @@ void SwitchOut()
 int MainMenu()
 {
 	clear(screen);
-	
+
 	const char *strings[] = {"PLAY", "OPTIONS", "QUIT"};
 	int colorSel = 0xFFFF00;
 	int colorNot = 0xFFFFFF;
-	
+
 	int i;
 	int y;
 	int sel = 0;
-	
+
 	while(true)
 	{
 		for(i = 0, y = screen->h / 4; i < 3; i++, y += screen->h / 4)
@@ -196,7 +256,7 @@ int MainMenu()
 		UpdateKeys();
 		if(upKey == KeyDown) sel = (sel + 2) % 3;
 		if(downKey == KeyDown) sel = (sel + 1) % 3;
-		
+
 		if((aKey == KeyDown) || (sKey == KeyDown) || (xKey == KeyDown) || (cKey == KeyDown)) return sel;
 	}
 }
@@ -208,28 +268,29 @@ int main(int argc, char **argv)
 
 	srand(time(0));
 	allegro_init();
-	set_color_depth(32);
-	CheckMIDIs();
-	set_config_file("trog.cfg");
-	fullScreen = get_config_int("gfxmode", "fullscreen", 0);
-	windowW = get_config_int("gfxmode", "width", 640);
-	windowH = get_config_int("gfxmode", "height", 480);
 
-	set_gfx_mode(fullScreen ? GFX_AUTODETECT_FULLSCREEN : GFX_AUTODETECT_WINDOWED, windowW, windowH, 0, 0);
 	install_keyboard();
 	install_mouse();
 	install_timer();
 	install_joystick(JOY_TYPE_AUTODETECT);
+
+	set_color_depth(32);
+
+	CheckMIDIs();
+	set_config_file("trog.cfg");
+
+	CfgLoad();
+
+	set_gfx_mode(cfgFull ? GFX_AUTODETECT_FULLSCREEN : GFX_AUTODETECT_WINDOWED, std::atoi(cfgW), std::atoi(cfgH), 0, 0);
 	install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, 0);
 
 	set_window_title("The Revenge of Gregorius");
 	set_display_switch_mode(SWITCH_BACKGROUND);
 	set_display_switch_callback(SWITCH_OUT, &SwitchOut);
-
-	LoadControls();
 	
+	LoadSoundVolumes("sounds.cfg");
 	game.Init();
-	
+
 	bool notQuit = true;
 	while(notQuit)
 	{
@@ -237,7 +298,7 @@ int main(int argc, char **argv)
 		switch(ret)
 		{
 			case 0:
-				game.zoomMode = get_config_int("gfxmode", "zoomin", 0);
+				game.zoomMode = cfgZoom;
 				game.Start(-1);
 				break;
 			case 1:

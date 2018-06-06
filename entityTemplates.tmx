@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="15" tileheight="15" nextobjectid="34">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="15" tileheight="15" nextobjectid="35">
  <objectgroup name="Object Layer 1">
   <object id="4" name="Entity" x="-15" y="-15" width="30" height="30"/>
   <object id="5" name="Button" x="45" y="-15" width="30" height="30">
@@ -94,5 +94,10 @@
   <object id="30" name="Plague" x="-15" y="285" width="30" height="30"/>
   <object id="31" name="Rock" x="45" y="285" width="30" height="30"/>
   <object id="32" name="Saver" x="105" y="285" width="30" height="30"/>
+  <object id="34" name="Teller" x="105" y="105" width="30" height="30">
+   <properties>
+    <property name="text" value=""/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

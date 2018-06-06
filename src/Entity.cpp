@@ -5,6 +5,7 @@
 
 #include "Game.h"
 #include "Entity.h"
+#include "SoundVolume.h"
 
 const float blockWidth = 15.0f;
 const float blockHeight = 15.0f;
@@ -285,7 +286,7 @@ bool Entity::IsBlockFloor(int b)
 
 float Entity::GetFeetHeight()
 {
-	return 15;
+	return 10;
 }
 
 bool Entity::CheckFloor(float &floorX, float &floorY)
@@ -330,5 +331,20 @@ int Entity::PlaySample(const SAMPLE *spl, int vol, int freq)
 	int pan = ((x + (width * 0.5f)) / 630.0f) * 255.0f;
 	if(pan < 0) pan = 0;
 	if(pan > 255) pan = 255;
+
+	//vol = GetSoundVolume(
+
+	return play_sample(spl, vol, pan, freq, 0);
+}
+
+int Entity::PlaySample(const char *name, int vol, int freq)
+{
+	int pan = ((x + (width * 0.5f)) / 630.0f) * 255.0f;
+	if(pan < 0) pan = 0;
+	if(pan > 255) pan = 255;
+
+	SAMPLE *spl = (SAMPLE *) game.GetData(name);
+	vol = (vol * 255) / (GetSoundVolume(std::string(name)));
+
 	return play_sample(spl, vol, pan, freq, 0);
 }

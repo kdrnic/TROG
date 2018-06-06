@@ -30,6 +30,7 @@
 #include "Devil.h"
 #include "Gargoyle.h"
 #include "MusicSetter.h"
+#include "Teller.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -120,8 +121,7 @@ void GameManager::Init()
 	doubleBuffer = create_bitmap(640, 480);
 	transitionBitmap = create_bitmap(630, 420);
 	playArea = create_bitmap(630, 420);
-	if(zoomMode) zoomBuffer = create_bitmap(640, 430);
-
+	
 	hud = (BITMAP *) GetData("gui_hud"); // load_bitmap("hud.bmp", 0);
 	inventoryManager.inventoryBackground = (BITMAP *) GetData("gui_inventory"); // load_bitmap("inventory.bmp", 0);
 	inventoryManager.itemSelection = (BITMAP *) GetData("gui_itemSelection"); // load_bitmap("itemSelection.bmp", 0);
@@ -149,12 +149,17 @@ void GameManager::Init()
 	blip = (SAMPLE *) GetData("snd_blip");
 
 	shallPause = false;
+	
+	zoomBuffer = 0;
 }
 
 void GameManager::Start(int f)
 {
 	file = f;
 	continuePlaying = true;
+	
+	if(zoomMode && (!zoomBuffer)) zoomBuffer = create_bitmap(640, 430);
+	
 	while(continuePlaying)
 	{
 		player = new Player;
@@ -450,6 +455,7 @@ void GameManager::RegisterEntities()
 	REGISTER_ENTITY(Devil)
 	REGISTER_ENTITY(Gargoyle)
 	REGISTER_ENTITY(MusicSetter)
+	REGISTER_ENTITY(Teller)
 	#undef REGISTER_ENTITY
 }
 
