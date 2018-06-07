@@ -3,13 +3,6 @@ DBGOBJDIR=build/objdbg/
 CFLAGS2=$(CFLAGS)
 CFLAGS2+=-Wall -Wuninitialized
 
-ifeq ($(origin CC),default)
-	ifeq ($(OS),Windows_NT)
-		CC=gcc
-		CXX=g++
-	endif
-endif
-
 ifeq ($(CC),clang)
 	ifeq ($(OS),Windows_NT)
 		CFLAGS2+=-target i686-pc-windows-gnu
@@ -22,8 +15,8 @@ CPPFILES=$(wildcard  $(addsuffix /*.cpp,$(SRCDIRS)))
 HEADERFILES=$(wildcard $(addsuffix /*.hpp,$(SRCDIRS)) $(addsuffix /*.h,$(SRCDIRS)))
 OFILES=$(patsubst %.c,%.o,$(CFILES)) $(patsubst %.cpp,%.o,$(CPPFILES))
 
-OBJECTS=$(addprefix $(OBJDIR),OFILES)
-OBJECTS_DBG=$(addprefix $(DBGOBJDIR),OFILES)
+OBJECTS=$(addprefix $(OBJDIR),$(OFILES))
+OBJECTS_DBG=$(addprefix $(DBGOBJDIR),$(OFILES))
 
 ifeq ($(USE_LOADPNG),1)
 	LDPNG_LIBS=-lloadpng -lpng -lz
