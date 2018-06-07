@@ -117,7 +117,7 @@ DIALOG cfgDialog[] =
 	{d_button_proc,		60,		464,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Apply and save",				(void *) 0,		(void *) 0		},//4
 	{d_button_proc,		380,	464,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Leave (without saving)",		(void *) 0,		(void *) 0		},//5
 	{d_button_proc,		60,		224,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Configure keyboard input",		(void *) 0,		(void *) 0		},//6
-	{d_button_proc,		380,	224,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Configure joystick input",	(void *) 0,		(void *) 0		},//7
+	{d_button_proc,		380,	224,	200,	16,		WHITE,	0,		0,		D_EXIT,		0,						0,		(void *)"Configure joystick input",		(void *) 0,		(void *) 0		},//7
 	{d_list_proc,		320,	112,	280,	48,		WHITE,	0,		0,		0,			0,						0,		(void *)JoystickGetter,					(void *) 0,		(void *) 0		},//8
 	{d_rtext_proc,		320,	112,	0,		0,		WHITE,	0,		0,		0,			0,						0,		(void *)"Joystick select:",				(void *) 0,		(void *) 0		},//9
 	{d_edit_proc,		320,	192,	224,	8,		WHITE,	0,		0,		0,			sizeof(cfgW)-1,			0,		(void *)cfgW,							(void *) NULL,	(void *) NULL	},//10
