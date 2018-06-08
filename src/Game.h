@@ -8,9 +8,9 @@
 #include "EntitiesManager.h"
 #include "InventoryManager.h"
 #include "Factory.h"
-#include "JsEngine.h"
 
 class Player;
+class JsEngine;
 
 enum GameState
 {
@@ -46,7 +46,7 @@ class GameManager
 		InventoryManager inventoryManager;
 		Factory<Item *> itemsFactory;
 		Factory<Entity *> entitiesFactory;
-		JsEngine scriptEngine;
+		JsEngine *scriptEngine;
 		Player *player;
 		int frame;
 		int file;

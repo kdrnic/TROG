@@ -2,6 +2,8 @@
 
 #include <allegro.h>
 
+#include "JsEngine.h"
+
 #include "Player.h"
 
 #include "BarbedWire.h"
@@ -114,7 +116,9 @@ void GameManager::Init()
 
 	RegisterEntities();
 	RegisterItems();
-
+	
+	scriptEngine = new JsEngine();
+	
 	mapManager.LoadTileSet("tiles/tileset.tls");
 	mapManager.LoadAllMaps("maps/map");
 
