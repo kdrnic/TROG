@@ -8,6 +8,7 @@
 #include "EntitiesManager.h"
 #include "InventoryManager.h"
 #include "Factory.h"
+#include "JsEngine.h"
 
 class Player;
 
@@ -45,6 +46,7 @@ class GameManager
 		InventoryManager inventoryManager;
 		Factory<Item *> itemsFactory;
 		Factory<Entity *> entitiesFactory;
+		JsEngine scriptEngine;
 		Player *player;
 		int frame;
 		int file;

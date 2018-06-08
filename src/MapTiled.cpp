@@ -256,6 +256,12 @@ void MapTiled::Load(std::istream &is)
 	}
 	
 	xml_node n_objects = n_map.child("objectgroup");
+	for(;
+		(!n_objects.attribute("name")) ||
+		(std::string(n_objects.attribute("name").value()).find("autotile_") == 0);
+		n_objects = n_objects.next_sibling("objectgroup"))
+	{
+	}
 	if(n_objects)
 	{
 		for(xml_node n_object = n_objects.child("object"); n_object; n_object = n_object.next_sibling("object"))
@@ -295,7 +301,23 @@ void MapTiled::Load(std::istream &is)
 			entities.push_back(entity);
 		}
 	}
-	else WARN("No objects group found");
+	else WARN("No entities objects group found");
+	
+	for(
+		n_objects = n_map.child("objectgroup");
+		n_objects;
+		n_objects = n_objects.next_sibling("objectgroup"))
+	{
+		if((!n_objects.attribute("name")) || (std::string(n_objects.attribute("name").value()).find("autotile_") != 0)) continue;
+		for(xml_node n_object = n_objects.child("object"); n_object; n_object = n_object.next_sibling("object"))
+		{
+			int x = std::atoi(n_object.attribute("x").value());
+			int y = std::atoi(n_object.attribute("y").value());
+			int w = std::atoi(n_object.attribute("width").value());
+			int h = std::atoi(n_object.attribute("height").value());
+			
+		}
+	}
 	
 	delete [] blocksLayer;
 	
