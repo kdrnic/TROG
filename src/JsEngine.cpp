@@ -22,12 +22,19 @@ void JsEngine::OnError(std::string msg)
 {
 }
 
+#define BEGIN_PUSH													\
+	if(state != StateCall && state != StateSet) err = ErrWhyPush;	\
+	if(err) return this;											\
+	numArgs++;
+#define END_PUSH							\
+	if(state == StateSet) return EndSet();	\
+	return this;
+
 JsEngine *JsEngine::PushNumber(double d)
 {
-	if(err) return this;
-	numArgs++;
+	BEGIN_PUSH
 	duk_push_number(ctx, d);
-	return this;
+	END_PUSH
 }
 
 #define PUSH_BUFFER(type)											\
@@ -39,77 +46,75 @@ JsEngine *JsEngine::PushNumber(double d)
 
 JsEngine *JsEngine::PushBuffer(unsigned int *b, int len)
 {
-	if(err) return this;
-	numArgs++;
+	BEGIN_PUSH
 	PUSH_BUFFER(DUK_BUFOBJ_UINT32ARRAY)
-	return this;
+	END_PUSH
 }
 
 JsEngine *JsEngine::PushBuffer(int *b, int len)
 {
-	if(err) return this;
-	numArgs++;
+	BEGIN_PUSH
 	PUSH_BUFFER(DUK_BUFOBJ_INT32ARRAY)
-	return this;
+	END_PUSH
 }
 
 JsEngine *JsEngine::PushString(std::string s)
 {
-	if(err) return this;
-	numArgs++;
+	BEGIN_PUSH
 	duk_push_string(ctx, s.c_str());
-	return this;
+	END_PUSH
 }
 
 JsEngine *JsEngine::PushTable(std::map<std::string, std::string> *m)
 {
-	if(err) return this;
-	numArgs++;
+	BEGIN_PUSH
 	duk_push_object(ctx);
 	for(std::map<std::string, std::string>::iterator it = m->begin(); it != m->end(); it++)
 	{
 		duk_push_string(ctx, it->second.c_str());
 		duk_put_prop_string(ctx, -1, it->first.c_str());
 	}
-	return this;
+	END_PUSH
 }
 
+JsEngine *JsEngine::PushCFunction(void *f, int nargs)
+{
+	BEGIN_PUSH
+	duk_push_c_function(ctx, (duk_c_function) f, nargs);
+	END_PUSH
+}
+
+#define BEGIN_POP_					\
+	if(OnPop()) return err;
+#define BEGIN_POP(typ)				\
+	BEGIN_POP_						\
+	if(!duk_is_ ## typ(ctx, -1))	\
+	{								\
+		return (err = ErrPopType);	\
+	}
+#define END_POP						\
+	OnEnd();						\
+	return ErrNone;
 
 JsEngine::JsEngineError JsEngine::PopNumberTo(double *d)
 {
-	if(OnPop()) return err;
-	if(!duk_is_number(ctx, -1))
-	{
-		return (err = ErrPopType);
-	}
+	BEGIN_POP(number)
 	*d = duk_get_number(ctx, -1);
 	duk_pop(ctx);
-	
-	OnEnd();
-	return ErrNone;
+	END_POP
 }
 
 JsEngine::JsEngineError JsEngine::PopStringTo(std::string *s)
 {
-	if(OnPop()) return err;
-	if(!duk_is_string(ctx, -1))
-	{
-		return (err = ErrPopType);
-	}
+	BEGIN_POP(string)
 	*s = duk_get_string(ctx, -1);
 	duk_pop(ctx);
-	
-	OnEnd();
-	return ErrNone;
+	END_POP
 }
 
 JsEngine::JsEngineError JsEngine::PopTableTo(std::map<std::string, std::string> *m)
 {
-	if(OnPop()) return err;
-	if(!duk_is_object(ctx, -1))
-	{
-		return (err = ErrPopType);
-	}
+	BEGIN_POP(object)
 	duk_enum(ctx, -1, 0);
 	while(duk_next(ctx, -1, 1))
 	{
@@ -117,18 +122,14 @@ JsEngine::JsEngineError JsEngine::PopTableTo(std::map<std::string, std::string> 
 		duk_pop_2(ctx);
 	}
 	duk_pop_2(ctx);
-	
-	OnEnd();
-	return ErrNone;
+	END_POP
 }
 
 JsEngine::JsEngineError JsEngine::Pop()
 {
-	if(OnPop()) return err;
+	BEGIN_POP_
 	duk_pop(ctx);
-	
-	OnEnd();
-	return ErrNone;
+	END_POP
 }
 
 void JsEngine::OnEnd()
@@ -231,5 +232,31 @@ JsEngine *JsEngine::Call(std::string f)
 	{
 		err = ErrBusy;
 	}
+	return this;
+}
+
+JsEngine *JsEngine::Set(std::string n)
+{
+	if(state == StateNone)
+	{
+		state = StateSet;
+		toSet = n;
+	}
+	else
+	{
+		err = ErrBusy;
+	}
+	return this;
+}
+
+JsEngine *JsEngine::EndSet()
+{
+	if(duk_get_top(ctx) != 0)
+	{
+		err = ErrSetNoValue;
+		return 0;
+	}
+	duk_put_global_string(ctx, toSet.c_str());
+	state = StateNone;
 	return this;
 }

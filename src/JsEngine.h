@@ -20,7 +20,9 @@ class JsEngine
 			ErrEval,
 			ErrNothingToDo,
 			ErrBusy,
-			ErrNotCallable
+			ErrNotCallable,
+			ErrWhyPush,
+			ErrSetNoValue
 		};
 		
 		JsEngine *PushNumber(double d);
@@ -28,6 +30,7 @@ class JsEngine
 		JsEngine *PushBuffer(int *b, int len);
 		JsEngine *PushString(std::string s);
 		JsEngine *PushTable(std::map<std::string, std::string> *m);
+		JsEngine *PushCFunction(void *f, int nargs);
 		
 		JsEngineError PopNumberTo(double *d);
 		JsEngineError PopStringTo(std::string *s);
@@ -36,6 +39,7 @@ class JsEngine
 		
 		JsEngine *Eval(std::string c);
 		JsEngine *Call(std::string f);
+		JsEngine *Set(std::string n);
 		
 		virtual void OnError(std::string msg);
 		
@@ -48,17 +52,19 @@ class JsEngine
 		duk_context *ctx;
 		void *heapUdata;
 		int numArgs;
-		std::string toEval;
+		std::string toEval, toSet;
 		enum JsEngineState
 		{
 			StateNone,
 			StateCall,
-			StateEval
+			StateEval,
+			StateSet
 		};
 		JsEngineState state;
 		
 		int OnPop();
 		void OnEnd();
+		JsEngine *EndSet();
 };
 
 #endif
