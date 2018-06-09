@@ -13,7 +13,7 @@ class KnifeSkeleton : public Enemy
 		int seeDistance;
 		float walkSpeed;
 		int walkAnimSpeed, attackAnimSpeed;
-		int visibilityCounter, visibilityTime, followTurnTime;
+		int followTurnTime;
 		int randomWalkCounter, randomWalkTime;
 		int attackCooldown;
 

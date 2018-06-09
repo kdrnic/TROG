@@ -256,6 +256,6 @@ std::string DatafileToString(DATAFILE *d)
 	memcpy(cstr, d->dat, d->size);
 	cstr[d->size] = 0;
 	std::string cppStr(cstr);
-	delete cstr;
+	delete[] cstr;
 	return cppStr;
 }

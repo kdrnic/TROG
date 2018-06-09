@@ -36,6 +36,7 @@ class Entity
 		void GetCenter(int &x, int &y);
 		
 		Entity();
+		virtual ~Entity(){};
 	protected:
 		virtual bool IsEntitySolid(Entity *e);
 		virtual bool IsBlockSolid(int b);

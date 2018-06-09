@@ -631,6 +631,8 @@ void GameManager::Update()
 				}
 			}
 			break;
+		default:
+			break;
 	}
 	UpdateKeys();
 	//std::cout << "A " << aKey << " S " << sKey << " X " << xKey << " C " << cKey << " l " << leftKey << " r " << rightKey << " u " << upKey << " d " << downKey << "\n";
@@ -737,7 +739,7 @@ void GameManager::Draw()
 
 		if(continuePlaying) blit(continueBg, doubleBuffer, 0, 0, bgx, bgy, 109, 52);
 		else blit(continueBg, doubleBuffer, 0, 52, bgx, bgy, 109, 52);
-		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5, 0, -1, captions[gameState == GameStateQuit]);
+		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5, 0, -1, "%s", captions[gameState == GameStateQuit]);
 		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5 + 14, 0, -1, " Continue");
 		textprintf_ex(doubleBuffer, dialogFont, bgx + 5, bgy + 5 + 14 + 14, 0, -1, " Quit");
 	}

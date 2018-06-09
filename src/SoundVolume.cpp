@@ -13,7 +13,7 @@ void LoadSoundVolumes(const char *filename)
 	
 	if(!inf) return;
 	
-	while(fscanf(inf, "%s,%d", soundName, &vol) == 2) soundVolumes[std::string(soundName)] == vol;
+	while(fscanf(inf, "%s,%d", soundName, &vol) == 2) soundVolumes[std::string(soundName)] = vol;
 	
 	fclose(inf);
 }

@@ -23,14 +23,16 @@ void CheckMIDIs()
 	numMIDIs = (availableMIDIs[0]) + (availableMIDIs[1]) + (availableMIDIs[2]);
 }
 
+const char *MIDIDriverGetter_names[] =
+{
+	"None (no music)",
+	"Default OS driver",
+	"Allegro synth (uses patches.dat)"
+};
+
 char *MIDIDriverGetter(int index, int *list_size)
 {
-	const char *names[] =
-	{
-		"None (no music)",
-		"Default OS driver",
-		"Allegro synth (uses patches.dat)"
-	};
+	char **names = (char **) MIDIDriverGetter_names;
 	if(index < 0)
 	{
 		*list_size = numMIDIs;
@@ -73,6 +75,7 @@ char *MIDIDriverGetter(int index, int *list_size)
 			return (char *) names[index];
 		}
 	}
+	return names[0];
 }
 
 char *JoystickGetter(int index, int *list_size)
@@ -263,9 +266,6 @@ int MainMenu()
 
 int main(int argc, char **argv)
 {
-	bool fullScreen;
-	int windowW, windowH;
-
 	srand(time(0));
 	allegro_init();
 

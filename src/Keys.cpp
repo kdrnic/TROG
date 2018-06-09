@@ -9,7 +9,7 @@ void UpdateKey(bool key, KeyState &_key)
 {
 	if(key)
 	{
-		if((_key == KeyUnpressed) || (key == KeyUp)) _key = KeyDown;
+		if((_key == KeyUnpressed) || (_key == KeyUp)) _key = KeyDown;
 		else _key = KeyPressed;
 	}
 	if(!key)

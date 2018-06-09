@@ -24,7 +24,8 @@ class Vampire : public SpriteEntity
 		int teleportDistance;
 		int destX, destY;
 		bool axis;
-		int speed, animSpeed;
+		float speed;
+		int animSpeed;
 		int batCounter, batTime, maxBats;
 		int dieCountdown, dieTime, diePoofDelay;
 		int blinkingCounter, blinkingTime, blinkingHz;

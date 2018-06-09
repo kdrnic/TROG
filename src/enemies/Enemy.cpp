@@ -145,6 +145,7 @@ bool Enemy::MoveSmart(float speed)
 {
 	switch(orientation)
 	{
+		default:
 		case 0:
 			return MoveSmart(0, -speed);
 		case 1:

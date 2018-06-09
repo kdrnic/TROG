@@ -21,6 +21,8 @@ class Item
 		{
 			amount = a;
 		}
+		
+		virtual ~Item(){};
 };
 
 #endif

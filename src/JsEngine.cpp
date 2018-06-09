@@ -191,7 +191,7 @@ int JsEngine::OnPop()
 				return 1;
 			}
 			return 0;
-		case StateNone:
+		default:
 			err = ErrNothingToDo;
 			return 1;
 	}

@@ -11,7 +11,7 @@ class Enemy : public SpriteEntity
 		typedef Entity(*(*CreateDropFunction)());
 		
 		int health;
-		int hitJump;
+		float hitJump;
 		
 		virtual bool Is(std::string what);
 		virtual void Update();
@@ -26,7 +26,7 @@ class Enemy : public SpriteEntity
 		void Drop();
 		
 		Enemy();
-	
+		
 	protected:
 		int noDropChance;
 		
