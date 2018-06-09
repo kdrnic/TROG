@@ -55,24 +55,28 @@ $(DBGOBJDIR)%.o: %.cpp $(HEADERFILES)
 	$(CXX) $(INCLUDE_PATHS) -g $(CFLAGS2) $< -c -o $@
 
 clean:
-	rm -f $(OBJDIR)*.o
-	rm -f $(DBGOBJDIR)*.o
+	rm -f -r $(OBJDIR)
+	rm -f -r $(DBGOBJDIR)
+
+build/obj/src:
+	mkdir build\obj\src
+	xcopy /t /e src build\obj\src\
+
+build/objdbg/src:
+	mkdir build\objdbg\src
+	xcopy /t /e src build\objdbg\src\
 
 build/obj:
-	cd build
-	mkdir obj
-	cd ..
+	mkdir build\obj
 
 build/objdbg:
-	cd build
-	mkdir objdbg
-	cd ..
+	mkdir build\objdbg
 
 build:
 	mkdir build
 
-objs: build/obj $(OBJECTS)
-objsdbg: build/objdbg $(OBJECTS_DBG)
+objs: build/obj build/obj/src $(OBJECTS)
+objsdbg: build/objdbg build/objdbg/src $(OBJECTS_DBG)
 
 regular: build objs
 	$(CXX) $(LINK_PATHS) $(LINK_FLAGS) $(CFLAGS2) $(OBJECTS) -o build/game.exe $(LDPNG_LIBS) -lalleg -lm
