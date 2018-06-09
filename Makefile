@@ -14,6 +14,10 @@ CFILES=$(wildcard $(addsuffix /*.c,$(SRCDIRS)))
 CPPFILES=$(wildcard  $(addsuffix /*.cpp,$(SRCDIRS)))
 HEADERFILES=$(wildcard $(addsuffix /*.hpp,$(SRCDIRS)) $(addsuffix /*.h,$(SRCDIRS)))
 OFILES=$(patsubst %.c,%.o,$(CFILES)) $(patsubst %.cpp,%.o,$(CPPFILES))
+DFILES=$(patsubst %.c,%.d,$(CFILES)) $(patsubst %.cpp,%.d,$(CPPFILES))
+DEPDIRS=$(addprefix deps/,$(SRCDIRS))
+EXISTING_DFILES=$(wildcard  $(addsuffix /*.d,$(DEPDIRS)))
+TOBUILD_DFILES=$(addprefix deps/,$(DFILES))
 
 OBJECTS=$(addprefix $(OBJDIR),$(OFILES))
 OBJECTS_DBG=$(addprefix $(DBGOBJDIR),$(OFILES))
@@ -41,6 +45,14 @@ ifeq ($(OS),Windows_NT)
 		LINK_PATHS+=-L$(LDPNG_PATH)lib
 	endif
 endif
+
+include $(EXISTING_DFILES)
+
+deps/%.d: %.c
+	$(CC) $(INCLUDE_PATHS) -MM $< > $@
+
+deps/%.d: %.cpp
+	$(CC) $(INCLUDE_PATHS) -MM $< > $@
 
 $(OBJDIR)%.o: %.c $(HEADERFILES)
 	$(CC) $(INCLUDE_PATHS) $(CFLAGS2) $< -c -o $@
@@ -75,6 +87,9 @@ build/objdbg:
 build:
 	mkdir build
 
+deps:
+	xcopy /t /e src deps\src\
+
 objs: build/obj build/obj/src $(OBJECTS)
 objsdbg: build/objdbg build/objdbg/src $(OBJECTS_DBG)
 
@@ -83,3 +98,5 @@ regular: build objs
 
 debug: build objsdbg
 	$(CXX) $(LINK_PATHS) $(LINK_FLAGS) -g $(CFLAGS2) $(OBJECTS_DBG) -o build/game_dbg.exe $(LDPNG_LIBS) -lalleg -lm
+
+depend: deps $(TOBUILD_DFILES)
