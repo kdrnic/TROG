@@ -37,7 +37,7 @@ class MapTiled : public Map
 		
 		unsigned int **layers;
 		
-		bool LoadTileLayer(unsigned int *layer, xml_node n_data);
+		bool LoadTileLayer(unsigned int *layer, void *n_data);
 		void CallAutoTiler(std::string type, unsigned int *autoLayer);
 };
 

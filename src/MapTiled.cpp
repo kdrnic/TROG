@@ -27,8 +27,9 @@ int TilesetCompare(const void *a, const void *b)
 	return 0;
 }
 
-bool MapTiled::LoadTileLayer(unsigned int *layer, xml_node n_data)
+bool MapTiled::LoadTileLayer(unsigned int *layer, void *n_data_ptr)
 {
+	xml_node n_data = *((xml_node *) n_data_ptr);
 	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << (e) << "\n"; failure = true; return true; }
 	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
 	if(!n_data) ERROR("Layer data not found");
@@ -237,17 +238,20 @@ void MapTiled::Load(std::istream &is)
 	for(int i = 0; i < numberOfLayers; i++)
 	{
 		layers[i] = new unsigned int[42 * 28];
-		if(LoadTileLayer(layers[i], n_layers[i].child("data"))) return;
+		xml_node n_data = n_layers[i].child("data");
+		if(LoadTileLayer(layers[i], (void *) &n_data)) return;
 	}
 	if(n_blocksLayer)
 	{
 		blocksLayer = new unsigned int[42 * 28];
-		if(LoadTileLayer(blocksLayer, n_blocksLayer.child("data"))) return;
+		xml_node n_data = n_blocksLayer.child("data");
+		if(LoadTileLayer(blocksLayer, (void *) &n_data)) return;
 	}
 	for(unsigned int i = 0; i < n_autotiles.size(); i++)
 	{
 		unsigned int *autoLayer = new unsigned int[42 * 28];
-		if(LoadTileLayer(autoLayer, n_autotiles[i].child("data"))) return;
+		xml_node n_data = n_autotiles[i].child("data");
+		if(LoadTileLayer(autoLayer, (void *) &n_data)) return;
 		CallAutoTiler(std::string(n_autotiles[i].attribute("name").value()).substr(sizeof("autotile_")), autoLayer);
 	}
 	
