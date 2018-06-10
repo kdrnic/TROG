@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "JsEngine.h"
 #include "Utils.h"
 #include "Player.h"
 #include "NPC.h"
@@ -13,6 +14,10 @@ void NPC::SetParameter(std::string p, std::string v)
 	{
 		skin = std::atoi(v.c_str());
 		return;
+	}
+	if(p == "script")
+	{
+		script = v;
 	}
 	if(p == "text")
 	{
@@ -68,6 +73,16 @@ void NPC::SetParameter(std::string p, std::string v)
 
 void NPC::Interact()
 {
+	if(!script.empty())
+	{
+		int err;
+		if(!game.scriptEngine->Set("self")->PushPointer((void *) this))
+		{
+		}
+		else if((err = game.scriptEngine->Eval(script)->Pop()))
+		{
+		}
+	}
 	for(int i = 0; i < text.size(); i++) game.PushDialogLine(text[i]);
 	frameStart = skin * 4;
 	frameEnd = skin * 4;
@@ -166,4 +181,5 @@ NPC::NPC()
 	skin = 0;
 	MoveToFreeSpot();
 	agitation = 8;
+	script = "";
 }

@@ -4,6 +4,7 @@
 #include "EventEntity.h"
 
 #include <vector>
+#include <string>
 
 class NPC : public EventEntity
 {
@@ -16,6 +17,7 @@ class NPC : public EventEntity
 		NPC();
 	private:
 		std::vector<std::string> text;
+		std::string script;
 		int skin;
 		bool walking;
 		int walkTime;
