@@ -135,6 +135,21 @@ void GameManager::Init()
 	scriptEngine = new JsEngine();
 	InitJsGameFuncs();
 	
+	std::string jsMainSrc;
+	int jsErr;
+	if(HasData("js_main"))
+	{
+		jsMainSrc = DatafileToString((DATAFILE *) GetData("js_main"));
+	}
+	else
+	{
+		jsMainSrc = ReadWholeTextFile("main.js");
+	}
+	if((jsErr = scriptEngine->Eval(jsMainSrc)->Pop()))
+	{
+		std::cout << "main.js error: " << jsErr << "\n";
+	}
+	
 	mapManager.LoadTileSet("tiles/tileset.tls");
 	mapManager.LoadAllMaps("maps/map");
 
