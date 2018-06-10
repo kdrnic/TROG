@@ -11,6 +11,7 @@
 
 class Player;
 class JsEngine;
+class FileWatchManager;
 
 enum GameState
 {
@@ -47,12 +48,14 @@ class GameManager
 		Factory<Item *> itemsFactory;
 		Factory<Entity *> entitiesFactory;
 		JsEngine *scriptEngine;
+		FileWatchManager *fileWatchManager;
 		Player *player;
 		int frame;
 		int file;
 		bool tampered;
 		bool shallPause;
 		bool zoomMode;
+		bool updateFiles;
 
 		void *GetData(const char *name);
 		bool HasData(const char *name);
