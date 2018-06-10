@@ -344,6 +344,7 @@ int Entity::PlaySample(const char *name, int vol, int freq)
 	if(pan > 255) pan = 255;
 
 	SAMPLE *spl = (SAMPLE *) game.GetData(name);
+	if(!spl) return -999;
 	vol = (vol * 255) / (GetSoundVolume(std::string(name)));
 
 	return play_sample(spl, vol, pan, freq, 0);
