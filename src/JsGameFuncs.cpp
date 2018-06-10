@@ -1,4 +1,6 @@
 #include <cmath>
+#include <string>
+#include <map>
 #include <iostream>
 
 #include <allegro.h>
@@ -213,6 +215,43 @@ JS_FUNC(PlaySample)
 	return 0;
 }
 
+JS_FUNC(ConsolePrint)
+{
+	if(duk_is_string(ctx, 0))
+	{
+		std::cout << duk_get_string(ctx, 0) << "\n";
+	}
+	return 0;
+}
+
+JS_FUNC(Spawn)
+{
+	std::string type;
+	std::map<std::string, std::string> params;
+	if(!duk_is_string(ctx, 0)) return 0;
+	type = duk_get_string(ctx, 0);
+	if(duk_is_object(ctx, 1))
+	{
+		duk_enum(ctx, 1, 0);
+		while(duk_next(ctx, -1, 1))
+		{
+			if(duk_is_string(ctx, -1)) params[duk_get_string(ctx, -2)] = duk_get_string(ctx, -1);
+			duk_pop_2(ctx);
+		}
+		duk_pop(ctx);
+	}
+	
+	Entity *e = game.entitiesFactory.Create(type);
+	for(std::map<std::string, std::string>::iterator it = params.begin() ; it != params.end(); ++it)
+	{
+		e->SetParameter(it->first, it->second);
+	}
+	e->mapId = -999;
+	game.entitiesManager.Add(e);
+	PushEntity(ctx, e);
+	return 1;
+}
+
 void InitJsGameFuncs()
 {
 	#define CHECK_ERR(a) if(game.scriptEngine->err)\
@@ -235,4 +274,6 @@ void InitJsGameFuncs()
 	PUSHFUNC(Blink, 2)
 	PUSHFUNC(Teleport, 3)
 	PUSHFUNC(PlaySample, DUK_VARARGS)
+	PUSHFUNC(ConsolePrint, 1)
+	PUSHFUNC(Spawn, DUK_VARARGS)
 }
