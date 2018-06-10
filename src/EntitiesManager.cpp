@@ -162,3 +162,14 @@ int EntitiesManager::FilterEntities(std::string what, Entity **foundEntities, in
 	}
 	return j;
 }
+
+Entity *EntitiesManager::GetByMapId(int mapId)
+{
+	for(std::list<Entity *>::iterator i = entities.begin(); i != entities.end(); i++)
+	{
+		if((*i)->alive == false) continue;
+		if((*i)->persistent) continue;
+		if((*i)->mapId == mapId) return (*i);
+	}
+	return 0;
+}

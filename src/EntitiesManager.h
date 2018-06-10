@@ -26,6 +26,7 @@ class EntitiesManager : public GameDrawer
 		int Count(std::string w);
 		int Count();
 		int FilterEntities(std::string what, Entity **entities, int maxEntities);
+		Entity *GetByMapId(int mapId);
 	private:
 		std::list<Entity *> entities;
 		std::list<Entity *>::iterator drawIt;
