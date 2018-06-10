@@ -905,7 +905,8 @@ void GameManager::Play()
 
 	remove_int(Ticker);
 	remove_int(SaveFrame);
-
+	
+	midi_pause();
 }
 
 void GameManager::SetQuestState(std::string s, std::string v)
