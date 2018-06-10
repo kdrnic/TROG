@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#ifndef JSENGINE_CPP
+#ifndef DUKTAPE_H_INCLUDED
 struct duk_context;
 #endif
 
@@ -30,6 +30,7 @@ class JsEngine
 		JsEngine *PushBuffer(int *b, int len);
 		JsEngine *PushString(std::string s);
 		JsEngine *PushTable(std::map<std::string, std::string> *m);
+		JsEngine *PushPointer(void *p);
 		JsEngine *PushCFunction(void *f, int nargs);
 		
 		JsEngineError PopNumberTo(double *d);
@@ -55,7 +56,7 @@ class JsEngine
 		std::string toEval, toSet;
 		enum JsEngineState
 		{
-			StateNone,
+			StateNone = 0,
 			StateCall,
 			StateEval,
 			StateSet

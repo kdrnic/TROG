@@ -1,5 +1,3 @@
-#define JSENGINE_CPP
-
 #include "duktape.h"
 
 #include "JsEngine.h"
@@ -15,6 +13,7 @@ JsEngine::JsEngine()
 	heapUdata = (void *) this;
 	ctx = duk_create_heap(0, 0, 0, heapUdata, FatalHandler);
 	state = StateNone;
+	err = ErrNone;
 	numArgs = 0;
 }
 
@@ -74,6 +73,13 @@ JsEngine *JsEngine::PushTable(std::map<std::string, std::string> *m)
 		duk_push_string(ctx, it->second.c_str());
 		duk_put_prop_string(ctx, -1, it->first.c_str());
 	}
+	END_PUSH
+}
+
+JsEngine *JsEngine::PushPointer(void *p)
+{
+	BEGIN_PUSH
+	duk_push_pointer(ctx, p);
 	END_PUSH
 }
 
@@ -251,7 +257,7 @@ JsEngine *JsEngine::Set(std::string n)
 
 JsEngine *JsEngine::EndSet()
 {
-	if(duk_get_top(ctx) != 0)
+	if(duk_get_top(ctx) <= 0)
 	{
 		err = ErrSetNoValue;
 		return 0;

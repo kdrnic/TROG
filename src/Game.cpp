@@ -3,6 +3,7 @@
 #include <allegro.h>
 
 #include "JsEngine.h"
+#include "JsGameFuncs.h"
 
 #include "Player.h"
 
@@ -118,6 +119,7 @@ void GameManager::Init()
 	RegisterItems();
 	
 	scriptEngine = new JsEngine();
+	InitJsGameFuncs();
 	
 	mapManager.LoadTileSet("tiles/tileset.tls");
 	mapManager.LoadAllMaps("maps/map");
