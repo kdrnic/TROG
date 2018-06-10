@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "duktape.h"
 
 #include "JsEngine.h"
@@ -19,6 +21,7 @@ JsEngine::JsEngine()
 
 void JsEngine::OnError(std::string msg)
 {
+	std::cout << "JsEngine error: " << msg.c_str() << "\n";
 }
 
 #define BEGIN_PUSH													\
