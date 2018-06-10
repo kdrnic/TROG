@@ -11,7 +11,7 @@ class Rat : public HitHurtEnemy
 		bool Is(std::string what);
 		void Update();
 		
-		SAMPLE *GetDyingSound();
+		const char *GetDyingSound();
 		
 		Rat();
 	private:

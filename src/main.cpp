@@ -5,8 +5,6 @@
 
 #include "Keys.h"
 
-#include "SoundVolume.h"
-
 #include <cstring>
 #include <iostream>
 
@@ -288,7 +286,6 @@ int main(int argc, char **argv)
 	set_display_switch_mode(SWITCH_BACKGROUND);
 	set_display_switch_callback(SWITCH_OUT, &SwitchOut);
 	
-	LoadSoundVolumes("sounds.cfg");
 	game.Init();
 
 	bool notQuit = true;

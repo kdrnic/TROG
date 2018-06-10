@@ -91,10 +91,10 @@ void Slime::Update()
 	SpriteEntity::Update();
 }
 
-SAMPLE *Slime::GetDyingSound()
+const char *Slime::GetDyingSound()
 {
 	const char *soundNames[] = {"snd_slime1", "snd_slime2", "snd_slime3"};
-	return (SAMPLE *) game.GetData(soundNames[rand() % 3]);
+	return soundNames[rand() % 3];
 }
 
 Slime::Slime(int fh)

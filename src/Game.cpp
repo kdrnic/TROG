@@ -5,6 +5,8 @@
 #include "JsEngine.h"
 #include "JsGameFuncs.h"
 
+#include "SoundVolume.h"
+
 #include "Player.h"
 
 #include "BarbedWire.h"
@@ -118,6 +120,18 @@ void GameManager::Init()
 	RegisterEntities();
 	RegisterItems();
 	
+	if(HasData("cfg_soundvol"))
+	{
+		std::stringstream ss;
+		ss.str(DatafileToString((DATAFILE *) GetData("cfg_soundvol")));
+		LoadSoundVolumes(ss);
+	}
+	else
+	{
+		std::fstream ss("soundvol.cfg", std::fstream::in);
+		if(ss.is_open()) LoadSoundVolumes(ss);
+	}
+	
 	scriptEngine = new JsEngine();
 	InitJsGameFuncs();
 	
@@ -151,8 +165,6 @@ void GameManager::Init()
 
 	heartSprite = (BITMAP *) GetData("gui_heart"); // load_bitmap("heart.bmp", 0);
 	continueBg = (BITMAP *) GetData("gui_continue"); // load_bitmap("continue.bmp", 0);
-
-	blip = (SAMPLE *) GetData("snd_blip");
 
 	shallPause = false;
 	
@@ -596,7 +608,7 @@ void GameManager::Update()
 				{
 					if(std::isalnum(currentDialogLines[currentDialogLine][dialogProgress]) != 0)
 					{
-						if(dialogProgress % 3 == 0) player->PlaySample(blip, 128);
+						if(dialogProgress % 3 == 0) player->PlaySample("snd_blip", 128);
 					}
 				}
 				dialogProgress++;

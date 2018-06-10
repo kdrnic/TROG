@@ -43,7 +43,7 @@ void Door::Interact()
 	{
 		counter = 0;
 		frameEnd = frameStart + 3;
-		PlaySample((SAMPLE *) game.GetData("snd_door"));
+		PlaySample("snd_door");
 	}
 }
 

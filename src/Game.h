@@ -84,7 +84,6 @@ class GameManager
 		BITMAP *facePicture;
 		BITMAP *heartSprite;
 		BITMAP *continueBg;
-		SAMPLE *blip;
 		
 		std::string currentMusic;
 

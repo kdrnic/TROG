@@ -5,6 +5,8 @@
 
 #include "Trap.h"
 
+static const char *sounds[3] = {"snd_arrow1", "snd_arrow2", "snd_arrow3"};
+
 void Trap::SetParameter(std::string p, std::string v)
 {
 	if(p == "stakeO")
@@ -32,10 +34,6 @@ void Trap::OnTrigger(int t)
 
 Trap::Trap()
 {
-	sounds[0] = (SAMPLE *) game.GetData("snd_arrow1");
-	sounds[1] = (SAMPLE *) game.GetData("snd_arrow2");
-	sounds[2] = (SAMPLE *) game.GetData("snd_arrow3");
-	
 	width = 1;
 	height = 1;
 }

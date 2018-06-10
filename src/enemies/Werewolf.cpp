@@ -229,7 +229,7 @@ void Werewolf::Update()
 			if(transformationCountdown < 0)
 			{
 				isTransforming = true;
-				PlaySample((SAMPLE *) game.GetData("snd_howl"));
+				PlaySample("snd_howl");
 				inverseSpeed = transformationSpeed;
 				counter = 0;
 				frameStart = 4;

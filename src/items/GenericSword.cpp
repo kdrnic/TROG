@@ -11,7 +11,7 @@ void GenericSword::OnUse()
 		if(success)
 		{
 			lastFrameUsed = game.frame;
-			SAMPLE *s = swishes[rand() % 3];
+			const char *s = swishes[rand() % 3];
 			if(s != 0) game.player->PlaySample(s);
 		}
 	}

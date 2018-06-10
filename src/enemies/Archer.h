@@ -22,8 +22,6 @@ class Archer : public Enemy
 		int shootAnimSpeed;
 		bool hasShot;
 		int backupOrientation;
-		
-		SAMPLE *arrowSounds[3];
 };
 
 #endif

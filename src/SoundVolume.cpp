@@ -2,20 +2,26 @@
 #include <stdlib.h>
 #include <string>
 #include <map>
+#include <sstream>
+#include <fstream>
+#include <iostream>
 
 std::map<std::string, int> soundVolumes;
 
-void LoadSoundVolumes(const char *filename)
+void LoadSoundVolumes(std::istream &is)
 {
 	char soundName[1024];
 	int vol;
-	FILE *inf = fopen(filename, "r");
+	std::string sndLine;
 	
-	if(!inf) return;
-	
-	while(fscanf(inf, "%s,%d", soundName, &vol) == 2) soundVolumes[std::string(soundName)] = vol;
-	
-	fclose(inf);
+	while(!is.eof())
+	{
+		getline(is, sndLine);
+		if(sscanf(sndLine.c_str(), "%s %d", soundName, &vol))
+		{
+			soundVolumes[std::string(soundName)] = vol;
+		}
+	}
 }
 
 int GetSoundVolume(std::string name)

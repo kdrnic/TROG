@@ -34,5 +34,5 @@ void Bomb::Explode()
 {
 	alive = false;
 	game.entitiesManager.Add(new Explosion(x + 14, y + 17));
-	PlaySample((SAMPLE *) game.GetData("snd_explosion"));
+	PlaySample("snd_explosion");
 }

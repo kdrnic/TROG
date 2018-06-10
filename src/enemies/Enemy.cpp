@@ -32,7 +32,7 @@ void Enemy::Die()
 	Drop();
 	alive = false;
 	Entity *poof;
-	SAMPLE *dyingSound = GetDyingSound();
+	const char *dyingSound = GetDyingSound();
 	if(dyingSound == 0) poof = new Poof(x + width / 2, y + height / 2);
 	else
 	{
@@ -48,7 +48,7 @@ void Enemy::OnHit(int damage)
 	if(health <= 0) Die();
 	else
 	{
-		SAMPLE *hurtSound = GetHurtSound();
+		const char *hurtSound = GetHurtSound();
 		if(hurtSound != 0) PlaySample(hurtSound);
 	}
 }
@@ -85,12 +85,12 @@ void Enemy::OnHit(int hx, int hy, int hw, int hh, int damage)
 	}
 }
 
-SAMPLE *Enemy::GetHurtSound()
+const char *Enemy::GetHurtSound()
 {
 	return 0;
 }
 
-SAMPLE *Enemy::GetDyingSound()
+const char *Enemy::GetDyingSound()
 {
 	return 0;
 }

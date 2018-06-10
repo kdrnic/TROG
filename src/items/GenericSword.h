@@ -16,7 +16,7 @@ class GenericSword : public Item
 		int frames[2];
 		int damage;
 		int speed;
-		SAMPLE *swishes[3];
+		const char *swishes[3];
 
 	private:
 		int lastFrameUsed;

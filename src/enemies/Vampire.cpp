@@ -134,7 +134,7 @@ void Vampire::Update()
 			{
 				Entity *bat = new Bat(x + width / 2, y + height / 2);
 				game.entitiesManager.Add(bat);
-				PlaySample((SAMPLE *) game.GetData("snd_bat"), 255);
+				PlaySample("snd_bat");
 				batCounter = 0;
 			}
 		}
@@ -162,7 +162,7 @@ void Vampire::Update()
 			game.entitiesManager.Add(poof);
 			game.SetQuestState("vampire", "defeated");
 			game.SaveStatus();
-			PlaySample((SAMPLE *) game.GetData("snd_victory"));
+			PlaySample("snd_victory");
 			game.PushDialogLine("The vampire has been defeated!");
 			alive = false;
 		}

@@ -12,7 +12,7 @@ class Slime : public HitHurtEnemy
 		void Die();
 		void Update();
 		
-		SAMPLE *GetDyingSound();
+		const char *GetDyingSound();
 		
 		Slime(int fh = 1);
 	private:

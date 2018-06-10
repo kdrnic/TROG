@@ -10,7 +10,7 @@ Sword::Sword()
 	coolDownTime = 0;
 	speed = 5;
 	name = "Sword";
-	swishes[0] = (SAMPLE *) game.GetData("snd_swish1");
-	swishes[1] = (SAMPLE *) game.GetData("snd_swish2");
-	swishes[2] = (SAMPLE *) game.GetData("snd_swish3");
+	swishes[0] = "snd_swish1";
+	swishes[1] = "snd_swish2";
+	swishes[2] = "snd_swish3";
 }

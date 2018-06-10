@@ -1,8 +1,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <iostream>
+#include <string>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <ctime>
 #include <cstdlib>
 #include <cstdint>

@@ -91,7 +91,7 @@ void Devil::Update()
 		proj->hitDamage = PROJDMG;
 		game.entitiesManager.Add((Entity *) proj);
 
-		PlaySample((SAMPLE *) game.GetData("snd_devilproj"));
+		PlaySample("snd_devilproj");
 
 		projCounter = PROJCOUNTERMIN + (std::rand() % (PROJCOUNTERMAX - PROJCOUNTERMIN));
 	}

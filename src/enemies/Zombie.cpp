@@ -21,7 +21,7 @@ void Zombie::Update()
 			if(frameEnd != 15)
 			{
 				counter = 0;
-				PlaySample((SAMPLE *) game.GetData("snd_zombieDig"));
+				PlaySample("snd_zombieDig");
 			}
 			frameEnd = 15;
 		}

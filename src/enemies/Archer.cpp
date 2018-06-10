@@ -7,6 +7,8 @@
 
 BITMAP *Archer::_sprite = 0;
 
+static const char *arrowSounds[3] = {"snd_arrow1", "snd_arrow2", "snd_arrow3"};
+
 void Archer::Update()
 {
 	if(!shooting)
@@ -85,9 +87,6 @@ void Archer::Update()
 
 Archer::Archer()
 {
-	arrowSounds[0] = (SAMPLE *) game.GetData("snd_arrow1");
-	arrowSounds[1] = (SAMPLE *) game.GetData("snd_arrow2");
-	arrowSounds[2] = (SAMPLE *) game.GetData("snd_arrow3");
 	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_archer"); // load_bitmap("archer.bmp", 0);
 	sprite = _sprite;
 	width = 20;

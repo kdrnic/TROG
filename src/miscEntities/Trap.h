@@ -13,8 +13,6 @@ class Trap : public TriggeredEntity
 	private:
 		int stakeO;
 		int trigger;
-		
-		SAMPLE *sounds[3];
 };
 
 #endif

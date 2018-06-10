@@ -29,7 +29,7 @@ void Plague::Update()
 			game.SetQuestState("plague", q.replace(pos, n.size(), "#"));
 			Entity *poof = new Poof(x + width / 2, y + height / 2, 1);
 			game.entitiesManager.Add(poof);
-			PlaySample((SAMPLE *) game.GetData("snd_victory"));
+			PlaySample("snd_victory");
 			if(game.GetQuestState("plague").find_first_not_of("#") == std::string::npos)
 			{
 				game.PushDialogLine("The village has been rid of the plague!");

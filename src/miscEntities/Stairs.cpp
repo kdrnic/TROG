@@ -72,7 +72,7 @@ void Stairs::OnCollision(Entity *e)
 					q.append(";");
 					game.SetQuestState("stairs", q);
 
-					PlaySample((SAMPLE *) game.GetData("snd_scrape"), 128);
+					PlaySample("snd_scrape", 128);
 				}
 			}
 		}
@@ -99,7 +99,7 @@ void Stairs::OnTrigger(int t)
 		{
 			frameEnd = 4;
 			counter = 0;
-			PlaySample((SAMPLE *) game.GetData("snd_scrape"), 128);
+			PlaySample("snd_scrape", 128);
 		}
 	}
 }
@@ -112,7 +112,7 @@ void Stairs::Update()
 		{
 			frameEnd = 4;
 			counter = 0;
-			PlaySample((SAMPLE *) game.GetData("snd_scrape"), 128);
+			PlaySample("snd_scrape", 128);
 		}
 	}
 	SpriteEntity::Update();

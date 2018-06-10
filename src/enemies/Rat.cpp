@@ -63,9 +63,9 @@ void Rat::Update()
 	SpriteEntity::Update();
 }
 
-SAMPLE *Rat::GetDyingSound()
+const char *Rat::GetDyingSound()
 {
-	return (SAMPLE *) game.GetData("snd_rat");
+	return "snd_rat";
 }
 
 Rat::Rat()

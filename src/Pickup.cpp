@@ -8,7 +8,7 @@ void Pickup::OnCollision(Entity *e)
 	{
 		OnPickup();
 		alive = false;
-		PlaySample((SAMPLE *) game.GetData("snd_pickup"));
+		PlaySample("snd_pickup");
 	}
 }
 

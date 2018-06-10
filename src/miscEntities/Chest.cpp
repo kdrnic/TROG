@@ -46,7 +46,7 @@ void Chest::Interact()
 		game.inventoryManager.Add(newItem);
 	}
 	
-	PlaySample((SAMPLE *) game.GetData("snd_door"));
+	PlaySample("snd_door");
 	
 	isOpen = true;
 	orientation = 1;
