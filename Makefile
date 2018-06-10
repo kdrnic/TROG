@@ -69,14 +69,13 @@ $(DBGOBJDIR)%.o: %.cpp $(HEADERFILES)
 clean:
 	rm -f -r $(OBJDIR)
 	rm -f -r $(DBGOBJDIR)
+	rm -f -r deps/
 
 build/obj/src:
-	mkdir build\obj\src
-	xcopy /t /e src build\obj\src\
+	xcopy /t /e src build\obj\src\\
 
 build/objdbg/src:
-	mkdir build\objdbg\src
-	xcopy /t /e src build\objdbg\src\
+	xcopy /t /e src build\objdbg\src\\
 
 build/obj:
 	mkdir build\obj
@@ -88,7 +87,7 @@ build:
 	mkdir build
 
 deps:
-	xcopy /t /e src deps\src\
+	xcopy /t /e src deps\src\\
 
 objs: build/obj build/obj/src $(OBJECTS)
 objsdbg: build/objdbg build/objdbg/src $(OBJECTS_DBG)
