@@ -337,8 +337,43 @@ void MapTiled::Load(std::istream &is)
 	timeLastVisited = 0;
 }
 
+void MapTiled::Reload()
+{
+	if(blocks)
+	{
+		for(int i = 0; i < 42; i++) delete[] blocks[i];
+		delete[] blocks;
+		blocks = 0;
+	}
+	
+	if(layers)
+	{
+		for(int i = 0; i < numberOfLayers; i++) delete[] layers[i];
+		delete[] layers;
+		layers = 0;
+	}
+	if(tilesets)
+	{
+		delete[] tilesets;
+		tilesets = 0;
+	}
+	
+	numberOfLayers = 0;
+	numberOfTilesets = 0;
+	failure = false;
+	warn = false;
+	
+	timeLastVisited = 0;
+	exits[0] = exits[1] = exits[2] = exits[3] = "";
+	
+	entities.clear();
+	
+	Load(filename);
+}
+
 void MapTiled::Load(std::string fileName)
 {
+	filename = fileName;
 	failure = false;
 	warn = false;
 	std::fstream mapFile;

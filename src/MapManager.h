@@ -23,6 +23,7 @@ class MapManager : public GameDrawer
 		int BlockTypeAt(int x, int y);		
 		std::string GetExit(int o);
 		void SpawnEntities();
+		void RespawnEntities();
 		void SetMap(std::string n);
 		void ResetTimes();
 	private:

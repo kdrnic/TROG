@@ -8,6 +8,7 @@
 #include "MapOwn.h"
 #include "MapTiled.h"
 #include "Game.h"
+#include "FileWatch.h"
 #include "Utils.h"
 
 void MapManager::LoadTileSet(std::string fileName)
@@ -29,6 +30,19 @@ void MapManager::LoadTileSet(std::string fileName)
 	tileSetFile.close();
 	bmpNames.clear();
 }
+
+class MapTiledWatch : public FileWatch
+{
+	public:
+		void OnModify()
+		{
+			m->Reload();
+			if(game.mapManager.currentMapName == m->name) game.mapManager.RespawnEntities();
+		}
+		MapTiledWatch(MapTiled *theM) : m(theM) {};
+	private:
+		MapTiled *m;
+};
 
 void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 {
@@ -59,6 +73,9 @@ void MapManager::LoadAllMaps(std::string prefix, std::string suffix)
 			MapTiled *m = new MapTiled;
 			m->Load(fileName.c_str());
 			maps[m->name] = (Map *) m;
+			
+			FileWatch *fw = (FileWatch *) new MapTiledWatch(m);
+			game.fileWatchManager->Add(fileName, fw);
 
 			if(al_findnext(&fileInfo2) != 0) break;
 		}
@@ -134,6 +151,26 @@ void MapManager::SpawnEntities()
 		}
 	}
 	currentMap->timeLastVisited = game.frame;
+}
+
+void MapManager::RespawnEntities()
+{
+	for(std::list<Map::MapEntity>::iterator i = currentMap->entities.begin(); i != currentMap->entities.end(); i++)
+	{
+		Entity *e;
+		bool add = false;
+		if(!(e = game.entitiesManager.GetByMapId(i->id)))
+		{
+			e = game.entitiesFactory.Create(i->name);
+			add = true;
+		}
+		for(int j = 0; j < i->parameters.size(); j++)
+		{
+			e->SetParameter(i->parameters[j].first, i->parameters[j].second);
+		}
+		e->mapId = i->id;
+		if(add) game.entitiesManager.Add(e);
+	}
 }
 
 void MapManager::SetMap(std::string n)
