@@ -165,12 +165,16 @@ void MapTiled::Load(std::istream &is)
 		{
 			std::string imgSourceNoPath = tileset->imageSource.substr(tileset->imageSource.find_last_of("/") + 1);
 			std::string imgSourceNoPathNoExtension = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
-			if(!(tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoPathNoExtension).c_str())))
+			if(!game.HasData((std::string("tls_") + imgSourceNoPathNoExtension).c_str()))
 			{
-				WARN("Tileset image not in data file");
 				if(loadedTilesetImages.find(imgSourceNoPathNoExtension) == loadedTilesetImages.end()) loadedTilesetImages[imgSourceNoPathNoExtension] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
-				if(!loadedTilesetImages[imgSourceNoPathNoExtension]) ERROR("Tileset image not loaded");
+				if(!loadedTilesetImages[imgSourceNoPathNoExtension]) ERROR("Tileset image not found, not loaded");
+				WARN("Tileset image not in data file");
 				tileset->image = loadedTilesetImages[imgSourceNoPathNoExtension];
+			}
+			else
+			{
+				tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoPathNoExtension).c_str());
 			}
 		}
 		
