@@ -122,7 +122,7 @@ JS_FUNC(GiveItem)
 	if(!duk_is_string(ctx, 0)) return 0;
 	n = duk_get_string(ctx, 0);
 	if(duk_is_number(ctx, 1)) amount = duk_get_int(ctx, 1);
-	if(!game.inventoryManager.Find(n))
+	if(!(i = game.inventoryManager.Find(n)))
 	{
 		i = game.itemsFactory.Create(n);
 		game.inventoryManager.Add(i);
