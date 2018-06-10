@@ -116,6 +116,32 @@ DATAFILE *GameManager::GetDataRaw(const char *name)
 	return find_datafile_object(data, name);
 }
 
+class SoundVolWatch : public FileWatch
+{
+	public:
+		void OnModify()
+		{
+			std::fstream ss("soundvol.cfg", std::fstream::in);
+			if(ss.is_open()) LoadSoundVolumes(ss);
+		}
+};
+
+class MainJsWatch : public FileWatch
+{
+	public:
+		void OnModify()
+		{
+			std::string jsMainSrc;
+			int jsErr;
+			
+			jsMainSrc = ReadWholeTextFile("main.js");
+			if((jsErr = game.scriptEngine->Eval(jsMainSrc)->Pop()))
+			{
+				std::cout << "main.js error: " << jsErr << "\n";
+			}
+		}
+};
+
 void GameManager::Init()
 {
 	data = load_datafile("game.dat");
@@ -133,26 +159,27 @@ void GameManager::Init()
 	}
 	else
 	{
-		std::fstream ss("soundvol.cfg", std::fstream::in);
-		if(ss.is_open()) LoadSoundVolumes(ss);
+		FileWatch *fw = (FileWatch *) new SoundVolWatch();
+		fileWatchManager->AddRun("soundvol.cfg", fw);
 	}
 	
 	scriptEngine = new JsEngine();
 	InitJsGameFuncs();
 	
-	std::string jsMainSrc;
-	int jsErr;
 	if(HasData("js_main"))
 	{
+		std::string jsMainSrc;
+		int jsErr;
 		jsMainSrc = DatafileToString((DATAFILE *) GetData("js_main"));
+		if((jsErr = scriptEngine->Eval(jsMainSrc)->Pop()))
+		{
+			std::cout << "main.js error: " << jsErr << "\n";
+		}
 	}
 	else
 	{
-		jsMainSrc = ReadWholeTextFile("main.js");
-	}
-	if((jsErr = scriptEngine->Eval(jsMainSrc)->Pop()))
-	{
-		std::cout << "main.js error: " << jsErr << "\n";
+		FileWatch *fw = (FileWatch *) new MainJsWatch();
+		fileWatchManager->AddRun("main.js", fw);
 	}
 	
 	mapManager.LoadTileSet("tiles/tileset.tls");
