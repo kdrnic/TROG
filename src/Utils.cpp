@@ -259,3 +259,48 @@ std::string DatafileToString(DATAFILE *d)
 	delete[] cstr;
 	return cppStr;
 }
+
+long ReadWholeFile(const char *filename, char **ptxt, bool binary)
+{
+	char *txt = 0;
+	size_t size2 = -6;
+	long size = -1;
+	FILE *f = fopen(filename, binary ? "rb" : "r");
+	if(f != 0)
+	{
+		if(fseek(f, 0L, SEEK_END) == 0)
+		{
+			size = ftell(f);
+			if(size < 0) return -3;
+			txt = (char *) malloc(size + (binary ? 0 : 1));
+			if(!txt) return -4;
+			if(fseek(f, 0L, SEEK_SET) != 0) return -1;
+			size2 = fread(txt, 1, size, f);
+			if(!size2) return -5;
+			if(!binary) txt[size2] = '\0';
+			*ptxt = txt;
+		}
+		fclose(f);
+	}
+	else return -2;
+	return size2;
+}
+
+std::string ReadWholeTextFile(const char *filename)
+{
+	char *txt;
+	std::string res = "";
+	if(ReadWholeFile(filename, &txt, false) > 0) res = std::string(txt);
+	return res;
+}
+
+std::vector<char> ReadWholeBinFile(const char *filename)
+{
+	char *bin;
+	std::vector<char> res;
+	long len = ReadWholeFile(filename, &bin, true);
+	if(len < 0) return res;
+	res.assign(bin, bin + len);
+	free(bin);
+	return res;
+}

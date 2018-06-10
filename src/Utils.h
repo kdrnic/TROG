@@ -38,5 +38,8 @@ std::string Base64Encode(unsigned char const* bytes_to_encode, unsigned int in_l
 std::string Base64Decode(std::string const& encodedString);
 std::string RemoveWhitespace(std::string in);
 std::string DatafileToString(DATAFILE *d);
+long ReadWholeFile(const char *filename, char **ptxt, bool binary);
+std::string ReadWholeTextFile(const char *filename);
+std::vector<char> ReadWholeBinFile(const char *filename);
 
 #endif
