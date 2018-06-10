@@ -31,6 +31,8 @@ class Map
 		virtual void Load(std::string fileName) = 0;
 		
 		virtual void DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0 = 0, int y0 = 0) = 0;
+		
+		Map() : blocks(0), numberOfLayers(0) {};
 };
 
 #endif

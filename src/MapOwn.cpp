@@ -98,3 +98,7 @@ void MapOwn::LoadMapEntity(std::string l)
 	}
 	entities.push_back(me);
 }
+
+MapOwn::MapOwn() : Map(), tiles(0)
+{
+}

@@ -29,11 +29,16 @@ class MapTiled : public Map
 		void Load(std::string fileName);
 		
 		void DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0 = 0, int y0 = 0);
+		
+		MapTiled();
 	private:
 		bool failure;
 		bool warn;
 		
 		unsigned int **layers;
+		
+		bool LoadTileLayer(unsigned int *layer, xml_node n_data);
+		void CallAutoTiler(std::string type, unsigned int *autoLayer);
 };
 
 #endif

@@ -18,6 +18,8 @@ class MapOwn : public Map
 		void Load(std::string fileName);
 		
 		void DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0 = 0, int y0 = 0);
+		
+		MapOwn();
 	private:
 		void LoadBlocksLayer(int **&l, std::istream &is);	
 		void LoadTilesLayer(int **&l, std::istream &is);		

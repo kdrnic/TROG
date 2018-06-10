@@ -13,6 +13,7 @@
 
 #include "Utils.h"
 #include "Game.h"
+#include "JsEngine.h"
 #include "MapTiled.h"
 
 using namespace pugi;
@@ -26,11 +27,44 @@ int TilesetCompare(const void *a, const void *b)
 	return 0;
 }
 
+bool MapTiled::LoadTileLayer(unsigned int *layer, xml_node n_data)
+{
+	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << (e) << "\n"; failure = true; return true; }
+	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
+	if(!n_data) ERROR("Layer data not found");
+	
+	xml_attribute a_encoding = n_data.attribute("encoding"), a_compression = n_data.attribute("compression");
+	if(!a_encoding) ERROR("Invalid enconding (none)");
+	if(std::string(a_encoding.value()) != "base64") ERROR("Invalid encoding");
+	if(a_compression) ERROR("Data compression unsupported");
+	
+	std::string data1 = n_data.child_value();
+	std::string data2 = RemoveWhitespace(data1);
+	std::string data3 = Base64Decode(data2);
+	
+	std::memcpy(layer, data3.data(), data3.size());
+	return false;
+	#undef ERROR
+	#undef WARN
+}
+
+void MapTiled::CallAutoTiler(std::string type, unsigned int *autoLayer)
+{
+	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t script engine error #" << (e) << "\n"; warn = true; }
+	
+	JsEngine *jse = game.scriptEngine->Call("MapAutotile")->PushString(type)->PushBuffer(autoLayer, 42 * 28);
+	for(int i = 0; i < numberOfLayers; i++) jse = jse->PushBuffer(layers[i], 42 * 28);
+	JsEngine::JsEngineError err = jse->Pop();
+	if(err) WARN(err);
+	
+	#undef WARN
+}
+
 void MapTiled::Load(std::istream &is)
 {
-	static std::map<std::string, BITMAP *> loadedTilesetImages;
 	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << (e) << "\n"; failure = true; return; }
 	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
+	static std::map<std::string, BITMAP *> loadedTilesetImages;
 	xml_document doc;
 	if(!doc.load(is)) ERROR("XML not parsed")
 	
@@ -180,12 +214,17 @@ void MapTiled::Load(std::istream &is)
 	std::qsort((void *) tilesets, numberOfTilesets, sizeof(Tileset), TilesetCompare);
 	
 	std::vector<xml_node> n_layers;
+	std::vector<xml_node> n_autotiles;
 	xml_node n_blocksLayer;
 	for(xml_node n = n_map.child("layer"); n; n = n.next_sibling("layer"))
 	{
 		if(std::string(n.attribute("name").value()) == "blocks")
 		{
 			n_blocksLayer = n;
+		}
+		else if(std::string(n.attribute("name").value()).find("autotile_") == 0)
+		{
+			n_autotiles.push_back(n);
 		}
 		else n_layers.push_back(n);
 	}
@@ -195,36 +234,21 @@ void MapTiled::Load(std::istream &is)
 	
 	unsigned int *blocksLayer = 0;
 	
-	for(int i = 0; i < numberOfLayers + 1; i++)
+	for(int i = 0; i < numberOfLayers; i++)
 	{
-		unsigned int *layer;
-		xml_node n_data;
-		if(i < numberOfLayers)
-		{
-			layers[i] = new unsigned int[42 * 28];
-			layer = layers[i];
-			n_data = n_layers[i].child("data");
-		}
-		else
-		{
-			if(!n_blocksLayer) break;
-			blocksLayer = new unsigned int[42 * 28];
-			layer = blocksLayer;
-			n_data = n_blocksLayer.child("data");
-		}
-		
-		if(!n_data) ERROR("Layer data not found");
-		
-		xml_attribute a_encoding = n_data.attribute("encoding"), a_compression = n_data.attribute("compression");
-		if(!a_encoding) ERROR("Invalid enconding (none)");
-		if(std::string(a_encoding.value()) != "base64") ERROR("Invalid encoding");
-		if(a_compression) ERROR("Data compression unsupported");
-		
-		std::string data1 = n_data.child_value();
-		std::string data2 = RemoveWhitespace(data1);
-		std::string data3 = Base64Decode(data2);
-		
-		std::memcpy(layer, data3.data(), data3.size());
+		layers[i] = new unsigned int[42 * 28];
+		if(LoadTileLayer(layers[i], n_layers[i].child("data"))) return;
+	}
+	if(n_blocksLayer)
+	{
+		blocksLayer = new unsigned int[42 * 28];
+		if(LoadTileLayer(blocksLayer, n_blocksLayer.child("data"))) return;
+	}
+	for(unsigned int i = 0; i < n_autotiles.size(); i++)
+	{
+		unsigned int *autoLayer = new unsigned int[42 * 28];
+		if(LoadTileLayer(autoLayer, n_autotiles[i].child("data"))) return;
+		CallAutoTiler(std::string(n_autotiles[i].attribute("name").value()).substr(sizeof("autotile_")), autoLayer);
 	}
 	
 	blocks = new int *[42];
@@ -256,12 +280,6 @@ void MapTiled::Load(std::istream &is)
 	}
 	
 	xml_node n_objects = n_map.child("objectgroup");
-	for(;
-		(!n_objects.attribute("name")) ||
-		(std::string(n_objects.attribute("name").value()).find("autotile_") == 0);
-		n_objects = n_objects.next_sibling("objectgroup"))
-	{
-	}
 	if(n_objects)
 	{
 		for(xml_node n_object = n_objects.child("object"); n_object; n_object = n_object.next_sibling("object"))
@@ -302,22 +320,6 @@ void MapTiled::Load(std::istream &is)
 		}
 	}
 	else WARN("No entities objects group found");
-	
-	for(
-		n_objects = n_map.child("objectgroup");
-		n_objects;
-		n_objects = n_objects.next_sibling("objectgroup"))
-	{
-		if((!n_objects.attribute("name")) || (std::string(n_objects.attribute("name").value()).find("autotile_") != 0)) continue;
-		for(xml_node n_object = n_objects.child("object"); n_object; n_object = n_object.next_sibling("object"))
-		{
-			int x = std::atoi(n_object.attribute("x").value());
-			int y = std::atoi(n_object.attribute("y").value());
-			int w = std::atoi(n_object.attribute("width").value());
-			int h = std::atoi(n_object.attribute("height").value());
-			
-		}
-	}
 	
 	delete [] blocksLayer;
 	
@@ -367,4 +369,8 @@ void MapTiled::DrawLayer(BITMAP *bmp, BITMAP **unused, int layer, int row0, int 
 			masked_blit(t_img, bmp, sourceX, sourceY, x0 + x * 15, y0 + y * 15, 15, 15);
 		}
 	}
+}
+
+MapTiled::MapTiled() : Map(), numberOfTilesets(0), tilesets(0), failure(0), warn(0), layers(0)
+{
 }
