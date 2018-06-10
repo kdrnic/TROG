@@ -256,7 +256,7 @@ void MapTiled::Load(std::istream &is)
 		unsigned int *autoLayer = new unsigned int[42 * 28];
 		xml_node n_data = n_autotiles[i].child("data");
 		if(LoadTileLayer(autoLayer, (void *) &n_data)) return;
-		CallAutoTiler(std::string(n_autotiles[i].attribute("name").value()).substr(sizeof("autotile_")), autoLayer);
+		CallAutoTiler(std::string(n_autotiles[i].attribute("name").value()).substr(sizeof("autotile_") - 1), autoLayer);
 	}
 	
 	blocks = new int *[42];
