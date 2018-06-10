@@ -25,6 +25,11 @@ class Factory
 		{
 			return registeredCs[name]();
 		}
+		
+		bool Has(std::string name)
+		{
+			return (registeredCs.find(name) != registeredCs.end());
+		}
 	private:
 		std::map<std::string, CreateCFunction> registeredCs;
 		
