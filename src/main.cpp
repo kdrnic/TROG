@@ -236,6 +236,11 @@ void SwitchOut()
 	game.shallPause = true;
 }
 
+void SwitchIn()
+{
+	game.updateFiles = true;
+}
+
 int MainMenu()
 {
 	clear(screen);
@@ -285,6 +290,7 @@ int main(int argc, char **argv)
 	set_window_title("The Revenge of Gregorius");
 	set_display_switch_mode(SWITCH_BACKGROUND);
 	set_display_switch_callback(SWITCH_OUT, &SwitchOut);
+	set_display_switch_callback(SWITCH_IN, &SwitchIn);
 	
 	game.Init();
 

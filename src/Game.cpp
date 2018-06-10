@@ -7,6 +7,8 @@
 
 #include "SoundVolume.h"
 
+#include "FileWatch.h"
+
 #include "Player.h"
 
 #include "BarbedWire.h"
@@ -118,6 +120,8 @@ void GameManager::Init()
 {
 	data = load_datafile("game.dat");
 
+	fileWatchManager = new FileWatchManager();
+	
 	RegisterEntities();
 	RegisterItems();
 	
@@ -185,6 +189,7 @@ void GameManager::Init()
 	shallPause = false;
 	
 	zoomBuffer = 0;
+	updateFiles = false;
 }
 
 void GameManager::Start(int f)
@@ -508,6 +513,13 @@ void GameManager::Update()
 {
 	static int uFrame = 0;
 	uFrame++;
+	
+	if(updateFiles)
+	{
+		fileWatchManager->Update();
+		updateFiles = false;
+	}
+	
 	switch(gameState)
 	{
 		case GameStateEnteringMap:
