@@ -30,6 +30,18 @@ Bomb::Bomb(int _x, int _y)
 	sprite = _sprite;
 }
 
+Bomb::Bomb()
+{
+	if(_sprite == 0) _sprite = (BITMAP *) game.GetData("spr_bomb"); // load_bitmap("bomb.bmp", 0);
+	width = 30;
+	height = 30;
+	spriteWidth = 30;
+	spriteHeight = 30;
+	frameEnd = 17;
+	inverseSpeed = 4;
+	sprite = _sprite;
+}
+
 void Bomb::Explode()
 {
 	alive = false;

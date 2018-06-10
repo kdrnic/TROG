@@ -36,6 +36,7 @@
 #include "Gargoyle.h"
 #include "MusicSetter.h"
 #include "Teller.h"
+#include "Bomb.h"
 
 #include "AK47.h"
 #include "AKMagazine.h"
@@ -489,6 +490,7 @@ void GameManager::RegisterEntities()
 	REGISTER_ENTITY(Gargoyle)
 	REGISTER_ENTITY(MusicSetter)
 	REGISTER_ENTITY(Teller)
+	REGISTER_ENTITY(Bomb)
 	#undef REGISTER_ENTITY
 }
 

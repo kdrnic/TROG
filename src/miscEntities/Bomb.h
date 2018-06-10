@@ -11,7 +11,8 @@ class Bomb : public SpriteEntity
 		void Update();
 		void OnCollision(Entity *e);
 		
-		Bomb(int _x, int _y);	
+		Bomb(int _x, int _y);
+		Bomb();
 	private:
 		void Explode();
 };
