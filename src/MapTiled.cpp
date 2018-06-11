@@ -79,7 +79,7 @@ void MapTiled::CallAutoTiler(std::string type, unsigned int *autoLayer)
 
 void MapTiled::Load(std::istream &is)
 {
-	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << (e) << "\n"; failure = true; return; }
+	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << e << "\n"; failure = true; return; }
 	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
 	static std::map<std::string, BITMAP *> loadedTilesetImages;
 	xml_document doc;
@@ -179,18 +179,24 @@ void MapTiled::Load(std::istream &is)
 		
 		if(!tilesetBlocks)
 		{
-			std::string imgSourceNoPath = tileset->imageSource.substr(tileset->imageSource.find_last_of("/") + 1);
-			std::string imgSourceNoPathNoExtension = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
-			if(!game.HasData((std::string("tls_") + imgSourceNoPathNoExtension).c_str()))
+			std::string imgSourceNoPath = get_filename(tileset->imageSource.c_str());
+			std::string imgSourceNoExt = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
+			if(!game.HasData((std::string("tls_") + imgSourceNoExt).c_str()))
 			{
-				if(loadedTilesetImages.find(imgSourceNoPathNoExtension) == loadedTilesetImages.end()) loadedTilesetImages[imgSourceNoPathNoExtension] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
-				if(!loadedTilesetImages[imgSourceNoPathNoExtension]) ERROR("Tileset image not found, not loaded");
+				if(loadedTilesetImages.find(imgSourceNoExt) == loadedTilesetImages.end())
+				{
+					loadedTilesetImages[imgSourceNoExt] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
+				}
+				if(!loadedTilesetImages[imgSourceNoExt])
+				{
+					ERROR("Tileset image not found, not loaded " << (std::string("tilesets/") + imgSourceNoPath).c_str());
+				}
 				WARN("Tileset image not in data file");
-				tileset->image = loadedTilesetImages[imgSourceNoPathNoExtension];
+				tileset->image = loadedTilesetImages[imgSourceNoExt];
 			}
 			else
 			{
-				tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoPathNoExtension).c_str());
+				tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoExt).c_str());
 			}
 		}
 		
