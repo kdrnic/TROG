@@ -36,14 +36,30 @@ bool MapTiled::LoadTileLayer(unsigned int *layer, void *n_data_ptr)
 	
 	xml_attribute a_encoding = n_data.attribute("encoding"), a_compression = n_data.attribute("compression");
 	if(!a_encoding) ERROR("Invalid enconding (none)");
-	if(std::string(a_encoding.value()) != "base64") ERROR("Invalid encoding");
-	if(a_compression) ERROR("Data compression unsupported");
-	
-	std::string data1 = n_data.child_value();
-	std::string data2 = RemoveWhitespace(data1);
-	std::string data3 = Base64Decode(data2);
-	
-	std::memcpy(layer, data3.data(), data3.size());
+	if(std::string(a_encoding.value()) == "base64")
+	{
+		if(a_compression) ERROR("Data compression unsupported");
+		
+		std::string data1 = n_data.child_value();
+		std::string data2 = RemoveWhitespace(data1);
+		std::string data3 = Base64Decode(data2);
+		
+		std::memcpy(layer, data3.data(), data3.size());
+	}
+	else if(std::string(a_encoding.value()) == "csv")
+	{
+		std::string data1 = n_data.child_value();
+		std::string data2 = RemoveWhitespace(data1);
+		std::string tile;
+		std::stringstream ss;
+		ss.str(data2);
+		while(!ss.eof())
+		{
+			getline(ss, tile, ',');
+			if(!tile.empty()) *(layer++) = std::atoi(tile.c_str());
+		}
+	}
+	else ERROR("Invalid encoding");
 	return false;
 	#undef ERROR
 	#undef WARN
