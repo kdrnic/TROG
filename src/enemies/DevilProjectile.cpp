@@ -45,7 +45,7 @@ DevilProjectile::DevilProjectile(float _x, float _y, float _dx, float _dy)
 	inverseSpeed = 1;
 	orientation = 0;
 
-	layer = 1;
+	layer = 999;
 
 	hitDamage = 0;
 }

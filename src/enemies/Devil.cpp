@@ -9,7 +9,9 @@
 
 #define ENDFRAME 0
 #define ANIMSPEED 6
-#define SPEED 3
+#define SPEEDMIN 2.0
+#define SPEEDMAX 5.0
+#define SPEEDTIME 90
 #define PROJCOUNTERMIN 55
 #define PROJCOUNTERMAX 80
 #define LEADPROB 33
@@ -25,7 +27,7 @@
 
 #define TALKMAX 60
 
-#define MAXDEVILS 2
+#define MAXDEVILS 3
 
 bool ShallTalk()
 {
@@ -52,11 +54,21 @@ void Devil::Update()
 			if(ShallTalk())
 			{
 				game.PushDialogLine("Hello!");
-				game.PushDialogLine("I am a \"tampered savegame file\" devil!");
+				game.PushDialogLine("I am a tampered savegame file devil!");
 			}
 		}
 	}
 
+	speedCounter--;
+	if(speedCounter <= 0)
+	{
+		speedCounter = SPEEDTIME;
+		speedCurr = speedNext;
+		speedNext = float(SPEEDMIN + (rand() % int(SPEEDMAX - SPEEDMIN)));
+	}
+	
+	#define SPEED (speedCurr + (speedNext - speedCurr) * (1.0f - (float(SPEEDTIME - speedCounter) / float(SPEEDTIME))))
+	
 	x += SPEED * std::cos(angle);
 	y += SPEED * std::sin(angle);
 	angle += dAngle * ANGSPEED;
@@ -119,10 +131,12 @@ Devil::Devil()
 	projCounter = 0;
 	angle = double(std::rand() % 1000) * M_PI * 1.0 / 500.0;
 	angCounter = 0;
+	speedCounter = 0;
+	speedNext =  speedCurr = 0;
 	if(std::rand() % 100 < 50) dAngle = 1;
 	else dAngle = -1;
 
-	layer = 1;
+	layer = 999;
 
 	persistent = true;
 

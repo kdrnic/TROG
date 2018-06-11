@@ -17,6 +17,8 @@ class Devil : public Enemy
 		int angCounter;
 		bool hasTalked;
 		int talkCounter;
+		int speedCounter;
+		float speedNext, speedCurr;
 };
 
 #endif
