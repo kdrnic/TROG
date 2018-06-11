@@ -402,6 +402,13 @@ void GameManager::Save()
 	const char *toHash = sTemp.c_str();
 	Int64Tuple hash = {0, 0};
 	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
+	
+	if(tampered)
+	{
+		hash.a ^= time(0);
+		hash.b ^= time(0);
+	}
+	
 	gameStream << std::hex << hash.a << '\n' << hash.b;
 
 	gameStream.close();
@@ -468,6 +475,13 @@ void GameManager::SaveStatus()
 	const char *toHash = temp.c_str();
 	Int64Tuple hash = {0, 0};
 	CustomHash((std::uint8_t *) toHash, strlen(toHash), &hash);
+	
+	if(tampered)
+	{
+		hash.a ^= time(0);
+		hash.b ^= time(0);
+	}
+	
 	saveStream << std::hex << hash.a << '\n' << hash.b;
 
 	saveStream.close();
