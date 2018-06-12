@@ -31,6 +31,8 @@ class MapTiled : public Map
 		
 		void DrawLayer(BITMAP *bmp, BITMAP **tileSet, int layer, int row0, int rows, int x0 = 0, int y0 = 0);
 		
+		unsigned int **GetLayers();
+		
 		MapTiled();
 	private:
 		std::string filename;

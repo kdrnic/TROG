@@ -191,3 +191,19 @@ void MapManager::ResetTimes()
 		i->second->timeLastVisited = 0;
 	}
 }
+
+std::vector<unsigned int *> MapManager::GetMapLayers(std::string name)
+{
+	if(maps.find(name) != maps.end())
+	{
+		Map *m = maps[name];
+		unsigned int **layers = m->GetLayers();
+		if(layers)
+		{
+			std::vector<unsigned int *> res(layers, layers + m->numberOfLayers);
+			return res;
+		}
+	}
+	std::vector<unsigned int *> emptyVec;
+	return emptyVec;
+}

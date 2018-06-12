@@ -99,6 +99,11 @@ void MapOwn::LoadMapEntity(std::string l)
 	entities.push_back(me);
 }
 
+unsigned int **MapOwn::GetLayers()
+{
+	return 0;
+}
+
 MapOwn::MapOwn() : Map(), tiles(0)
 {
 }

@@ -436,6 +436,11 @@ void MapTiled::DrawLayer(BITMAP *bmp, BITMAP **unused, int layer, int row0, int 
 	}
 }
 
+unsigned int **MapTiled::GetLayers()
+{
+	return layers;
+}
+
 MapTiled::MapTiled() : Map(), numberOfTilesets(0), tilesets(0), failure(0), warn(0), layers(0)
 {
 }

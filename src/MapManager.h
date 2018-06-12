@@ -26,6 +26,7 @@ class MapManager : public GameDrawer
 		void RespawnEntities();
 		void SetMap(std::string n);
 		void ResetTimes();
+		std::vector<unsigned int *> GetMapLayers(std::string name);
 	private:
 		BITMAP **tileSet;
 		std::map<std::string, Map *> maps;

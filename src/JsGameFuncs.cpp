@@ -252,6 +252,26 @@ JS_FUNC(Spawn)
 	return 1;
 }
 
+JS_FUNC(GetMapLayers)
+{
+	std::string name;
+	if(!duk_is_string(ctx, 0)) return 0;
+	name = duk_get_string(ctx, 0);
+	std::vector<unsigned int *> layers;
+	duk_push_array(ctx);
+	int index = 0;
+	for(std::vector<unsigned int *>::iterator it = layers.begin(); it != layers.end(); it++)
+	{
+		duk_push_external_buffer(ctx);
+		duk_config_buffer(ctx, -1, *it, 42 * 28 * sizeof(unsigned int));
+		duk_push_buffer_object(ctx, -1, 0, 42 * 28 * sizeof(unsigned int), DUK_BUFOBJ_UINT32ARRAY);
+		duk_swap_top(ctx, -2);
+		duk_pop(ctx);
+		duk_put_prop_index(ctx, -2, index++);
+	}
+	return 1;
+}
+
 void InitJsGameFuncs()
 {
 	#define CHECK_ERR(a) if(game.scriptEngine->err)\
@@ -276,4 +296,5 @@ void InitJsGameFuncs()
 	PUSHFUNC(PlaySample, DUK_VARARGS)
 	PUSHFUNC(ConsolePrint, 1)
 	PUSHFUNC(Spawn, DUK_VARARGS)
+	PUSHFUNC(GetMapLayers, 1)
 }
