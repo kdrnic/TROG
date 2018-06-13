@@ -18,6 +18,8 @@
 
 using namespace pugi;
 
+std::map<std::string, BITMAP *> MapTiled::loadedTilesetImages;
+
 int TilesetCompare(const void *a, const void *b)
 {
 	const MapTiled::Tileset *ta = (MapTiled::Tileset *) a;
@@ -77,11 +79,133 @@ void MapTiled::CallAutoTiler(std::string type, unsigned int *autoLayer)
 	#undef WARN
 }
 
+bool MapTiled::LoadTileSet(Tileset *tileset, void *n_tileset_ptr, std::map<int, int> &tileBits)
+{
+	xml_node &n_tileset = *((xml_node *) n_tileset_ptr);
+	bool external = false;
+	xml_document doc;
+	
+	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << e << "\n"; failure = true; return true; }
+	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
+	
+	xml_attribute a_firstgid, a_name, a_tilewidth, a_tileheight, a_source;
+	if(!(a_firstgid = n_tileset.attribute("firstgid"))) ERROR("Tileset without firstgid");
+	
+	if((a_source = n_tileset.attribute("source")))
+	{
+		std::string filename = a_source.value();
+		external = true;
+		
+		std::string filenameNoPath = get_filename(filename.c_str());
+		std::string filenameNoExt = filenameNoPath.substr(0, filenameNoPath.find_last_of("."));
+		
+		if(game.HasData((std::string("tsx_") + filenameNoExt).c_str()))
+		{
+			std::stringstream ss;
+			ss.str(DatafileToString((DATAFILE *) game.GetDataRaw((std::string("tsx_") + filenameNoExt).c_str())));
+			if(!doc.load(ss)) ERROR("External tileset XML not parsed")
+		}
+		else
+		{
+			if(exists((std::string("maps/") + filenameNoPath).c_str()))
+			{
+				std::fstream fs;
+				fs.open((std::string("maps/") + filenameNoPath).c_str(), std::fstream::in);
+				if(!doc.load(fs)) ERROR("External tileset XML not parsed")
+				WARN("External tileset not in datafile")
+			}
+			else ERROR("External tileset not found" << filenameNoExt.c_str())
+		}
+		
+		n_tileset = doc.child("tileset");
+		if(!n_tileset) ERROR("External tileset XML doesn't contain tileset")
+	}
+	
+	if(!(a_name = n_tileset.attribute("name"))) WARN("Tileset without name");
+	if(!(a_tilewidth = n_tileset.attribute("tilewidth"))) WARN("Tileset without tilewidth");
+	if(!(a_tileheight = n_tileset.attribute("tileheight"))) WARN("Tileset without tileheight");
+	
+	if((a_tilewidth.as_int() != 15) || (a_tileheight.as_int() != 15)) ERROR("Invalid tileset tile size");
+	
+	if(std::string(a_name.value()) == "blocks")
+	{
+		if(tilesetBlocks) ERROR("More than one blocks tileset found");
+		tilesetBlocks = tileset;
+	}
+	
+	tileset->firstgid = a_firstgid.as_int();
+	tileset->name = a_name.value();
+	
+	xml_node n_image;
+	if(!(n_image = n_tileset.child("image"))) ERROR("Tileset without image");
+	
+	xml_attribute a_imgSource, a_imgWidth, a_imgHeight;
+	if(!(a_imgSource = n_image.attribute("source"))) ERROR("Image without source");
+	if(!(a_imgWidth = n_image.attribute("width"))) WARN("Image without width");
+	if(!(a_imgHeight = n_image.attribute("height"))) WARN("Image without height");
+	
+	tileset->imageSource = a_imgSource.value();
+	tileset->imageWidth = a_imgWidth.as_int();
+	tileset->imageHeight = a_imgHeight.as_int();
+	
+	if(!tilesetBlocks)
+	{
+		std::string imgSourceNoPath = get_filename(tileset->imageSource.c_str());
+		std::string imgSourceNoExt = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
+		if(!game.HasData((std::string("bmp_") + imgSourceNoExt).c_str()))
+		{
+			if(loadedTilesetImages.find(imgSourceNoExt) == loadedTilesetImages.end())
+			{
+				loadedTilesetImages[imgSourceNoExt] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
+			}
+			if(!loadedTilesetImages[imgSourceNoExt])
+			{
+				ERROR("Tileset image not found, not loaded " << (std::string("tilesets/") + imgSourceNoPath).c_str());
+			}
+			WARN("Tileset image not in data file");
+			tileset->image = loadedTilesetImages[imgSourceNoExt];
+		}
+		else
+		{
+			tileset->image = (BITMAP *) game.GetData((std::string("bmp_") + imgSourceNoExt).c_str());
+		}
+	}
+	
+	std::vector <xml_node> n_tiles;
+	for(xml_node n = n_tileset.child("tile"); n; n = n.next_sibling("tile"))
+	{
+		n_tiles.push_back(n);
+	}
+	for(int j = 0; j < n_tiles.size(); j++)
+	{
+		xml_node n_tile = n_tiles[j];
+		int id = n_tile.attribute("id").as_int();
+		id += tileset->firstgid;
+		xml_node n_properties = n_tile.child("properties");
+		if(!n_properties) WARN("Tile defined but no properties");
+		for(xml_node n_property = n_properties.child("property"); n_property; n_property = n_property.next_sibling("property"))
+		{
+			std::string name(n_property.attribute("name").value());
+			if(name == "bits")
+			{
+				int bits;
+				if(std::sscanf(n_property.attribute("value").value(), "%i", &bits) != 1) WARN("Failure reading bits");
+				tileBits[id] = bits;
+			}
+			else WARN("Unknown property");
+		}
+	}
+	
+	#undef ERROR
+	#undef WARN
+	
+	return false;
+}
+
 void MapTiled::Load(std::istream &is)
 {
 	#define ERROR(e) { std::cerr << int(__LINE__) << "\tERROR:\t\t" << e << "\n"; failure = true; return; }
 	#define WARN(e) { std::cerr << int(__LINE__) << "\tWARNING:\t" << (e) << "\n"; warn = true; }
-	static std::map<std::string, BITMAP *> loadedTilesetImages;
 	xml_document doc;
 	if(!doc.load(is)) ERROR("XML not parsed")
 	
@@ -141,89 +265,14 @@ void MapTiled::Load(std::istream &is)
 	
 	std::map <int, int> tileBits;
 	
-	Tileset *tilesetBlocks = 0;
+	tilesetBlocks = 0;
 	
 	for(int i = 0; i < n_tilesets.size(); i++)
 	{
 		xml_node n_tileset = n_tilesets[i];
 		Tileset *tileset = &tilesets[i];
 		
-		xml_attribute a_firstgid, a_name, a_tilewidth, a_tileheight;
-		if(!(a_firstgid = n_tileset.attribute("firstgid"))) ERROR("Tileset without firstgid");
-		if(!(a_name = n_tileset.attribute("name"))) WARN("Tileset without name");
-		if(!(a_tilewidth = n_tileset.attribute("tilewidth"))) WARN("Tileset without tilewidth");
-		if(!(a_tileheight = n_tileset.attribute("tileheight"))) WARN("Tileset without tileheight");
-		
-		if((a_tilewidth.as_int() != 15) || (a_tileheight.as_int() != 15)) ERROR("Invalid tileset tile size");
-		
-		if(std::string(a_name.value()) == "blocks")
-		{
-			if(tilesetBlocks) ERROR("More than one blocks tileset found");
-			tilesetBlocks = tileset;
-		}
-		
-		tileset->firstgid = a_firstgid.as_int();
-		tileset->name = a_name.value();
-		
-		xml_node n_image;
-		if(!(n_image = n_tileset.child("image"))) ERROR("Tileset without image");
-		
-		xml_attribute a_imgSource, a_imgWidth, a_imgHeight;
-		if(!(a_imgSource = n_image.attribute("source"))) ERROR("Image without source");
-		if(!(a_imgWidth = n_image.attribute("width"))) WARN("Image without width");
-		if(!(a_imgHeight = n_image.attribute("height"))) WARN("Image without height");
-		
-		tileset->imageSource = a_imgSource.value();
-		tileset->imageWidth = a_imgWidth.as_int();
-		tileset->imageHeight = a_imgHeight.as_int();
-		
-		if(!tilesetBlocks)
-		{
-			std::string imgSourceNoPath = get_filename(tileset->imageSource.c_str());
-			std::string imgSourceNoExt = imgSourceNoPath.substr(0, imgSourceNoPath.find_last_of("."));
-			if(!game.HasData((std::string("tls_") + imgSourceNoExt).c_str()))
-			{
-				if(loadedTilesetImages.find(imgSourceNoExt) == loadedTilesetImages.end())
-				{
-					loadedTilesetImages[imgSourceNoExt] = load_bitmap((std::string("tilesets/") + imgSourceNoPath).c_str(), 0);
-				}
-				if(!loadedTilesetImages[imgSourceNoExt])
-				{
-					ERROR("Tileset image not found, not loaded " << (std::string("tilesets/") + imgSourceNoPath).c_str());
-				}
-				WARN("Tileset image not in data file");
-				tileset->image = loadedTilesetImages[imgSourceNoExt];
-			}
-			else
-			{
-				tileset->image = (BITMAP *) game.GetData((std::string("tls_") + imgSourceNoExt).c_str());
-			}
-		}
-		
-		std::vector <xml_node> n_tiles;
-		for(xml_node n = n_tileset.child("tile"); n; n = n.next_sibling("tile"))
-		{
-			n_tiles.push_back(n);
-		}
-		for(int j = 0; j < n_tiles.size(); j++)
-		{
-			xml_node n_tile = n_tiles[j];
-			int id = n_tile.attribute("id").as_int();
-			id += tileset->firstgid;
-			xml_node n_properties = n_tile.child("properties");
-			if(!n_properties) WARN("Tile defined but no properties");
-			for(xml_node n_property = n_properties.child("property"); n_property; n_property = n_property.next_sibling("property"))
-			{
-				std::string name(n_property.attribute("name").value());
-				if(name == "bits")
-				{
-					int bits;
-					if(std::sscanf(n_property.attribute("value").value(), "%i", &bits) != 1) WARN("Failure reading bits");
-					tileBits[id] = bits;
-				}
-				else WARN("Unknown property");
-			}
-		}
+		LoadTileSet(tileset, (void *) &n_tileset, tileBits);
 	}
 	
 	for(int i = 0; i < numberOfTilesets - 1; i++)

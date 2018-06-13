@@ -4,6 +4,7 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <map>
 
 struct BITMAP;
 
@@ -41,7 +42,11 @@ class MapTiled : public Map
 		
 		unsigned int **layers;
 		
+		Tileset *tilesetBlocks;
+		static std::map<std::string, BITMAP *> loadedTilesetImages;
+		
 		bool LoadTileLayer(unsigned int *layer, void *n_data);
+		bool LoadTileSet(Tileset *tileset, void *n_data, std::map<int, int> &tileBits);
 		void CallAutoTiler(std::string type, unsigned int *autoLayer);
 };
 
